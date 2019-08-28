@@ -147,7 +147,7 @@ def get_model(n_vocab,
     model = keras.models.Model(inputs=input_layer, outputs=[lm_head, mc_head])
     model.compile(
         optimizer=keras.optimizers.Adam(),
-        loss=keras.losses.sparse_categorical_crossentropy,
+        loss=loss_function,
     )
     return model
 
