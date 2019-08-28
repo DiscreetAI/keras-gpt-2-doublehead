@@ -38,6 +38,12 @@ def load_trained_model_from_checkpoint(config_path,
         "resid_pdrop": 0.1,
         'n_vocab': 50257
     }
+
+    if seq_len is None:
+        n_ctx = config['n_ctx']
+    else:
+        n_ctx = min(seq_len, config['n_ctx'])
+    n_embd = config['n_embd']
     model = get_model(
         n_vocab=config['n_vocab'],
         n_ctx=config['n_ctx'],
