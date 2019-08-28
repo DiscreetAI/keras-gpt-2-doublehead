@@ -144,15 +144,16 @@ def get_model(n_vocab,
     #     activation=K.softmax
     # )([lm_head, embeddings])
 
-    model = keras.models.Model(inputs=input_layer, outputs=[lm_head, mc_head, norm_layer[1:]])
+    model = keras.models.Model(inputs=input_layer, outputs=[lm_head, mc_head])
     model.compile(
         optimizer=keras.optimizers.Adam(),
         loss=keras.losses.sparse_categorical_crossentropy,
     )
     return model
 
-def loss_function(lm_output, mc_output):
-    return 0
+def loss_function(labels, output):
+    lm_logits, mc_logits, _ = output
+    
 
 def get_custom_objects():
     custom_objects = get_transformer_custom_objects()
