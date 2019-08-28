@@ -133,7 +133,7 @@ def get_model(n_vocab,
     lm_head = Dense(
         units=n_embd,
         name='LMHead',
-        activation=
+        activation=K.softmax
     )(norm_layer)
 
     # output_layer = EmbeddingSim(
