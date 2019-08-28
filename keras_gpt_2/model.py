@@ -151,7 +151,8 @@ def get_model(n_vocab,
     )
     return model
 
-def loss_function(lm_output, mc_output)
+def loss_function(lm_output, mc_output):
+    return 0
 
 def get_custom_objects():
     custom_objects = get_transformer_custom_objects()
