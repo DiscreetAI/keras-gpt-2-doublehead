@@ -23,7 +23,7 @@ def generate(model,
     max_len = max(text_lens)
     input_data = [encode + [0] * (max_len - len(encode)) for encode in encodes]
     for shift in range(length):
-        output_data, _ = model.predict(np.array(input_data))
+        output_data, _, _ = model.predict(np.array(input_data))
         output_data = K.softmax(output_data, axis=-1)
         output_data = K.eval(output_data)
         for index in range(batch_size):
