@@ -36,7 +36,7 @@ def load_trained_model_from_checkpoint(config_path,
         "n_positions": 512,
         "n_special": 5,
         "resid_pdrop": 0.1,
-        'n_vocab': 40483
+        'n_vocab': 50257
     }
     model = get_model(
         n_vocab=config['n_vocab'],
