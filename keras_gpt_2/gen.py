@@ -25,6 +25,7 @@ def generate(model,
     for shift in range(length):
         output_data = model.predict(np.array(input_data))
         output_data = K.softmax(output_data, axis=-1)
+        output_data = K.eval(output_data)
         for index in range(batch_size):
             probs = [(prob, i) for i, prob in enumerate(output_data[index, text_lens[index] + shift - 1])]
             probs.sort(reverse=True)
