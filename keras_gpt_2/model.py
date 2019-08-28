@@ -135,15 +135,13 @@ def get_model(n_vocab,
         name='LMHead',
     )(norm_layer)
 
-    output_layer = K.softmax(lm_head, axis=-1)
-
     # output_layer = EmbeddingSim(
     #     use_bias=False,
     #     name='Output',
     #     activation=K.softmax
     # )([lm_head, embeddings])
 
-    model = keras.models.Model(inputs=input_layer, outputs=output_layer)
+    model = keras.models.Model(inputs=input_layer, outputs=lm_head)
     model.compile(
         optimizer=keras.optimizers.Adam(),
         loss=keras.losses.sparse_categorical_crossentropy,

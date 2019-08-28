@@ -1,5 +1,5 @@
 import numpy as np
-
+from keras import backend as K
 
 def generate(model,
              bpe,
@@ -24,6 +24,7 @@ def generate(model,
     input_data = [encode + [0] * (max_len - len(encode)) for encode in encodes]
     for shift in range(length):
         output_data = model.predict(np.array(input_data))
+        output_data = K.softmax(output_data, axis=-1)
         for index in range(batch_size):
             probs = [(prob, i) for i, prob in enumerate(output_data[index, text_lens[index] + shift - 1])]
             probs.sort(reverse=True)
