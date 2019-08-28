@@ -133,8 +133,9 @@ def get_model(n_vocab,
     lm_head = Dense(
         units=n_embd,
         name='LMHead',
-        activation=K.softmax
     )(norm_layer)
+
+    output_layer = K.softmax(lm_head, axis=-1)
 
     # output_layer = EmbeddingSim(
     #     use_bias=False,
@@ -142,7 +143,7 @@ def get_model(n_vocab,
     #     activation=K.softmax
     # )([lm_head, embeddings])
 
-    model = keras.models.Model(inputs=input_layer, outputs=lm_head)
+    model = keras.models.Model(inputs=input_layer, outputs=output_layer)
     model.compile(
         optimizer=keras.optimizers.Adam(),
         loss=keras.losses.sparse_categorical_crossentropy,
