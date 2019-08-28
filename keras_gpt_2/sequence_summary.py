@@ -1,7 +1,7 @@
 from keras.layers import Layer
 
 class SequenceSummary(Layer):
-    def __init__(self, config):
+    def __init__(self):
         super(SequenceSummary, self).__init__()
 
         self.summary_type = 'last'
@@ -25,7 +25,7 @@ class SequenceSummary(Layer):
         # if hasattr(config, 'summary_last_dropout') and config.summary_last_dropout > 0:
         #     self.last_dropout = nn.Dropout(config.summary_last_dropout)
 
-    def forward(self, hidden_states, cls_index=None):
+    def call(self, hidden_states, cls_index=None):
         """ hidden_states: float Tensor in shape [bsz, seq_len, hidden_size], the hidden-states of the last layer.
             cls_index: [optional] position of the classification token if summary_type == 'cls_index',
                 shape (bsz,) or more generally (bsz, ...) where ... are optional leading dimensions of hidden_states.

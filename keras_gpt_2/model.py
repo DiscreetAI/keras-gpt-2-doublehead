@@ -7,6 +7,7 @@ from keras_transformer import get_custom_objects as get_transformer_custom_objec
 
 from keras.layers import Dense, Layer
 from keras import backend as K
+from .sequence_summary import SequenceSummary
 
 
 __all__ = ['get_model', 'get_custom_objects']
@@ -135,13 +136,15 @@ def get_model(n_vocab,
         name='LMHead',
     )(norm_layer)
 
+    mc_head = SequenceSummary()(norm_layer)
+
     # output_layer = EmbeddingSim(
     #     use_bias=False,
     #     name='Output',
     #     activation=K.softmax
     # )([lm_head, embeddings])
 
-    model = keras.models.Model(inputs=input_layer, outputs=lm_head)
+    model = keras.models.Model(inputs=input_layer, outputs=[lm_head, mc_head])
     model.compile(
         optimizer=keras.optimizers.Adam(),
         loss=keras.losses.sparse_categorical_crossentropy,
