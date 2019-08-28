@@ -131,7 +131,7 @@ def get_model(n_vocab,
     )(last_layer)
 
     lm_head = Dense(
-        units=n_vocab,
+        units=n_embd,
         name='LMHead'
     )(norm_layer)
 
