@@ -134,9 +134,9 @@ def get_model(n_vocab,
     lm_head = Dense(
         units=n_embd,
         name='LMHead',
-    )(norm_layer[0])
+    )(norm_layer)
 
-    mc_head = SequenceSummary()(norm_layer[0])
+    mc_head = SequenceSummary()(norm_layer)
 
     # output_layer = EmbeddingSim(
     #     use_bias=False,
@@ -152,7 +152,21 @@ def get_model(n_vocab,
     return model
 
 def loss_function(labels, output):
-    lm_logits, mc_logits, _ = output
+    lm_logits, mc_logits = output
+    lm_labels, mc_labels = output
+
+    shift_logits = lm_logits[..., :-1, :]
+    shift_labels = lm_labels[..., 1:]
+    lm_loss = keras.losses.sparse_categorical_crossentropy(
+        K.flatten(shift_labels), 
+        K.reshape(shift_logits, (-1, K.int_shape(shift_logits)[-1]))
+    )
+    mc_loss = keras.losses.sparse_categorical_crossentropy(
+        K.flatten(mc_labels), 
+        K.reshape(mc_logits, (-1, K.int_shape(mc_logits)[-1]))
+    )
+
+    return 2*lm_loss + mc_loss
     
 
 def get_custom_objects():
