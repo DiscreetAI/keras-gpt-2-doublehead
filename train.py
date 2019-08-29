@@ -219,6 +219,6 @@ model.fit(
     input_ids[0],
     {
         'LMOutput': lm_labels[0],
-        'MCOutput': mc_labels[0]
+        'MCOutput': np.array(mc_labels[0])
     }
 )
