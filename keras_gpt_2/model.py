@@ -10,6 +10,7 @@ from keras import backend as K
 from .sequence_summary import SequenceSummary
 
 import tensorflow as tf
+import numpy as np
 
 __all__ = ['get_model', 'get_custom_objects']
 
