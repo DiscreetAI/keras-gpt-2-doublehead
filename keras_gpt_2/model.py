@@ -143,7 +143,7 @@ def get_model(n_vocab,
     model = keras.models.Model(inputs=input_layer, outputs=[lm_head, mc_head])
     model.compile(
         optimizer=keras.optimizers.Adam(),
-        loss=loss_function,
+        loss=keras.losses.sparse_categorical_crossentropy,
     )
     return model
 
@@ -163,6 +163,7 @@ def loss_function(labels, output):
     )
 
     return 2*lm_loss + mc_loss
+
     
 
 def get_custom_objects():
