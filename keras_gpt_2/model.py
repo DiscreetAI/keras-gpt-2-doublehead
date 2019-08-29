@@ -9,6 +9,7 @@ from keras.layers import Dense, Layer
 from keras import backend as K
 from .sequence_summary import SequenceSummary
 
+import tensorflow as tf
 
 __all__ = ['get_model', 'get_custom_objects']
 
