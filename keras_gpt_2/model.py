@@ -134,7 +134,6 @@ def get_model(n_vocab,
     lm_head = EmbeddingSim(
         use_bias=False,
         name='Output',
-        activation=K.softmax
     )([norm_layer, embeddings])
 
     mc_head = SequenceSummary()(norm_layer)
