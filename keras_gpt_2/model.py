@@ -172,10 +172,10 @@ def cross_entropy(logits, labels, ignore_index=None):
     return xentropy
     
 def loss_function(labels, output):
-    labels = K.eval(labels)
-    output = K.eval(output)
-    lm_logits, mc_logits = output
-    lm_labels, mc_labels = output
+    print(K.int_shape(labels))
+    print(K.int_shape(outputs))
+    lm_logits, mc_logits = tf.split(output, 2)
+    lm_labels, mc_labels = tf.split(labels, 2)
 
     shift_logits = lm_logits[..., :-1, :]
     shift_labels = lm_labels[..., 1:]
