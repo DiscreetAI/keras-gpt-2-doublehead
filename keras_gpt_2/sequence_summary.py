@@ -1,8 +1,8 @@
 from keras.layers import Layer
 
 class SequenceSummary(Layer):
-    def __init__(self):
-        super(SequenceSummary, self).__init__()
+    def __init__(self, name):
+        super(SequenceSummary, self).__init__(name=name)
 
         self.summary_type = 'last'
         # self.summary = Identity()

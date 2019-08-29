@@ -135,17 +135,26 @@ def get_model(n_vocab,
 
     lm_head = EmbeddingSim(
         use_bias=False,
-        name='Output',
+        name='LMOutput',
     )([norm_layer, embeddings])
 
-    mc_head = SequenceSummary()(norm_layer)
+    mc_head = SequenceSummary(
+        name='MCOutput'
+    )(norm_layer)
 
     # output_layer = 
+
+    losses = {
+        "LMOutput": lm_loss_function,
+        "MCOutput": mc_loss_function,
+    }
+    lossWeights = {"LMOutput": 2.0, "MCOutput": 1.0}
 
     model = keras.models.Model(inputs=input_layer, outputs=[lm_head, mc_head])
     model.compile(
         optimizer=keras.optimizers.Adam(),
-        loss=loss_function
+        loss=losses,
+        loss_weights=lossWeights
     )
     return model
 
@@ -175,10 +184,17 @@ def cross_entropy(logits, labels, ignore_index=None):
         )
     return xentropy
     
-def loss_function(labels, output):
-    lm_logits, mc_logits = tf.split(output, 2, axis=1)
-    lm_labels, mc_labels = tf.split(labels, 2, axis=1)
+def mc_loss_function(mc_labels, mc_output):
+    shift_logits = lm_logits[..., :-1, :]
+    shift_labels = lm_labels[..., 1:]
+    mc_loss = cross_entropy( 
+        K.reshape(mc_logits, (-1, K.int_shape(mc_logits)[-1])),
+        K.flatten(mc_labels)
+    )
 
+    return mc_loss
+
+def lm_loss_function(lm_labels, lm_output):
     shift_logits = lm_logits[..., :-1, :]
     shift_labels = lm_labels[..., 1:]
     lm_loss = cross_entropy(
@@ -186,12 +202,8 @@ def loss_function(labels, output):
         K.flatten(shift_labels),
         -1
     )
-    mc_loss = cross_entropy( 
-        K.reshape(mc_logits, (-1, K.int_shape(mc_logits)[-1])),
-        K.flatten(mc_labels)
-    )
 
-    return 2*lm_loss + mc_loss
+    return lm_loss
 
 
 
