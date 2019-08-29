@@ -150,6 +150,8 @@ def get_model(n_vocab,
 
 def cross_entropy(logits, labels, ignore_index=None):
     if ignore_index:
+        print(K.int_shape(labels))
+        unc = np.ones(K.int_shape(labels))
         xentropy = tf.reduce_mean(
             tf.losses.compute_weighted_loss(
                 weights = tf.cast(unc, tf.float32),
