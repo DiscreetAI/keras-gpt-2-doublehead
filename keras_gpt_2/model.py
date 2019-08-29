@@ -131,18 +131,15 @@ def get_model(n_vocab,
         name='Norm',
     )(last_layer)
 
-    lm_head = Dense(
-        units=n_embd,
-        name='LMHead',
-    )(norm_layer)
+    lm_head = EmbeddingSim(
+        use_bias=False,
+        name='Output',
+        activation=K.softmax
+    )([norm_layer, embeddings])
 
     mc_head = SequenceSummary()(norm_layer)
 
-    # output_layer = EmbeddingSim(
-    #     use_bias=False,
-    #     name='Output',
-    #     activation=K.softmax
-    # )([lm_head, embeddings])
+    # output_layer = 
 
     model = keras.models.Model(inputs=input_layer, outputs=[lm_head, mc_head])
     model.compile(
