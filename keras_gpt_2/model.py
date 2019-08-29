@@ -143,26 +143,55 @@ def get_model(n_vocab,
     model = keras.models.Model(inputs=input_layer, outputs=[lm_head, mc_head])
     model.compile(
         optimizer=keras.optimizers.Adam(),
-        loss=keras.losses.sparse_categorical_crossentropy,
+        loss=keras.losses.sparse_categorical_crossentropy
     )
     return model
 
+def cross_entropy(logits, labels, ignore_index=None):
+    if ignore_index:
+        xentropy = tf.reduce_mean(
+            tf.losses.compute_weighted_loss(
+                weights = tf.cast(unc, tf.float32),
+                losses = tf.nn.sigmoid_cross_entropy_with_logits(
+                    logits = logits,
+                    labels = tf.cast(labels, tf.float32)
+                )
+            ), 
+            name='xentropy'
+        )
+    else:
+        xentropy = tf.reduce_mean(
+            tf.losses.compute_weighted_loss(
+                losses = tf.nn.sigmoid_cross_entropy_with_logits(
+                    logits = logits,
+                    labels = tf.cast(labels, tf.float32)
+                )
+            ), 
+            name='xentropy'
+        )
+    return xentropy
+    
 def loss_function(labels, output):
+    labels = K.eval(labels)
+    output = K.eval(output)
     lm_logits, mc_logits = output
     lm_labels, mc_labels = output
 
     shift_logits = lm_logits[..., :-1, :]
     shift_labels = lm_labels[..., 1:]
-    lm_loss = keras.losses.sparse_categorical_crossentropy(
-        K.flatten(shift_labels), 
-        K.reshape(shift_logits, (-1, K.int_shape(shift_logits)[-1]))
+    lm_loss = cross_entropy(
+        K.reshape(shift_logits, (-1, K.int_shape(shift_logits)[-1])),
+        K.flatten(shift_labels),
+        -1
     )
-    mc_loss = keras.losses.sparse_categorical_crossentropy(
-        K.flatten(mc_labels), 
-        K.reshape(mc_logits, (-1, K.int_shape(mc_logits)[-1]))
+    mc_loss = cross_entropy( 
+        K.reshape(mc_logits, (-1, K.int_shape(mc_logits)[-1])),
+        K.flatten(mc_labels)
     )
 
     return 2*lm_loss + mc_loss
+
+
 
     
 
