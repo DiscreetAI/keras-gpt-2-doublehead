@@ -164,7 +164,7 @@ def cross_entropy(logits, labels, ignore_index=None):
         unc = tf.convert_to_tensor(unc)
         xentropy = tf.reduce_mean(
             tf.losses.compute_weighted_loss(
-                weights = tf.cast(unc, tf.float32),
+                weights = K.reshape(tf.cast(unc, tf.float32), (-1, 50257)),
                 losses = tf.nn.sigmoid_cross_entropy_with_logits(
                     logits = logits,
                     labels = K.reshape(tf.cast(labels, tf.float32), (-1, 50257))
