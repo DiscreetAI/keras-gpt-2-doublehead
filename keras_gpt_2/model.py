@@ -184,9 +184,7 @@ def cross_entropy(logits, labels, ignore_index=None):
         )
     return xentropy
     
-def mc_loss_function(mc_labels, mc_output):
-    shift_logits = lm_logits[..., :-1, :]
-    shift_labels = lm_labels[..., 1:]
+def mc_loss_function(mc_labels, mc_logits):
     mc_loss = cross_entropy( 
         K.reshape(mc_logits, (-1, K.int_shape(mc_logits)[-1])),
         K.flatten(mc_labels)
@@ -194,7 +192,7 @@ def mc_loss_function(mc_labels, mc_output):
 
     return mc_loss
 
-def lm_loss_function(lm_labels, lm_output):
+def lm_loss_function(lm_labels, lm_logits):
     shift_logits = lm_logits[..., :-1, :]
     shift_labels = lm_labels[..., 1:]
     lm_loss = cross_entropy(
