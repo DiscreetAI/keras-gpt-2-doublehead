@@ -172,8 +172,6 @@ def cross_entropy(logits, labels, ignore_index=None):
     return xentropy
     
 def loss_function(labels, output):
-    print(K.int_shape(labels))
-    print(K.int_shape(outputs))
     lm_logits, mc_logits = tf.split(output, 2)
     lm_labels, mc_labels = tf.split(labels, 2)
 
