@@ -184,14 +184,14 @@ tokenizer = OpenAIGPTTokenizer.from_pretrained('openai-gpt')
 url = "s3://datasets.huggingface.co/personachat/personachat_self_original.json"
 
 # Download and load JSON dataset
-personachat_file = cached_path(url)
+personachat_file = "small_dataset.json"
 with open(personachat_file, "r", encoding="utf-8") as f:
     dataset = json.loads(f.read())
 
 # with open('dataset.json', "w", encoding="utf-8") as f:
 #     f.write(json.dumps(dataset))
-dataset = {'train': dataset['train']}
-dataset['train'] = dataset['train'][:1]
+# dataset = {'train': dataset['train']}
+# dataset['train'] = dataset['train'][:1]
 # print('\n')
 # print(dataset[0]['utterances'][1])
 # print('\n')
