@@ -9,21 +9,23 @@ from attention import Attention
 from bert_layer_norm import BertLayerNorm as LayerNorm
 
 class Block(Layer):
-    def __init__(self, n_ctx, config, scale=False):
+    def __init__(self, n_ctx, config, name, scale=False):
         super(Block, self).__init__()
         nx = config.n_embd
-        self.attn = Attention(nx, n_ctx, config, scale)
-        self.ln_1 = LayerNorm(nx, eps=config.layer_norm_epsilon)
-        self.mlp = MLP(4 * nx, config)
-        self.ln_2 = LayerNorm(nx, eps=config.layer_norm_epsilon)
+        self.ln_1 = LayerNorm(nx, name=name+"_layernorm1", eps=config.layer_norm_epsilon)
+        self.attn = Attention(nx, n_ctx, config, name="_attention" scale)
+        self.ln_2 = LayerNorm(nx, name=name+"_layernorm2", eps=config.layer_norm_epsilon)
+        self.mlp = MLP(4 * nx, config, name="_mlp")
+        self.name = name
+        
 
-    def forward(self, x, head_mask=None):
-        attn_outputs = self.attn(x, head_mask=head_mask)
-        a = attn_outputs[0]
+    def call(self, x, layer_past=None, head_mask=None):
+        output_attn = self.attn(self.ln_1(x), layer_past=layer_past, head_mask=head_mask)
+        a = output_attn[0]
 
-        n = self.ln_1(x + a)
-        m = self.mlp(n)
-        h = self.ln_2(n + m)
+        x = x + a
 
-        outputs = [h] + attn_outputs[1:]
+        m = self.mlp(self.ln_2(x))
+        x = x + m
+        outputs = [h] + output_attn[1:]
         return outputs
