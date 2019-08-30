@@ -50,8 +50,9 @@ class SequenceSummary(Layer):
                 print(K.int_shape(cls_index), "ONE")
                 cls_index = K.expand_dims(K.expand_dims(cls_index, -1), -1)
                 print(K.int_shape(cls_index), "TWO")
-                args = (-1,) * (len(K.int_shape(cls_index)) - 1) + (K.int_shape(hidden_states)[-1],)
+                args = (1,) * (len(K.int_shape(cls_index)) - 1) + (K.int_shape(hidden_states)[-1],)
                 print("args", args)
+                cls_index = K.tile(cls_index, args)
                 #cls_index = cls_index.expand((-1,) * (cls_index.dim()-1) + (hidden_states.size(-1),))
             # shape of cls_index: (bsz, XX, 1, hidden_size) where XX are optional leading dim of hidden_states
             output = K.squeeze(K.gather(hidden_states, (-2, cls_index)), -2) # shape (bsz, XX, hidden_size)
