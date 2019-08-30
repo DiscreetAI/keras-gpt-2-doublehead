@@ -1,4 +1,5 @@
 from keras.layers import Layer
+from keras import backend as K
 
 class SequenceSummary(Layer):
     def __init__(self, name):
@@ -32,8 +33,10 @@ class SequenceSummary(Layer):
                 if summary_type == 'cls_index' and cls_index is None:
                     we take the last token of the sequence as classification token
         """
+        print(K.int_shape(hidden_states), "ONE")
         if self.summary_type == 'last':
             output = hidden_states[:, -1]
+            print(K.int_shape(output), "TWO")
         elif self.summary_type == 'first':
             output = hidden_states[:, 0]
         elif self.summary_type == 'mean':
