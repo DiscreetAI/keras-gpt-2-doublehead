@@ -26,13 +26,14 @@ class SequenceSummary(Layer):
         # if hasattr(config, 'summary_last_dropout') and config.summary_last_dropout > 0:
         #     self.last_dropout = nn.Dropout(config.summary_last_dropout)
 
-    def call(self, hidden_states, cls_index=None):
+    def call(self, inputs):
         """ hidden_states: float Tensor in shape [bsz, seq_len, hidden_size], the hidden-states of the last layer.
             cls_index: [optional] position of the classification token if summary_type == 'cls_index',
                 shape (bsz,) or more generally (bsz, ...) where ... are optional leading dimensions of hidden_states.
                 if summary_type == 'cls_index' and cls_index is None:
                     we take the last token of the sequence as classification token
         """
+        hidden_states, cls_index = inputs
         print(hidden_states, cls_index)
         #print(K.int_shape(hidden_states), "ONE")
         if self.summary_type == 'last':
