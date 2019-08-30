@@ -13,7 +13,7 @@ vocab_path = os.path.join(model_folder, 'vocab.bpe')
 
 
 print('Load model from checkpoint...')
-#model = load_trained_model_from_checkpoint(config_path, checkpoint_path)
+model = load_trained_model_from_checkpoint(config_path, checkpoint_path)
 print('Load BPE from files...')
 bpe = get_bpe_from_files(encoder_path, vocab_path)
 print('Generate text...')
@@ -216,10 +216,10 @@ lm_labels = arr['lm_labels']
 mc_labels = arr['mc_labels']
 
 print(input_ids.shape)
-# model.fit(
-#     input_ids,
-#     {
-#         'LMOutput': lm_labels,
-#         'MCOutput': mc_labels
-#     }
-# )
+model.fit(
+    input_ids,
+    {
+        'LMOutput': lm_labels,
+        'MCOutput': mc_labels
+    }
+)
