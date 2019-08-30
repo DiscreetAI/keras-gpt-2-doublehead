@@ -13,7 +13,7 @@ vocab_path = os.path.join(model_folder, 'vocab.bpe')
 
 
 print('Load model from checkpoint...')
-model = load_trained_model_from_checkpoint(config_path, checkpoint_path)
+#model = load_trained_model_from_checkpoint(config_path, checkpoint_path)
 print('Load BPE from files...')
 bpe = get_bpe_from_files(encoder_path, vocab_path)
 print('Generate text...')
@@ -134,7 +134,7 @@ def build_input_from_segments(persona, history, reply, tokenizer, lm_labels=Fals
         instance["lm_labels"] = ([-1] * sum(len(s) for s in sequence[:-1])) + [-1] + sequence[-1][1:]
     return instance, sequence
 
-def get_data_loaders(personachat, tokenizer, args_num_candidates=2, args_personality_permutations=1, args_max_history=2):
+def get_data_loaders(personachat, tokenizer, args_num_candidates=1, args_personality_permutations=1, args_max_history=2):
     """ Prepare the dataset for training and evaluation """
    
 
@@ -169,7 +169,7 @@ def get_data_loaders(personachat, tokenizer, args_num_candidates=2, args_persona
         dataset = pad_dataset(dataset, padding=tokenizer.convert_tokens_to_ids('<pad>'))
         for input_name in MODEL_INPUTS:
             tensor = np.array(dataset[input_name])
-            if input_name != "mc_labels":
+            if input_name == "mc_ldsfaabels":
                 tensor = tensor.reshape((-1, datasets[dataset_name]["n_candidates"]) + tensor.shape[1:])
             dataset[input_name] = tensor
 
@@ -214,11 +214,12 @@ input_ids = arr['input_ids']
 mc_token_ids = arr['mc_token_ids']
 lm_labels = arr['lm_labels']
 mc_labels = arr['mc_labels']
-    
-model.fit(
-    input_ids[0],
-    {
-        'LMOutput': lm_labels[0],
-        'MCOutput': np.array(mc_labels[0])
-    }
-)
+
+print(input_ids.shape)
+# model.fit(
+#     input_ids,
+#     {
+#         'LMOutput': lm_labels,
+#         'MCOutput': mc_labels
+#     }
+# )
