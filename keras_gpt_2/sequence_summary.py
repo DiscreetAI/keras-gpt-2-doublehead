@@ -35,7 +35,7 @@ class SequenceSummary(Layer):
         """
         hidden_states, cls_index = inputs
         print(hidden_states, cls_index)
-        #print(K.int_shape(hidden_states), "ONE")
+        print(K.int_shape(cls_index), "ONE")
         if self.summary_type == 'last':
             output = hidden_states[:, -1]
             print(K.int_shape(output), "TWO")
@@ -47,7 +47,9 @@ class SequenceSummary(Layer):
             if cls_index is None:
                 cls_index = torch.full_like(hidden_states[..., :1, :], hidden_states.shape[-2]-1, dtype=torch.long)
             else:
+                print(K.int_shape(cls_index), "ONE")
                 cls_index = K.expand_dims(K.expand_dims(cls_index, -1), -1)
+                print(K.int_shape(cls_index), "TWO")
                 args = (-1,) * (len(K.int_shape(cls_index)) - 1) + (K.int_shape(hidden_states)[-1],)
                 print("args", args)
                 #cls_index = cls_index.expand((-1,) * (cls_index.dim()-1) + (hidden_states.size(-1),))
