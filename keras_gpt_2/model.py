@@ -5,7 +5,7 @@ from keras_layer_normalization import LayerNormalization
 from keras_transformer import gelu, attention_builder, feed_forward_builder
 from keras_transformer import get_custom_objects as get_transformer_custom_objects
 
-from keras.layers import Dense, Layer
+from keras.layers import Dense, Layer, Dropout
 from keras import backend as K
 from .sequence_summary import SequenceSummary
 
@@ -100,9 +100,15 @@ def get_model(n_vocab,
         input_layer_shape = (batch_size, n_ctx)
     else:
         input_layer_shape = (batch_size, None)
-    input_layer = keras.layers.Input(
+
+    lm_input_layer = keras.layers.Input(
         batch_shape=input_layer_shape,
-        name='Input',
+        name='LMInput',
+    )
+
+    mc_input_layer = keras.layers.Input(
+        batch_shape=input_layer_shape,
+        name='MCInput',
     )
 
     embed_token, embeddings = EmbeddingRet(
@@ -110,7 +116,8 @@ def get_model(n_vocab,
         output_dim=n_embd,
         mask_zero=False,
         name='Embed-Token',
-    )(input_layer)
+    )(lm_input_layer)
+
     embed_token_pos = PositionEmbedding(
         input_dim=n_ctx,
         output_dim=n_embd,
@@ -138,9 +145,24 @@ def get_model(n_vocab,
         name='LMOutput',
     )([norm_layer, embeddings])
 
-    mc_head = SequenceSummary(
+    mc_sequence_summary = SequenceSummary(
+        name='MCSequenceSummary'
+    )([norm_layer, mc_input_layer])
+
+    mc_linear = Dense(
+        units=1,
+        input_shape=(n_embd,),
+        name='MCDense'
+    )(mc_sequence_summary)
+
+    mc_head = Dropout(
+        rate=0.1,
         name='MCOutput'
-    )(norm_layer)
+    )(mc_linear)
+
+
+
+
 
     # output_layer = 
 
@@ -150,7 +172,7 @@ def get_model(n_vocab,
     }
     lossWeights = {"LMOutput": 2.0, "MCOutput": 1.0}
 
-    model = keras.models.Model(inputs=input_layer, outputs=[lm_head, mc_head])
+    model = keras.models.Model(inputs=[lm_input_layer, mc_input_layer], outputs=[lm_head, mc_head])
     model.compile(
         optimizer=keras.optimizers.Adam(),
         loss=losses,

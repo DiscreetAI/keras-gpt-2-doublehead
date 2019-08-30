@@ -217,7 +217,10 @@ mc_labels = arr['mc_labels']
 
 print(input_ids.shape)
 model.fit(
-    input_ids,
+    {
+        'LMInput': input_ids,
+        'MCInput': mc_token_ids
+    },
     {
         'LMOutput': lm_labels,
         'MCOutput': mc_labels

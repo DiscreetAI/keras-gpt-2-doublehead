@@ -5,7 +5,7 @@ class SequenceSummary(Layer):
     def __init__(self, name):
         super(SequenceSummary, self).__init__(name=name)
 
-        self.summary_type = 'last'
+        self.summary_type = 'cls_index'
         # self.summary = Identity()
         # if hasattr(config, 'summary_use_proj') and config.summary_use_proj:
         #     if hasattr(config, 'summary_proj_to_labels') and config.summary_proj_to_labels and config.num_labels > 0:
@@ -45,10 +45,10 @@ class SequenceSummary(Layer):
             if cls_index is None:
                 cls_index = torch.full_like(hidden_states[..., :1, :], hidden_states.shape[-2]-1, dtype=torch.long)
             else:
-                cls_index = cls_index.unsqueeze(-1).unsqueeze(-1)
-                cls_index = cls_index.expand((-1,) * (cls_index.dim()-1) + (hidden_states.size(-1),))
+                cls_index = K.expand_dims(K.expand_dims(cls_index, -1), -1)
+                #cls_index = cls_index.expand((-1,) * (cls_index.dim()-1) + (hidden_states.size(-1),))
             # shape of cls_index: (bsz, XX, 1, hidden_size) where XX are optional leading dim of hidden_states
-            output = hidden_states.gather(-2, cls_index).squeeze(-2) # shape (bsz, XX, hidden_size)
+            output = K.squeeze(K.gather(hidden_states, (-2, cls_index)), -2) # shape (bsz, XX, hidden_size)
         elif self.summary_type == 'attn':
             raise NotImplementedError
 
