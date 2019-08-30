@@ -215,6 +215,7 @@ mc_token_ids = arr['mc_token_ids']
 lm_labels = arr['lm_labels']
 mc_labels = arr['mc_labels']
 
+print(lm_labels.shape)
 print(input_ids.shape)
 model.fit(
     {
