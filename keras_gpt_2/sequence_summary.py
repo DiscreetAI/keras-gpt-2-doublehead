@@ -55,9 +55,8 @@ class SequenceSummary(Layer):
                 print("args", args)
                 cls_index = K.tile(cls_index, args)
                 print(K.int_shape(cls_index), "THREE")
-                #cls_index = cls_index.expand((-1,) * (cls_index.dim()-1) + (hidden_states.size(-1),))
             # shape of cls_index: (bsz, XX, 1, hidden_size) where XX are optional leading dim of hidden_states
-            output = K.squeeze(K.gather(hidden_states, (-2, cls_index)), -2) # shape (bsz, XX, hidden_size)
+            output = K.squeeze(K.gather(hidden_states, (cls_index, -2)), -2) # shape (bsz, XX, hidden_size)
         elif self.summary_type == 'attn':
             raise NotImplementedError
 
