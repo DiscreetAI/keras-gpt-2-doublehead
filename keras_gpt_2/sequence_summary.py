@@ -1,6 +1,8 @@
 from keras.layers import Layer
 from keras import backend as K
 
+import tensorflow as tf
+
 class SequenceSummary(Layer):
     def __init__(self, name):
         super(SequenceSummary, self).__init__(name=name)
@@ -56,7 +58,7 @@ class SequenceSummary(Layer):
                 cls_index = K.tile(cls_index, args)
                 print(K.int_shape(cls_index), "THREE")
             # shape of cls_index: (bsz, XX, 1, hidden_size) where XX are optional leading dim of hidden_states
-            output = K.squeeze(K.gather(hidden_states, (cls_index, -2)), -2) # shape (bsz, XX, hidden_size)
+            output = K.squeeze(tf.gather(params=hidden_states, indices=cls_index, axis=-2)), -2) # shape (bsz, XX, hidden_size)
         elif self.summary_type == 'attn':
             raise NotImplementedError
 
