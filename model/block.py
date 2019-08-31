@@ -10,10 +10,10 @@ from bert_layer_norm import BertLayerNorm as LayerNorm
 
 class Block(Layer):
     def __init__(self, n_ctx, config, name, scale=False):
-        super(Block, self).__init__()
+        super(Block, self).__init__(name=name)
         nx = config.n_embd
         self.ln_1 = LayerNorm(nx, name=name+"_layernorm1", eps=config.layer_norm_epsilon)
-        self.attn = Attention(nx, n_ctx, config, name="_attention" scale)
+        self.attn = Attention(nx, n_ctx, config, name="_attention", scale=scale)
         self.ln_2 = LayerNorm(nx, name=name+"_layernorm2", eps=config.layer_norm_epsilon)
         self.mlp = MLP(4 * nx, config, name="_mlp")
         self.name = name

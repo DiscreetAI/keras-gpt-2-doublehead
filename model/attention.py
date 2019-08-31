@@ -5,24 +5,7 @@ import numpy
 import tensorflow as tf
 from conv_1d import Conv1D
 
-def prune_conv1d_layer(layer, index, dim=1):
-    """ Prune a Conv1D layer (a model parameters) to keep only entries in index.
-        A Conv1D work as a Linear layer (see e.g. BERT) but the weights are transposed.
-        Return the pruned layer as a new layer with requires_grad=True.
-        Used to remove heads.
-    """
-    index = K.eval(index)
-    tensor_list = [layer.weight[i] for i in index]
-    W = K.concatenate(tensor_list, axis=dim)
-    if dim == 0:
-        b = layer.bias
-    else:
-        b = layer.bias[index]
-    new_size = K.int_shape(layer.weight)
-    new_size[dim] = len(index)
-    new_layer = Conv1D(new_size[1], new_size[0], name=layer.name)
-    new_layer.set_weights(W, b)
-    return new_layer
+
 
 class Attention(Layer):
 
@@ -44,17 +27,39 @@ class Attention(Layer):
         self.attn_dropout = Dropout(config.attn_pdrop, name=name+"_drop1")
         self.resid_dropout = Dropout(config.resid_pdrop, name=name+"_drop2")
         self.name=name
+        self.n_ctx = n_ctx
 
-    def build():
+    def build(self, input_shape):
         def tril_initializer(shape):
-            return K.reshape(tf.convert_to_tensor(np.tril(np.ones(shape))), (1, 1, n_ctx, n_ctx))
+            return K.reshape(tf.convert_to_tensor(np.tril(np.ones(shape))), (1, 1, self.n_ctx, self.n_ctx))
 
         self.add_weight(
-            shape=(n_ctx, n_ctx),
+            shape=(self.n_ctx, self.n_ctx),
             initializer=tril_initializer,
             trainable=False,
             name=self.name + "_tril"
         )
+
+        super(Attention, self).build(input_shape)
+
+    def prune_conv1d_layer(self, layer, index, dim=1):
+        """ Prune a Conv1D layer (a model parameters) to keep only entries in index.
+            A Conv1D work as a Linear layer (see e.g. BERT) but the weights are transposed.
+            Return the pruned layer as a new layer with requires_grad=True.
+            Used to remove heads.
+        """
+        index = K.eval(index)
+        tensor_list = [layer.weight[i] for i in index]
+        W = K.concatenate(tensor_list, axis=dim)
+        if dim == 0:
+            b = layer.bias
+        else:
+            b = layer.bias[index]
+        new_size = K.int_shape(layer.weight)
+        new_size[dim] = len(index)
+        new_layer = Conv1D(new_size[1], new_size[0], name=layer.name)
+        new_layer.set_weights(W, b)
+        return new_layer
 
     def prune_heads(self, heads):
         if len(heads) == 0:
@@ -67,8 +72,8 @@ class Attention(Layer):
         index = tf.convert_to_tensor(np.arange(len(mask))[mask], tf.int64)
         index_attn = K.concatenate([index, index + self.split_size, index + (2*self.split_size)], axis=0)
         # Prune conv1d layers
-        self.c_attn = prune_conv1d_layer(self.c_attn, index_attn, dim=1)
-        self.c_proj = prune_conv1d_layer(self.c_proj, index, dim=0)
+        self.c_attn = self.prune_conv1d_layer(self.c_attn, index_attn, dim=1)
+        self.c_proj = self.prune_conv1d_layer(self.c_proj, index, dim=0)
         # Update hyper params
         self.split_size = (self.split_size // self.n_head) * (self.n_head - len(heads))
         self.n_head = self.n_head - len(heads)

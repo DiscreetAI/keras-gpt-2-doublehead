@@ -17,7 +17,7 @@ class Conv1D(Layer):
         self.name = name
        
 
-    def build(self):
+    def build(self, input_shape):
         w = K.random_normal(shape=(self.nx, self.nf), stddev=0.02)
         self.weight = self.add_weight(
             shape=(self.nx, self.nf),
@@ -31,6 +31,7 @@ class Conv1D(Layer):
             trainable=True,
             name=self.name + "_bias"
         )
+        super(Conv1D, self).build(input_shape)
 
     def call(self, x):
         size_out = K.int_shape(x)[:-1] + (self.nf,)

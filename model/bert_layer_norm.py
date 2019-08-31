@@ -12,19 +12,22 @@ class BertLayerNorm(Layer):
         super(BertLayerNorm, self).__init__(name=name)
         self.variance_epsilon = eps
         self.name = name
+        self.hidden_size = hidden_size
 
-    def build():
+    def build(self, input_shape):
         self.weight = self.add_weight(
-            shape=(hidden_size,),
+            shape=(self.hidden_size,),
             initializer=keras.initializers.Ones(),
             name=self.name + "_weight"
 
         ) 
         self.bias = self.add_weight(
             shape=(hidden_size,),
-            initializer=keras.initializers.Zeros()
+            initializer=keras.initializers.Zeros(),
             name=self.name + "_bias"
         ) 
+
+        super(BertLayerNorm, self).build(input_shape)
         
 
     def call(self, x):

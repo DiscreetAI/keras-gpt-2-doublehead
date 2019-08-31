@@ -8,6 +8,7 @@ from bert_layer_norm import BertLayerNorm as LayerNorm
 
 class GPT2Model(Layer):
     def __init__(self, config, name):
+        super(GPT2Model, self).__init__(name=name)
         self.output_hidden_states = config.output_hidden_states
         self.output_attentions = config.output_attentions
 
