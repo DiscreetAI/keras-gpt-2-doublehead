@@ -147,18 +147,8 @@ def get_model(n_vocab,
 
     mc_sequence_summary = SequenceSummary(
         name='MCSequenceSummary'
-    )([norm_layer, mc_input_layer])
+    )(norm_layer)
 
-    mc_linear = Dense(
-        units=1,
-        input_shape=(n_embd,),
-        name='MCDense'
-    )(mc_sequence_summary)
-
-    mc_head = Dropout(
-        rate=0.1,
-        name='MCOutput'
-    )(mc_linear)
 
 
 
