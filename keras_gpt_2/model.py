@@ -6,7 +6,6 @@ from keras_transformer import gelu, attention_builder, feed_forward_builder
 from keras_transformer import get_custom_objects as get_transformer_custom_objects
 
 from keras.layers import Dense, Layer, Dropout
-from keras.utils import one
 from keras import backend as K
 from .sequence_summary import SequenceSummary
 
