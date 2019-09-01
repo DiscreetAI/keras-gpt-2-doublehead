@@ -36,12 +36,12 @@ class SequenceSummary(Layer):
                     we take the last token of the sequence as classification token
         """
         hidden_states = inputs
-        print(K.int_shape(hidden_states), "ZERO")
-        print(hidden_states, cls_index)
-        print(K.int_shape(cls_index), "ONE")
+        # print(K.int_shape(hidden_states), "ZERO")
+        # print(hidden_states, cls_index)
+        # print(K.int_shape(cls_index), "ONE")
         if self.summary_type == 'last':
             output = hidden_states[:, -1]
-            print(K.int_shape(output), "TWO")
+            # print(K.int_shape(output), "TWO")
         elif self.summary_type == 'first':
             output = hidden_states[:, 0]
         elif self.summary_type == 'mean':
