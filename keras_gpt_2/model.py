@@ -146,12 +146,19 @@ def get_model(n_vocab,
     )([norm_layer, embeddings])
 
     mc_sequence_summary = SequenceSummary(
+        name='MCSequenceSummary'
+    )([norm_layer, mc_input_layer])
+
+    mc_linear = Dense(
+        units=1,
+        input_shape=(n_embd,),
+        name='MCDense'
+    )(mc_sequence_summary)
+
+    mc_head = Dropout(
+        rate=0.1,
         name='MCOutput'
-    )(norm_layer)
-
-
-
-
+    )(mc_linear)
 
 
     # output_layer = 
@@ -162,7 +169,7 @@ def get_model(n_vocab,
     }
     lossWeights = {"LMOutput": 2.0, "MCOutput": 1.0}
 
-    model = keras.models.Model(lm_input_layer, outputs=[lm_head, mc_sequence_summary])
+    model = keras.models.Model(inputs=[lm_input_layer, mc_input_layer], outputs=[lm_head, mc_head])
     model.compile(
         optimizer=keras.optimizers.Adam(),
         loss=losses,
@@ -179,7 +186,7 @@ def cross_entropy(logits, labels, ignore_index=None):
                 weights = K.reshape(tf.cast(unc, tf.float32), (-1, 50257)),
                 losses = tf.nn.sigmoid_cross_entropy_with_logits(
                     logits = logits,
-                    labels = K.reshape(tf.cast(labels, tf.float32), (-1, 50257))
+                    labels = tf.cast(labels, tf.float32)
                 )
             ), 
             name='xentropy'
@@ -189,7 +196,7 @@ def cross_entropy(logits, labels, ignore_index=None):
             tf.losses.compute_weighted_loss(
                 losses = tf.nn.sigmoid_cross_entropy_with_logits(
                     logits = logits,
-                    labels = K.reshape(tf.cast(labels, tf.float32), (-1, 768))
+                    labels = tf.cast(labels, tf.float32)
                 )
             ), 
             name='xentropy'
