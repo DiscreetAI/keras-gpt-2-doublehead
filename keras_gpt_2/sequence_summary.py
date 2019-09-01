@@ -7,7 +7,7 @@ class SequenceSummary(Layer):
     def __init__(self, name):
         super(SequenceSummary, self).__init__(name=name)
 
-        self.summary_type = 'last'
+        self.summary_type = 'cls_index'
         # self.summary = Identity()
         # if hasattr(config, 'summary_use_proj') and config.summary_use_proj:
         #     if hasattr(config, 'summary_proj_to_labels') and config.summary_proj_to_labels and config.num_labels > 0:
@@ -35,13 +35,13 @@ class SequenceSummary(Layer):
                 if summary_type == 'cls_index' and cls_index is None:
                     we take the last token of the sequence as classification token
         """
-        hidden_states = inputs
-        # print(K.int_shape(hidden_states), "ZERO")
-        # print(hidden_states, cls_index)
-        # print(K.int_shape(cls_index), "ONE")
+        hidden_states, cls_index = inputs
+        print(K.int_shape(hidden_states), "ZERO")
+        print(hidden_states, cls_index)
+        print(K.int_shape(cls_index), "ONE")
         if self.summary_type == 'last':
             output = hidden_states[:, -1]
-            # print(K.int_shape(output), "TWO")
+            print(K.int_shape(output), "TWO")
         elif self.summary_type == 'first':
             output = hidden_states[:, 0]
         elif self.summary_type == 'mean':
