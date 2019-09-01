@@ -6,6 +6,7 @@ from keras_transformer import gelu, attention_builder, feed_forward_builder
 from keras_transformer import get_custom_objects as get_transformer_custom_objects
 
 from keras.layers import Dense, Layer, Dropout
+from keras.utils import to_categorical
 from keras import backend as K
 from .sequence_summary import SequenceSummary
 
@@ -186,7 +187,7 @@ def cross_entropy(logits, labels, ignore_index=None):
                 weights = K.reshape(tf.cast(unc, tf.float32), (-1, 50257)),
                 losses = tf.nn.sigmoid_cross_entropy_with_logits(
                     logits = logits,
-                    labels = K.reshape(tf.cast(labels, tf.float32), (-1, 1))
+                    labels = K.reshape(tf.cast(to_categorical(labels, num_classes=50257), tf.float32), (-1, 1))
                 )
             ), 
             name='xentropy'
