@@ -222,12 +222,12 @@ print(mc_token_ids.shape)
 print(mc_labels.shape)
 model.fit(
     {
-        'LMInput': input_ids[:1],
-        'MCInput': mc_token_ids[:1]
+        'LMInput': input_ids,
+        'MCInput': mc_token_ids
     },
     {
-        'LMOutput': lm_labels[:1],
-        'MCOutput': mc_labels[:1]
-    }
+        'LMOutput': lm_labels,
+        'MCOutput': mc_labels
+    },
     batch_size=1
 )
