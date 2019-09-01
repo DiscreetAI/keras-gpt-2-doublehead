@@ -229,4 +229,5 @@ model.fit(
         'LMOutput': lm_labels[:1],
         'MCOutput': mc_labels[:1]
     }
+    batch_size=1
 )
