@@ -172,7 +172,7 @@ def get_model(n_vocab,
     }
     lossWeights = {"LMOutput": 2.0, "MCOutput": 1.0}
 
-    model = keras.models.Model(inputs=[lm_input_layer, mc_input_layer], outputs=[lm_head, mc_head])
+    model = keras.models.Model(lm_input_layer, outputs=[lm_head, mc_head])
     model.compile(
         optimizer=keras.optimizers.Adam(),
         loss=losses,
