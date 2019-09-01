@@ -146,7 +146,7 @@ def get_model(n_vocab,
     )([norm_layer, embeddings])
 
     mc_sequence_summary = SequenceSummary(
-        name='MCSequenceSummary'
+        name='MCOutput'
     )(norm_layer)
 
 
