@@ -223,10 +223,10 @@ print(mc_labels.shape)
 model.fit(
     {
         'LMInput': input_ids[:1],
-        'MCInput': mc_token_ids
+        'MCInput': mc_token_ids[:1]
     },
     {
         'LMOutput': lm_labels[:1],
-        'MCOutput': mc_labels
+        'MCOutput': mc_labels[:1]
     }
 )
