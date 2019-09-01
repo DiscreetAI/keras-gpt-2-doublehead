@@ -9,6 +9,7 @@ from keras.layers import Dense, Layer, Dropout
 from keras.utils import to_categorical
 from keras import backend as K
 from .sequence_summary import SequenceSummary
+from keras.layers import Lambda
 
 from tensorflow import one_hot
 import tensorflow as tf
@@ -30,7 +31,14 @@ def _wrap_layer(name, input_layer, build_func, trainable=True):
         trainable=trainable,
         name='%s-Norm' % name,
     )(input_layer)
-    build_output = build_func(normal_layer)
+    def print_shape(x):
+        if build_func == attention_builder:
+            print(x)
+        else:
+            print("not attention")
+        return x
+    dummy_layer = Lambda(print_shape)(normal_layer)
+    build_output = build_func(dummy_layer)
     return keras.layers.Add(name='%s-Add' % name)([input_layer, build_output])
 
 
