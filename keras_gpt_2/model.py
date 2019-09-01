@@ -189,7 +189,7 @@ def cross_entropy(logits, labels, ignore_index=None):
                 weights = K.reshape(tf.cast(unc, tf.float32), (-1, 50257)),
                 losses = tf.nn.sigmoid_cross_entropy_with_logits(
                     logits = logits,
-                    labels = K.reshape(tf.cast(one_hot(labels, 50257, axis=-1), tf.float32), (-1, 1))
+                    labels = tf.cast(one_hot(labels, 50257, axis=-1), tf.float32)
                 )
             ), 
             name='xentropy'
