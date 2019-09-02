@@ -214,7 +214,7 @@ def cross_entropy(logits, labels, ignore_index=None):
     return xentropy
     
 def mc_loss_function(mc_labels, mc_logits):
-    mc_labels, dim = tf.split(axis=0, value=mc_labels, num_split=2)
+    mc_labels, dim = tf.split(0, mc_labels, 2)
     print(dim)
     mc_loss = cross_entropy( 
         K.reshape(mc_logits, (-1, K.int_shape(mc_logits)[-1])),
