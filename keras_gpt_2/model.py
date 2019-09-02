@@ -15,6 +15,7 @@ from tensorflow import one_hot
 import tensorflow as tf
 import numpy as np
 
+import keras.metrics.
 __all__ = ['get_model', 'get_custom_objects']
 
 
@@ -176,7 +177,8 @@ def get_model(n_vocab,
     model.compile(
         optimizer=keras.optimizers.Adam(),
         loss=losses,
-        loss_weights=lossWeights
+        loss_weights=lossWeights,
+        metrics=['acc']
     )
     return model
 
