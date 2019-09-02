@@ -177,8 +177,7 @@ def get_model(n_vocab,
     }
 
     metrics = {
-        "LMOutput": get_metrics(is_mc=False),
-        "MCOutput": get_metrics(is_mc=True)
+        "LMOutput": get_metrics(is_mc=False)
     }
 
     model = keras.models.Model(inputs=[lm_input_layer, mc_input_layer], outputs=[lm_head, mc_head])
