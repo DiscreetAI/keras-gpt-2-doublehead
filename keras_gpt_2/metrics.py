@@ -35,4 +35,4 @@ def f1_m(y_true, y_pred):
     return 2*((precision*recall)/(precision+recall+K.epsilon()))
 
 def get_metrics():
-    return [perplexity, top_1, top_3, precision_m, f1_m
+    return [perplexity, top_1, top_3, precision_m, f1_m]
