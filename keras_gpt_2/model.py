@@ -15,7 +15,6 @@ from tensorflow import one_hot
 import tensorflow as tf
 import numpy as np
 
-import keras.metrics.
 __all__ = ['get_model', 'get_custom_objects']
 
 
