@@ -200,7 +200,7 @@ def cross_entropy(logits, labels, ignore_index=None):
         # unc = tf.fill(tf.shape(labels), -1)
         # unc = K.not_equal(unc, labels)
         labels = K.reshape(tf.cast(one_hot(labels, 50257, axis=-1), tf.float32), (-1, 50257))
-        xentropy = sigmoid_crossentropy(labels, logits), 
+        xentropy = sigmoid_crossentropy(labels, logits)
     else:
         xentropy = tf.reduce_mean(
             tf.losses.compute_weighted_loss(
