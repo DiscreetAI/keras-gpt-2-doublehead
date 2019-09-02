@@ -190,8 +190,8 @@ def get_model(n_vocab,
     return model
 
 def sigmoid_crossentropy(y_true, y_pred):
-    return K.mean(tf.nn.sigmoid_cross_entropy_with_logits(tf.multiply(y_pred, tf.cast(tf.not_equal(y_true, -1), tf.float32)),
-                        tf.multiply(y_true, tf.cast(tf.not_equal(y_true, -1), tf.float32))), axis=-1)
+    return K.mean(tf.nn.sigmoid_cross_entropy_with_logits(logits=tf.multiply(y_pred, tf.cast(tf.not_equal(y_true, -1), tf.float32)),
+                        labels=tf.multiply(y_true, tf.cast(tf.not_equal(y_true, -1), tf.float32))), axis=-1)
 
 def cross_entropy(logits, labels, ignore_index=None):
     if ignore_index:
