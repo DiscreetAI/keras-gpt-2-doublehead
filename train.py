@@ -116,6 +116,7 @@ import json
 from pytorch_pretrained_bert import cached_path
 from pytorch_pretrained_bert import GPT2Tokenizer
 from keras_gpt_2 import load_trained_model_from_checkpoint, get_bpe_from_files, generate
+from tensorflow import one_hot
 
 tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
 url = "s3://datasets.huggingface.co/personachat/personachat_self_original.json"
@@ -157,6 +158,10 @@ print(input_ids.shape)
 
 print(mc_token_ids, mc_token_ids.shape)
 print(mc_labels, mc_labels.shape)
+
+encodings_length = K.int_shape(lm_labels)[-1]
+mc_labels = K.reshape(tf.cast(one_hot(mc_labels, encodings_length, axis=-1), tf.float32), (-1, encodings_length))
+
 history_output = model.fit(
     {
         'LMInput': input_ids,
@@ -164,7 +169,7 @@ history_output = model.fit(
     },
     {
         'LMOutput': lm_labels,
-        'MCOutput': (mc_labels, K.int_shape(lm_labels)[-1])
+        'MCOutput': mc_labels
     },
     batch_size=1,
     epochs=3,
