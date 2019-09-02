@@ -160,7 +160,7 @@ print(input_ids.shape)
 print(mc_token_ids, mc_token_ids.shape)
 print(mc_labels, mc_labels.shape)
 
-encodings_length = K.int_shape(lm_labels)[-1]
+encodings_length lm_labels.shape[-1]
 mc_labels = K.reshape(tf.cast(one_hot(mc_labels, encodings_length, axis=-1), tf.float32), (-1, encodings_length))
 
 history_output = model.fit(
