@@ -48,7 +48,7 @@ def perplexity_lm(y_true, y_pred):
         mul_1 = tf.multiply(
                     y_true, tf.cast(tf.not_equal(y_true, -1), tf.float32)
                 )
-        temp = K.reshape(tf.cast(one_hot(y_true, 50257, axis=-1), tf.float32), (-1, 50257))     
+        temp = K.reshape(tf.cast(one_hot(tf.cast(y_true, tf.int32), 50257, axis=-1), tf.float32), (-1, 50257))     
         mul_2 = tf.multiply(
                     y_pred, tf.cast(tf.not_equal(temp, -1), tf.float32)
                 )
