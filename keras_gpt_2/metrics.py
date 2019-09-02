@@ -60,8 +60,8 @@ def top_1_mc(y_true, y_pred):
 
 def top_3_lm(y_true, y_pred):
     y_true = tf.cast(y_true, tf.int32)
-    y_true = K.reshape(tf.cast(one_hot(y_true, 50257, axis=-1), tf.float32), (-1, 50257))
-    return top_3(y_true, y_pred)
+    y_true = K.reshape(tf.cast(one_hot(y_true, 50257, axis=-1), tf.float32), (1, -1, 50257))
+    return top_3(y_true[0], y_pred[0])
 
 def top_3_mc(y_true, y_pred):
     y_true = K.reshape(tf.cast(y_true, tf.float32), (-1, 1))
