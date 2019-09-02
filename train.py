@@ -168,6 +168,10 @@ history_output = model.fit(
     batch_size=1,
     epochs=3
 )
-print(history_output.history)
+
+import json
+
+with open('training_history.json', 'w') as f:
+    json.dump(history_output.history, f)
 
 model.save('trained_model.h5')
