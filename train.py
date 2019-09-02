@@ -163,6 +163,8 @@ print(mc_labels, mc_labels.shape)
 encodings_length = lm_labels.shape[-1]
 mc_labels = K.eval(K.reshape(tf.cast(one_hot(mc_labels, encodings_length, axis=-1), tf.float32), (-1, encodings_length)))
 
+print(mc_labels.shape)
+
 history_output = model.fit(
     {
         'LMInput': input_ids,
