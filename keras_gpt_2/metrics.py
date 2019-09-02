@@ -89,11 +89,13 @@ def top_1_mc(y_true, y_pred):
 
 def top_3_lm(y_true, y_pred):
     y_true = tf.cast(y_true, tf.int32)
-    y_true = K.reshape(tf.cast(one_hot(y_true, 50257, axis=-1), tf.float32), (1, -1, 50257))
+    y_true = K.reshape(tf.cast(one_hot(y_true, 50257, axis=-1), tf.float32), (-1, 50257))
+    y_pred = K.reshape(y_pred, (-1, 50257))
     return top_3(y_true[0], y_pred[0])
 
 def top_3_mc(y_true, y_pred):
-    y_true = K.reshape(tf.cast(y_true, tf.float32), (-1, 1))
+    y_true = K.reshape(tf.cast(y_true, tf.float32), (1, -1))
+    y_pred = K.reshape(y_pred, (1, -1))
     return top_3(y_true, y_pred)
 
 def precision_lm(y_true, y_pred):
@@ -128,4 +130,4 @@ def f1_score_mc(y_true, y_pred):
     return f1_m(y_true, y_pred)
 
 def get_metrics(is_mc=False):
-    return [perplexity_mc, precision_mc, f1_score_mc, top_1_mc] if is_mc else [perplexity_lm, precision_lm, f1_score_lm, top_1_lm]
+    return [perplexity_mc, precision_mc, f1_score_mc, top_1_mc, top_3_mc] if is_mc else [perplexity_lm, precision_lm, f1_score_lm, top_1_lm, top_3_lm]
