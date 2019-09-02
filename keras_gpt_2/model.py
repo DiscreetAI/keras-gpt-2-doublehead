@@ -191,8 +191,7 @@ def get_model(n_vocab,
 
 def cross_entropy(logits, labels, ignore_index=None):
     if ignore_index:
-        unc = [0 if i == ignore_index else 1 for i in range(50257)]
-        unc = tf.convert_to_tensor(unc)
+        unc = tf.not_equal(tf.constant(-1, shape=labels.shape), labels)
         labels = tf.cast(labels, tf.int32)
         labels = K.reshape(tf.cast(one_hot(labels, 50257, axis=-1), tf.float32), (-1, 50257))
         xentropy = tf.reduce_mean(
