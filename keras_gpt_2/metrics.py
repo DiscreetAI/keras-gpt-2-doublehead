@@ -1,6 +1,8 @@
 from keras import backend as K
 from keras.metrics import top_k_categorical_accuracy
 
+import tensorflow as tf
+
 def perplexity(y_true, y_pred):
     """
     The perplexity metric. Why isn't this part of Keras yet?!
