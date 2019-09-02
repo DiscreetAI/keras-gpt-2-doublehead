@@ -114,14 +114,14 @@ def get_data_loaders(personachat, tokenizer, args_num_candidates=1, args_persona
 
 import json
 from pytorch_pretrained_bert import cached_path
-from pytorch_pretrained_bert import OpenAIGPTTokenizer
+from pytorch_pretrained_bert import GPT2Tokenizer
 from keras_gpt_2 import load_trained_model_from_checkpoint, get_bpe_from_files, generate
 
-tokenizer = OpenAIGPTTokenizer.from_pretrained('openai-gpt')
+tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
 url = "s3://datasets.huggingface.co/personachat/personachat_self_original.json"
 
 # Download and load JSON dataset
-personachat_file = "small_dataset.json"
+personachat_file = cached_path(url)
 with open(personachat_file, "r", encoding="utf-8") as f:
     dataset = json.loads(f.read())
 
