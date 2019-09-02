@@ -63,13 +63,14 @@ def perplexity_lm(y_true, y_pred):
     return perplexity(y_true, y_pred)
 
 def perplexity_mc(y_true, y_pred):
-    print(K.int_shape(y_pred), "y_pred")
-    print(K.int_shape(y_true), "y_true")
-    # y_pred = K.reshape(y_pred, (1, -1))
-    # y_pred = tf.cast(y_pred, tf.int32)
-    # y_true = tf.cast(y_true, tf.int32)
-    y_true = K.reshape(tf.cast(y_true, tf.float32), (-1, 1))
-    return perplexity(y_true, y_pred)
+    cross_entropy = K.mean(
+                        tf.nn.sigmoid_cross_entropy_with_logits(
+                            labels=K.reshape(tf.cast(y_true, tf.float32), (-1, 1)),
+                            logits=y_pred
+                        )
+                    )
+    
+    return K.exp(cross_entropy)
 
 def top_1_lm(y_true, y_pred):
     print(y_pred.shape, y_true.shape)
