@@ -9,6 +9,7 @@ coverage==4.5.4
 docutils==0.15.2
 gast==0.2.2
 google-pasta==0.1.7
+gpt-2-simple==0.6
 grpcio==1.23.0
 h5py==2.9.0
 idna==2.8
@@ -44,6 +45,7 @@ tensorboard==1.14.0
 tensorflow==1.14.0
 tensorflow-estimator==1.14.0
 termcolor==1.1.0
+toposort==1.5
 torch==1.2.0
 tqdm==4.35.0
 twine==1.13.0

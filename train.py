@@ -11,6 +11,10 @@ checkpoint_path = os.path.join(model_folder, 'model.ckpt')
 encoder_path = os.path.join(model_folder, 'encoder.json')
 vocab_path = os.path.join(model_folder, 'vocab.bpe')
 
+import gpt_2_simple as gpt2
+
+if not os.path.isdir(model_folder):
+    gpt2.download_gpt2(model_name = '117M')
 
 print('Load model from checkpoint...')
 model = load_trained_model_from_checkpoint(config_path, checkpoint_path)
