@@ -97,6 +97,7 @@ def top_3_mc(y_true, y_pred):
 def precision_lm(y_true, y_pred):
     y_true = tf.cast(y_true, tf.int64)
     # y_true = K.reshape(tf.cast(one_hot(y_true, 50257, axis=-1), tf.float32), (-1, 50257))
+    print(y_pred.shape)
     y_pred = K.argmax(y_pred, axis=-1)
     return precision_m(y_true, y_pred)
 
