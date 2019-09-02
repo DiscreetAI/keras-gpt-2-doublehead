@@ -113,7 +113,7 @@ def precision_mc(y_true, y_pred):
     y_pred = K.argmax(y_pred, axis=-1)
     print(y_pred.shape)
     print(y_true.shape)
-    y_true = K.reshape(y_true, (1, -1))
+    y_true = K.reshape(y_true, (1,))
     print(y_true.shape)
     return precision_m(y_true, y_pred)
 
