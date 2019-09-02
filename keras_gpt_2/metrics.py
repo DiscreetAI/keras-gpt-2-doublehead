@@ -47,12 +47,12 @@ def perplexity_lm(y_true, y_pred):
     def sparse_crossentropy_ignore_index(y_true, y_pred):
         return K.mean(
             K.sparse_categorical_crossentropy(
-                K.flatten(tf.multiply(
-                    y_pred, tf.cast(tf.not_equal(y_true, -1), tf.float32)
-                )), 
                 tf.multiply(
                     y_true, tf.cast(tf.not_equal(y_true, -1), tf.float32)
                 ),
+                tf.multiply(
+                    y_pred, tf.cast(tf.not_equal(y_true, -1), tf.float32)
+                )
                 from_logits=True
             ), axis=-1)
 
