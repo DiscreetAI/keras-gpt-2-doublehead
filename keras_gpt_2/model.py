@@ -177,7 +177,7 @@ def get_model(n_vocab,
     }
 
     metrics = {
-        "LMOutput": get_metrics(),
+        "LMOutput": get_metrics(is_mc=False),
         "MCOutput": get_metrics(is_mc=True)
     }
 
