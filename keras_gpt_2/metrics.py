@@ -105,7 +105,8 @@ def precision_lm(y_true, y_pred):
     return precision_m(y_true, y_pred)
 
 def precision_mc(y_true, y_pred):
-    y_true = K.reshape(tf.cast(y_true, tf.float32), (-1, 1))
+    y_pred = K.argmax(y_pred, axis=-1)
+    y_true = K.flatten(tf.cast(y_true, tf.float32))
     return precision_m(y_true, y_pred)
 
 def f1_score_lm(y_true, y_pred):
@@ -118,4 +119,4 @@ def f1_score_mc(y_true, y_pred):
     return f1_m(y_true, y_pred)
 
 def get_metrics(is_mc=False):
-    return [perplexity_mc, precision_mc] if is_mc else [perplexity_lm, precision_lm]
+    return [perplexity_mc, precision_mc4] if is_mc else [perplexity_lm, precision_lm]
