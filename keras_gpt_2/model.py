@@ -189,23 +189,18 @@ def get_model(n_vocab,
     )
     return model
 
+def sigmoid_crossentropy(y_true, y_pred):
+    return K.mean(tf.nn.sigmoid_cross_entropy_with_logits(tf.multiply(y_pred, tf.cast(tf.not_equal(y_true, -1), tf.float32)),
+                        tf.multiply(y_true, tf.cast(tf.not_equal(y_true, -1), tf.float32))), axis=-1)
+
 def cross_entropy(logits, labels, ignore_index=None):
     if ignore_index:
         print(K.int_shape(logits))
         labels = tf.cast(labels, tf.int32)
-        unc = tf.fill(tf.shape(labels), -1)
-        unc = K.not_equal(unc, labels)
+        # unc = tf.fill(tf.shape(labels), -1)
+        # unc = K.not_equal(unc, labels)
         labels = K.reshape(tf.cast(one_hot(labels, 50257, axis=-1), tf.float32), (-1, 50257))
-        xentropy = tf.reduce_mean(
-            tf.losses.compute_weighted_loss(
-                weights = K.reshape(tf.cast(unc, tf.float32), (-1, 136)),
-                losses = tf.nn.sigmoid_cross_entropy_with_logits(
-                    logits = logits,
-                    labels = labels
-                )
-            ), 
-            name='xentropy'
-        )
+        xentropy = sigmoid_crossentropy(labels, logits), 
     else:
         xentropy = tf.reduce_mean(
             tf.losses.compute_weighted_loss(
