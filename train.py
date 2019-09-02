@@ -117,6 +117,7 @@ from pytorch_pretrained_bert import cached_path
 from pytorch_pretrained_bert import GPT2Tokenizer
 from keras_gpt_2 import load_trained_model_from_checkpoint, get_bpe_from_files, generate
 from tensorflow import one_hot
+from keras import backend as K
 
 tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
 url = "s3://datasets.huggingface.co/personachat/personachat_self_original.json"
