@@ -191,8 +191,8 @@ def get_model(n_vocab,
     return model
 
 def sigmoid_crossentropy_ignore_index(y_true, y_pred):
-    return K.mean(K.categorical_crossentropy(tf.multiply(y_true, tf.cast(tf.not_equal(y_true, -1), tf.float32))),
-                        tf.multiply(y_pred, tf.cast(tf.not_equal(y_true, -1), tf.float32)), axis=-1)
+    return K.mean(K.categorical_crossentropy(tf.multiply(y_true, tf.cast(tf.not_equal(y_true, -1), tf.float32)),
+                        tf.multiply(y_pred, tf.cast(tf.not_equal(y_true, -1), tf.float32))), axis=-1)
 
 def cross_entropy(logits, labels, ignore_index=None):
     if ignore_index:
