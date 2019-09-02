@@ -126,8 +126,13 @@ def f1_score_lm(y_true, y_pred):
 
 def f1_score_mc(y_true, y_pred):
     y_true = tf.cast(y_true, tf.int64)
+    y_pred = K.reshape(y_pred, (1, -1))
+    print(y_pred.shape)
     y_pred = K.argmax(y_pred, axis=-1)
-    y_true = K.reshape(y_true, (1, -1))
+    print(y_pred.shape)
+    print(y_true.shape)
+    y_true = K.reshape(y_true, (1,))
+    print(y_true.shape)
     return f1_m(y_true, y_pred)
 
 def get_metrics(is_mc=False):
