@@ -168,6 +168,6 @@ history_output = model.fit(
     batch_size=1,
     epochs=3
 )
-print(history_output)
+print(history_output.history)
 
 model.save('trained_model.h5')
