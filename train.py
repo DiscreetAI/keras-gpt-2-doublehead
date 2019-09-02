@@ -164,7 +164,7 @@ history_output = model.fit(
     },
     {
         'LMOutput': lm_labels,
-        'MCOutput': mc_labels
+        'MCOutput': (mc_labels, K.int_shape(lm_labels)[-1])
     },
     batch_size=1,
     epochs=3,

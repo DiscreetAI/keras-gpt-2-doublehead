@@ -214,6 +214,8 @@ def cross_entropy(logits, labels, ignore_index=None):
     return xentropy
     
 def mc_loss_function(mc_labels, mc_logits):
+    mc_labels, dim = mc_labels
+    print(dim)
     mc_loss = cross_entropy( 
         K.reshape(mc_logits, (-1, K.int_shape(mc_logits)[-1])),
         K.flatten(mc_labels)
