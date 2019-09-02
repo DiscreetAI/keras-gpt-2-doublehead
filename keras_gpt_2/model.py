@@ -185,11 +185,11 @@ def get_model(n_vocab,
         optimizer=keras.optimizers.Adam(),
         loss=losses,
         loss_weights=lossWeights,
-        #metrics=metrics
+        metrics=metrics
     )
     return model
 
-def sigmoid_crossentropy(y_true, y_pred):
+def sigmoid_crossentropy_ignore_index(y_true, y_pred):
     return K.mean(tf.nn.sigmoid_cross_entropy_with_logits(logits=tf.multiply(y_pred, tf.cast(tf.not_equal(y_true, -1), tf.float32)),
                         labels=tf.multiply(y_true, tf.cast(tf.not_equal(y_true, -1), tf.float32))), axis=-1)
 
@@ -200,7 +200,7 @@ def cross_entropy(logits, labels, ignore_index=None):
         # unc = tf.fill(tf.shape(labels), -1)
         # unc = K.not_equal(unc, labels)
         labels = K.reshape(tf.cast(one_hot(labels, 50257, axis=-1), tf.float32), (-1, 50257))
-        xentropy = sigmoid_crossentropy(labels, logits)
+        xentropy = sigmoid_crossentropy_ignore_index(labels, logits)
     else:
         xentropy = tf.reduce_mean(
             tf.losses.compute_weighted_loss(
