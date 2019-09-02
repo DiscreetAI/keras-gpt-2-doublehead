@@ -171,7 +171,15 @@ def get_model(n_vocab,
         "LMOutput": lm_loss_function,
         "MCOutput": mc_loss_function,
     }
-    lossWeights = {"LMOutput": 2.0, "MCOutput": 1.0}
+    lossWeights = {
+        "LMOutput": 2.0, 
+        "MCOutput": 1.0
+    }
+
+    metrics = {
+        "LMOutput": get_metrics(),
+        "MCOutput": get_metrics()
+    }
 
     model = keras.models.Model(inputs=[lm_input_layer, mc_input_layer], outputs=[lm_head, mc_head])
     model.compile(
