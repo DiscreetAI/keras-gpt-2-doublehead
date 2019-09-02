@@ -64,6 +64,7 @@ def perplexity_lm(y_true, y_pred):
     return perplexity
 
 def perplexity_mc(y_true, y_pred):
+    y_pred = K.reshape(y_pred, (1, -1))
     #y_true = K.reshape(tf.cast(y_true, tf.float32), (-1, 1))
     return perplexity(y_true, y_pred)
 
