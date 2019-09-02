@@ -121,7 +121,7 @@ tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
 url = "s3://datasets.huggingface.co/personachat/personachat_self_original.json"
 
 # Download and load JSON dataset
-personachat_file = cached_path(url)
+personachat_file = 'small_dataset.json' # cached_path(url)
 with open(personachat_file, "r", encoding="utf-8") as f:
     dataset = json.loads(f.read())
 

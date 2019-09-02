@@ -195,7 +195,7 @@ def cross_entropy(logits, labels, ignore_index=None):
         unc = [0 if i == ignore_index else 1 for i in range(50257)]
         unc = tf.convert_to_tensor(unc)
         labels = tf.cast(labels, tf.int32)
-        labels = K.reshape(tf.cast(one_hot(labels, 50257, axis=-1), tf.float32), (-1, 50257))
+        labels = K.reshape(tf.cast(one_hot(y_true, 50257, axis=-1), tf.float32), (1, -1, 50257))
         xentropy = tf.reduce_mean(
             tf.losses.compute_weighted_loss(
                 weights = K.reshape(tf.cast(unc, tf.float32), (-1, 50257)),
