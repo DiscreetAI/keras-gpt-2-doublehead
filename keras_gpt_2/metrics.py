@@ -39,7 +39,7 @@ def f1_m(y_true, y_pred):
 
 
 def perplexity_lm(y_true, y_pred):
-    print(y_pred.shape)
+    print(y_true.shape, y_pred.shape)
     # y_true = tf.cast(y_true, tf.int32)
     # y_true = K.reshape(tf.cast(one_hot(y_true, 50257, axis=-1), tf.float32), (-1, 50257))
     return perplexity(y_true, y_pred)
