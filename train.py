@@ -168,7 +168,7 @@ history_output = model.fit(
     },
     batch_size=1,
     epochs=3,
-    callbacks=[BaseLogger, History]
+    callbacks=[BaseLogger()]
 )
 
 import json
