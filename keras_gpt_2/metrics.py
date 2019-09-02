@@ -100,6 +100,7 @@ def precision_lm(y_true, y_pred):
     print(y_pred.shape)
     y_pred = K.argmax(y_pred, axis=-1)
     print(y_pred.shape)
+    print(y_true.shape)
     return precision_m(y_true, y_pred)
 
 def precision_mc(y_true, y_pred):
