@@ -48,6 +48,7 @@ def perplexity_mc(y_true, y_pred):
     return perplexity(y_true, y_pred)
 
 def top_1_lm(y_true, y_pred):
+    print(y_pred.shape, y_true.shape)
     y_true = tf.cast(y_true, tf.int32)
     y_true = K.reshape(tf.cast(one_hot(y_true, 50257, axis=-1), tf.float32), (-1, 50257))
     print(y_pred.shape, y_true.shape)
