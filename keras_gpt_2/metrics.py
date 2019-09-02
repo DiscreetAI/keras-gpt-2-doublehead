@@ -10,7 +10,8 @@ def perplexity(y_true, y_pred):
     https://stackoverflow.com/questions/41881308/how-to-calculate-perplexity-of-rnn-in-tensorflow
     https://github.com/keras-team/keras/issues/8267
     """
-    cross_entropy = K.sparse_categorical_crossentropy(y_true, y_pred)
+#     cross_entropy = K.sparse_categorical_crossentropy(y_true, y_pred)
+    cross_entropy = K.cast(K.equal(K.max(y_true, axis=-1), K.cast(K.argmax(y_pred, axis=-1), K.floatx())), K.floatx())
     perplexity = K.exp(cross_entropy)
     return perplexity
 
