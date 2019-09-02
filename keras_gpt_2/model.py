@@ -178,7 +178,7 @@ def get_model(n_vocab,
 
     metrics = {
         "LMOutput": get_metrics(),
-        "MCOutput": get_metrics()
+        "MCOutput": get_metrics(is_mc=True)
     }
 
     model = keras.models.Model(inputs=[lm_input_layer, mc_input_layer], outputs=[lm_head, mc_head])
@@ -195,9 +195,7 @@ def cross_entropy(logits, labels, ignore_index=None):
         unc = [0 if i == ignore_index else 1 for i in range(50257)]
         unc = tf.convert_to_tensor(unc)
         labels = tf.cast(labels, tf.int32)
-        print("Logits", logits.shape)
         labels = K.reshape(tf.cast(one_hot(labels, 50257, axis=-1), tf.float32), (-1, 50257))
-        print("Labels", labels.shape)
         xentropy = tf.reduce_mean(
             tf.losses.compute_weighted_loss(
                 weights = K.reshape(tf.cast(unc, tf.float32), (-1, 50257)),
