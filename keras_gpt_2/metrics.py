@@ -52,9 +52,9 @@ def perplexity_lm(y_true, y_pred):
                 ),
                 tf.multiply(
                     y_pred, tf.cast(tf.not_equal(y_true, -1), tf.float32)
-                ),
-                from_logits=True
-            ), axis=-1)
+                )
+            ), axis=-1
+        )
 
     y_true = tf.cast(y_true, tf.int32)
     # unc = tf.fill(tf.shape(labels), -1)
