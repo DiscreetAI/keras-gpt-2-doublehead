@@ -61,7 +61,6 @@ def perplexity_lm(y_true, y_pred):
     # unc = K.not_equal(unc, labels)
     y_pred = K.flatten(y_pred)
     y_true = K.reshape(tf.cast(one_hot(y_true, 50257, axis=-1), tf.float32), (-1, 50257))
-    y_true = K.flatten()
     cross_entropy = sparse_crossentropy_ignore_index(y_true, y_pred)
     perplexity = K.exp(cross_entropy)
     return perplexity
