@@ -67,8 +67,8 @@ def perplexity_lm(y_true, y_pred):
     return perplexity(y_true, y_pred)
 
 def perplexity_mc(y_true, y_pred):
-    y_pred = K.reshape(logits, (1, -1))
-    y_true = K.reshape(labels, (1, -1))
+    y_pred = K.reshape(y_pred, (1, -1))
+    y_true = K.reshape(y_true, (1, -1))
     cross_entropy = K.mean(
                         K.categorical_crossentropy(
                             y_true,
