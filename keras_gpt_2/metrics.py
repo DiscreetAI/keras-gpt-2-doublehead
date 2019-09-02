@@ -77,11 +77,9 @@ def perplexity_mc(y_true, y_pred):
     return K.exp(cross_entropy)
 
 def top_1_lm(y_true, y_pred):
-    print(y_pred.shape, y_true.shape)
     y_true = tf.cast(y_true, tf.int32)
     y_true = K.reshape(tf.cast(one_hot(y_true, 50257, axis=-1), tf.float32), (-1, 50257))
     y_pred = K.reshape(y_pred, (-1, 50257))
-    print(y_pred.shape, y_true.shape)
     return top_1(y_true, y_pred)
 
 def top_1_mc(y_true, y_pred):
@@ -129,4 +127,4 @@ def f1_score_mc(y_true, y_pred):
     return f1_m(y_true, y_pred)
 
 def get_metrics(is_mc=False):
-    return [perplexity_mc, precision_mc, f1_score_mc] if is_mc else [perplexity_lm, precision_lm, f1_score_lm, top_1_lm]
+    return [perplexity_mc, precision_mc, f1_score_mc, top_1_mc] if is_mc else [perplexity_lm, precision_lm, f1_score_lm, top_1_lm]
