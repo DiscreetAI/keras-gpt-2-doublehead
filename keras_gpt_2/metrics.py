@@ -51,7 +51,7 @@ def perplexity_lm(y_true, y_pred):
     y_true = tf.cast(y_true, tf.int32)
     # unc = tf.fill(tf.shape(y_true), -1)
     # unc = K.not_equal(unc, y_true)
-    cross_entropy = sparse_categorical_crossentropy_ignore_index(y_true, y_pred)
+    cross_entropy = sparse_crossentropy_ignore_index(y_true, y_pred)
     perplexity = K.exp(cross_entropy)
     return perplexity
 
