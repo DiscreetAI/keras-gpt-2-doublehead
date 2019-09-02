@@ -48,7 +48,7 @@ def perplexity_lm(y_true, y_pred):
         return K.mean(
             K.sparse_categorical_crossentropy(
                 tf.multiply(
-                    y_pred, tf.cast(tf.not_equal(y_true, -1), tf.float32)
+                    y_pred, K.flatten(tf.cast(tf.not_equal(y_true, -1), tf.float32))
                 ), 
                 tf.multiply(
                     y_true, tf.cast(tf.not_equal(y_true, -1), tf.float32)
@@ -61,6 +61,7 @@ def perplexity_lm(y_true, y_pred):
     # unc = K.not_equal(unc, labels)
     y_pred = K.flatten(y_pred)
     y_true = K.reshape(tf.cast(one_hot(y_true, 50257, axis=-1), tf.float32), (-1, 50257))
+    y_true = K.flatten()
     cross_entropy = sparse_crossentropy_ignore_index(y_true, y_pred)
     perplexity = K.exp(cross_entropy)
     return perplexity
