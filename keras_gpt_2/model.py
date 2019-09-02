@@ -206,7 +206,7 @@ def cross_entropy(logits, labels, ignore_index=None):
         xentropy = K.mean(
                         K.categorical_crossentropy(
                             K.reshape(tf.cast(labels, tf.float32), (-1, 1)),
-                            logits
+                            K.reshape(logits, (1, -1))
                         )
                     )
     return xentropy
