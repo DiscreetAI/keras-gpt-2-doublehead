@@ -205,6 +205,8 @@ def cross_entropy(logits, labels, ignore_index=None):
     else:
         print(K.int_shape(logits), "LOGITS")
         print(K.int_shape(labels), "LABELS")
+        logits = K.reshape(logits, (1, -1))
+        labels = K.reshape(labels, (1, -1))
         xentropy = K.mean(
                         K.categorical_crossentropy(
                             labels,
