@@ -9,6 +9,7 @@ from keras.layers import Dense, Layer, Dropout
 from keras.utils import to_categorical
 from keras import backend as K
 from .sequence_summary import SequenceSummary
+from .metrics import get_metrics
 
 
 from tensorflow import one_hot
@@ -177,7 +178,7 @@ def get_model(n_vocab,
         optimizer=keras.optimizers.Adam(),
         loss=losses,
         loss_weights=lossWeights,
-        metrics=['acc']
+        metrics=get_metrics()
     )
     return model
 
