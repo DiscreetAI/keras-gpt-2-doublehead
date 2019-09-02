@@ -176,4 +176,4 @@ import json
 with open('training_history.json', 'w') as f:
     json.dump(history_output.history, f)
 
-model.save('trained_model.h5')
+# model.save('trained_model.h5')
