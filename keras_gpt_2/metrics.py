@@ -37,12 +37,21 @@ def f1_m(y_true, y_pred):
     recall = recall_m(y_true, y_pred)
     return 2*((precision*recall)/(precision+recall+K.epsilon()))
 
-
 def perplexity_lm(y_true, y_pred):
-    print(y_true.shape, y_pred.shape)
+    """
+    The perplexity metric. Why isn't this part of Keras yet?!
+    https://stackoverflow.com/questions/41881308/how-to-calculate-perplexity-of-rnn-in-tensorflow
+    https://github.com/keras-team/keras/issues/8267
+    """
     y_true = tf.cast(y_true, tf.int32)
-    # y_true = K.reshape(tf.cast(one_hot(y_true, 50257, axis=-1), tf.float32), (-1, 50257))
-    return perplexity(y_true, y_pred)
+    unc = [0 if i == ignore_index else 1 for i in range(50257)]
+    unc = tf.convert_to_tensor(unc)
+    cross_entropy = tf.losses.compute_weighted_loss(
+        weights=K.reshape(tf.cast(unc, tf.float32), (-1, 50257)),
+        K.sparse_categorical_crossentropy(y_true, y_pred)
+    )
+    perplexity = K.exp(cross_entropy)
+    return perplexity
 
 def perplexity_mc(y_true, y_pred):
     y_true = K.reshape(tf.cast(y_true, tf.float32), (-1, 1))
