@@ -47,7 +47,7 @@ def perplexity_lm(y_true, y_pred):
     unc = tf.fill(tf.shape(y_true), -1)
     unc = K.not_equal(unc, y_true)
     cross_entropy = tf.losses.compute_weighted_loss(
-        weights=K.reshape(tf.cast(unc, tf.float32), (-1, 50257)),
+        weights=K.reshape(tf.cast(unc, tf.float32), (-1, 136)),
         losses=K.sparse_categorical_crossentropy(y_true, y_pred)
     )
     perplexity = K.exp(cross_entropy)
