@@ -43,13 +43,15 @@ def perplexity_lm(y_true, y_pred):
     https://stackoverflow.com/questions/41881308/how-to-calculate-perplexity-of-rnn-in-tensorflow
     https://github.com/keras-team/keras/issues/8267
     """
+
+    def sparse_crossentropy_ignore_index(y_true, y_pred):
+        return K.mean(K.sparse_categorical_crossentropy(logits=tf.multiply(y_pred, tf.cast(tf.not_equal(y_true, -1), tf.float32)),
+                            labels=tf.multiply(y_true, tf.cast(tf.not_equal(y_true, -1), tf.float32))), axis=-1)
+
     y_true = tf.cast(y_true, tf.int32)
-    unc = tf.fill(tf.shape(y_true), -1)
-    unc = K.not_equal(unc, y_true)
-    cross_entropy = tf.losses.compute_weighted_loss(
-        weights=K.reshape(tf.cast(unc, tf.float32), (-1, 136)),
-        losses=K.sparse_categorical_crossentropy(y_true, y_pred)
-    )
+    # unc = tf.fill(tf.shape(y_true), -1)
+    # unc = K.not_equal(unc, y_true)
+    cross_entropy = sparse_categorical_crossentropy_ignore_index(y_true, y_pred)
     perplexity = K.exp(cross_entropy)
     return perplexity
 
