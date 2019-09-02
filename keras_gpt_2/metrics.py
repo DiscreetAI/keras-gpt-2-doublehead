@@ -66,7 +66,7 @@ def perplexity_mc(y_true, y_pred):
     cross_entropy = K.mean(
                         tf.nn.sigmoid_cross_entropy_with_logits(
                             labels=K.reshape(tf.cast(y_true, tf.float32), (-1, 1)),
-                            logits=y_pred
+                            logits=K.reshape(y_pred, (-1, 1))
                         )
                     )
     
