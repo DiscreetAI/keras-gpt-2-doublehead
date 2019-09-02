@@ -1,6 +1,7 @@
 import os
 import sys
 from keras_gpt_2 import load_trained_model_from_checkpoint, get_bpe_from_files, generate
+from keras.models import load_model
 import tensorflow as tf
 import numpy as np
 from collections import defaultdict
@@ -17,7 +18,12 @@ if not os.path.isdir(model_folder):
     gpt2.download_gpt2(model_name = '117M')
 
 print('Load model from checkpoint...')
-model = load_trained_model_from_checkpoint(config_path, checkpoint_path)
+if not os.path.isfile('model.h5'):
+    model = load_trained_model_from_checkpoint(config_path, checkpoint_path)
+    model.save('model.h5')
+else:
+    model = load_model('model.h5')
+
 print('Load BPE from files...')
 bpe = get_bpe_from_files(encoder_path, vocab_path)
 print('Generate text...')
@@ -235,3 +241,5 @@ model.fit(
     },
     batch_size=1
 )
+
+model.save('trained_model.h5')
