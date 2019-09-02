@@ -44,7 +44,8 @@ def perplexity_lm(y_true, y_pred):
     https://github.com/keras-team/keras/issues/8267
     """
     y_true = tf.cast(y_true, tf.int32)
-    unc = tf.not_equal(tf.constant(-1, shape=y_true.shape), y_true)
+    unc = tf.fill(tf.shape(labels), -1)
+    unc = K.not_equal(unc, labels)
     cross_entropy = tf.losses.compute_weighted_loss(
         weights=K.reshape(tf.cast(unc, tf.float32), (-1, 50257)),
         losses=K.sparse_categorical_crossentropy(y_true, y_pred)
