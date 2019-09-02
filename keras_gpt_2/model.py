@@ -177,7 +177,8 @@ def get_model(n_vocab,
     }
 
     metrics = {
-        "LMOutput": get_metrics(is_mc=False)
+        "LMOutput": get_metrics(),
+        "MCOutput": get_metrics(is_mc=True)
     }
 
     model = keras.models.Model(inputs=[lm_input_layer, mc_input_layer], outputs=[lm_head, mc_head])
@@ -185,7 +186,7 @@ def get_model(n_vocab,
         optimizer=keras.optimizers.Adam(),
         loss=losses,
         loss_weights=lossWeights,
-        metrics=get_metrics()
+        metrics=metrics
     )
     return model
 
