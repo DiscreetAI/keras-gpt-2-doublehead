@@ -230,7 +230,7 @@ print(input_ids.shape)
 
 print(mc_token_ids.shape)
 print(mc_labels.shape)
-model.fit(
+history_output = model.fit(
     {
         'LMInput': input_ids,
         'MCInput': mc_token_ids
@@ -239,7 +239,9 @@ model.fit(
         'LMOutput': lm_labels,
         'MCOutput': mc_labels
     },
-    batch_size=1
+    batch_size=1,
+    epochs=3
 )
+print(history_output)
 
 model.save('trained_model.h5')
