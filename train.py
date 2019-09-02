@@ -155,8 +155,8 @@ mc_labels = arr['mc_labels']
 print(lm_labels.shape)
 print(input_ids.shape)
 
-print(mc_token_ids.shape)
-print(mc_labels.shape)
+print(mc_token_ids, mc_token_ids.shape)
+print(mc_labels, mc_labels.shape)
 history_output = model.fit(
     {
         'LMInput': input_ids,
