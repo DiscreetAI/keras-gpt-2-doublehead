@@ -1,5 +1,6 @@
 from keras import backend as K
 from keras.metrics import top_k_categorical_accuracy
+from tensorflow import one_hot
 
 import tensorflow as tf
 
