@@ -67,10 +67,12 @@ def perplexity_lm(y_true, y_pred):
     return perplexity(y_true, y_pred)
 
 def perplexity_mc(y_true, y_pred):
+    y_pred = K.reshape(logits, (1, -1))
+    y_true = K.reshape(labels, (1, -1))
     cross_entropy = K.mean(
-                        tf.nn.sigmoid_cross_entropy_with_logits(
-                            labels=K.reshape(tf.cast(y_true, tf.float32), (-1, 1)),
-                            logits=K.reshape(y_pred, (-1, 1))
+                        K.categorical_crossentropy(
+                            y_true,
+                            y_pred
                         )
                     )
     
@@ -128,4 +130,4 @@ def f1_score_mc(y_true, y_pred):
     return f1_m(y_true, y_pred)
 
 def get_metrics(is_mc=False):
-    return [perplexity_mc, precision_mc, f1_score_mc] if is_mc else [perplexity_lm, precision_lm, f1_score_lm, top_1_lm]
+    return [perplexity_mc] if is_mc else [perplexity_lm, precision_lm, f1_score_lm, top_1_lm]
