@@ -11,9 +11,7 @@ def perplexity(y_true, y_pred):
     https://github.com/keras-team/keras/issues/8267
     """
 #     cross_entropy = K.sparse_categorical_crossentropy(y_true, y_pred)
-    cross_entropy = K.cast(K.equal(K.max(y_true, axis=-1), K.cast(K.argmax(y_pred, axis=-1), K.floatx())), K.floatx())
-    perplexity = K.exp(cross_entropy)
-    return perplexity
+    return K.exp(K.mean(K.categorical_crossentropy(y_true, y_pred)))
 
 def top_1(y_true, y_pred):
     return top_k_categorical_accuracy(y_true, y_pred, k=1)
@@ -55,20 +53,13 @@ def perplexity_lm(y_true, y_pred):
     #             )
     #     return K.mean(K.sparse_categorical_crossentropy(mul_1,mul_2), axis=-1)
 
-    # y_true = tf.cast(y_true, tf.float32)
+    y_true = tf.cast(y_true, tf.float32)
     # # unc = tf.fill(tf.shape(labels), -1)
     # # unc = K.not_equal(unc, labels)
-    # # y_true = K.reshape(tf.cast(one_hot(y_true, 50257, axis=-1), tf.float32), (-1, 50257))
+    y_true = K.reshape(tf.cast(one_hot(y_true, 50257, axis=-1), tf.float32), (-1, 50257))
     # # y_pred = K.reshape(y_pred, (-1, 50257))
     # cross_entropy = sparse_crossentropy_ignore_index(y_true, y_pred)
     # perplexity = K.exp(cross_entropy)
-    mul_1 = tf.multiply(
-                y_true, tf.cast(tf.not_equal(y_true, -1), tf.float32)
-            )
-    temp = K.reshape(tf.cast(one_hot(tf.cast(y_true, tf.int32), 50257, axis=-1), tf.float32), (-1, 50257))     
-    mul_2 = tf.multiply(
-                y_pred, tf.cast(tf.not_equal(temp, -1), tf.float32)
-            )
     return perplexity(mul_1, mul_2)
 
 def perplexity_mc(y_true, y_pred):
