@@ -191,6 +191,7 @@ def get_model(n_vocab,
 
 def cross_entropy(logits, labels, ignore_index=None):
     if ignore_index:
+        print(K.int_shape(logits))
         labels = tf.cast(labels, tf.int32)
         unc = tf.fill(tf.shape(labels), -1)
         unc = K.not_equal(unc, labels)
