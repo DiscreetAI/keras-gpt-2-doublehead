@@ -111,4 +111,4 @@ def f1_score_mc(y_true, y_pred):
     return f1_m(y_true, y_pred)
 
 def get_metrics(is_mc=False):
-    return [perplexity_mc] if is_mc else [perplexity_lm]
+    return [perplexity_mc] if is_mc else [perplexity_lm, precision_lm]
