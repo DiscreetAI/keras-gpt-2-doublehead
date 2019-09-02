@@ -60,7 +60,7 @@ def perplexity_lm(y_true, y_pred):
     # # y_pred = K.reshape(y_pred, (-1, 50257))
     # cross_entropy = sparse_crossentropy_ignore_index(y_true, y_pred)
     # perplexity = K.exp(cross_entropy)
-    return perplexity(mul_1, mul_2)
+    return perplexity(y_true, y_pred)
 
 def perplexity_mc(y_true, y_pred):
     # y_pred = K.reshape(y_pred, (1, -1))
