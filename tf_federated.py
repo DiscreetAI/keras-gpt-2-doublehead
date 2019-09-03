@@ -59,7 +59,7 @@ def dataset_map(input_ids, lm_labels, mc_token_ids, mc_labels):
     return {
         'x': {
             'LMInput': K.expand_dims(input_ids),
-            'MCInput': K.expand_dims(mc_token_ids
+            'MCInput': K.expand_dims(mc_token_ids)
         },
         'y': {
             'LMOutput': K.expand_dims(lm_labels),
