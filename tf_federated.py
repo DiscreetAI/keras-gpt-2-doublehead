@@ -74,7 +74,7 @@ train_data = datasets
 sample_batch = tf.nest.map_structure(
     lambda x: x.numpy(), iter(train_data[0]).next())
 
-print(sample)
+print(sample_batch)
 
 
 # def model_fn():
