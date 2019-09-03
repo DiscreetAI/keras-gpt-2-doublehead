@@ -11,10 +11,19 @@ from collections import defaultdict
 import urllib
 import gpt_2_simple as gpt2
 
-input_ids = np.load('input_ids.npy', allow_pickle=True)
-mc_token_ids = np.load('mc_token_ids.npy', allow_pickle=True)
-lm_labels = np.load('lm_labels.npy', allow_pickle=True)
-mc_labels = np.load('mc_labels.npy', allow_pickle=True)
+filenames = ['input_ids.json', 'lm_labels.json', 'mc_labels.json', 'mc_token_ids.json']
+
+url = "https://persona-dataset.s3.amazonaws.com/{}"
+
+data = []
+
+for name in filenames:
+    full_url = url.format(name)
+    json_data = requests.get(full_url).json()
+    data.append(np.array(json_data))
+    print("Done")
+
+input_ids, lm_labels, mc_labels, mc_token_ids = data
 
 
 # with open('preprocessed_dataset.json', 'w') as f:
