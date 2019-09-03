@@ -12,69 +12,70 @@ import urllib
 import gpt_2_simple as gpt2
 import requests
 
-# filenames = ['input_ids.json', 'lm_labels.json', 'mc_labels.json', 'mc_token_ids.json']
+filenames = ['input_ids.json', 'lm_labels.json', 'mc_labels.json', 'mc_token_ids.json']
 
-# url = "https://persona-dataset.s3.amazonaws.com/{}"
+url = "https://persona-dataset.s3.amazonaws.com/{}"
 
-# data = []
+data = []
 
-# for name in filenames:
-#     full_url = url.format(name)
-#     json_data = requests.get(full_url).json()
-#     data.append(np.array(json_data))
-#     print("Done")
+for name in filenames:
+    full_url = url.format(name)
+    json_data = requests.get(full_url).json()
+    data.append(np.array(json_data))
+    print("Done")
 
-# input_ids, lm_labels, mc_labels, mc_token_ids = data
+input_ids, lm_labels, mc_labels, mc_token_ids = data
 
 
-# # with open('preprocessed_dataset.json', 'w') as f:
-# #     personachat = json.dump(datasets, f)
+# with open('preprocessed_dataset.json', 'w') as f:
+#     personachat = json.dump(datasets, f)
 
-# print(lm_labels.shape)
-# print(input_ids.shape)
+print(lm_labels.shape)
+print(input_ids.shape)
 
-# print(mc_token_ids.shape)
-# print(mc_labels.shape)
+print(mc_token_ids.shape)
+print(mc_labels.shape)
 
-# num_clients = 5
+num_clients = 5
 
-# batches = [np.array_split(input_ids, num_clients), np.array_split(lm_labels, num_clients), np.array_split(mc_token_ids, num_clients), np.array_split(mc_labels, num_clients)]
+batches = [np.array_split(input_ids, num_clients), np.array_split(lm_labels, num_clients), np.array_split(mc_token_ids, num_clients), np.array_split(mc_labels, num_clients)]
 
-# assert len(batches) == 4
-# assert len(batches[0]) == num_clients
+assert len(batches) == 4
+assert len(batches[0]) == num_clients
 
-# datasets = list(zip(*batches))
+datasets = list(zip(*batches))
 
-# assert len(datasets) == num_clients
-# assert len(datasets[0]) == 4
+assert len(datasets) == num_clients
+assert len(datasets[0]) == 4
 
-# datasets = [list(dataset) for dataset in datasets]
-# datasets = [tf.data.Dataset.from_tensor_slices(dataset) for dataset in datasets]
+tf_datasets = []
+# for input_ids, lm_labels, mc_token_ids, mc_labels in datasets:
+#     tf_datasets.append()
 
-# train_data = datasets
+def dataset_map(input_ids, lm_labels, mc_token_ids, mc_labels):
+    return {
+        'x': {
+            'LMInput': input_ids,
+            'MCInput': mc_token_ids
+        },
+        'y': {
+            'LMOutput': lm_labels,
+            'MCOutput': mc_labels
+        }
+    }
 
-# Grab a single batch of data so that TFF knows what data looks like.
-# sample_batch = tf.nest.map_structure(
-#     lambda x: x.numpy(), iter(train_data[0]).next())
+#datasets = [tuple(dataset) for dataset in datasets]
+datasets = [tf.data.Dataset.from_tensor_slices(dataset) for dataset in datasets]
+datasets = [dataset.map(dataset_map) for dataset in datasets]
 
-# print(sample_batch)
-# Load simulation data.
-source, _ = tff.simulation.datasets.emnist.load_data()
-def client_data(n):
-  return source.create_tf_dataset_for_client(source.client_ids[n]).map(
-      lambda e: {
-          'x': tf.reshape(e['pixels'], [-1]),
-          'y': e['label'],
-  }).repeat(10).batch(20)
-
-# Pick a subset of client devices to participate in training.
-train_data = [client_data(n) for n in range(3)]
+train_data = datasets
 
 # Grab a single batch of data so that TFF knows what data looks like.
 sample_batch = tf.nest.map_structure(
     lambda x: x.numpy(), iter(train_data[0]).next())
 
-print(sample_batch)
+print(sample)
+
 
 # def model_fn():
 #     model_folder = 'models/117M'
