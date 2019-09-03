@@ -30,16 +30,6 @@ import re
 import numpy as np
 import json
 
-# Let's define our contexts and special tokens
-persona = [["i like playing football."],
-           ["i am from NYC."]]
-history = [["hello how are you?"],
-           ["i am fine thanks."]]
-reply = ["great to hear"]
-persona = [re.findall(r"[\w']+|[.,!?;]", sentence[0]) for sentence in persona]
-history = [re.findall(r"[\w']+|[.,!?;]", sentence[0]) for sentence in history]
-reply = re.findall(r"[\w']+|[.,!?;]", reply[0])
-speaker1, speaker2 = "You said: ", "I said: "
 
 
 MODEL_INPUTS = ["input_ids", "mc_token_ids", "lm_labels", "mc_labels", "token_type_ids"]
@@ -161,35 +151,7 @@ url = "s3://datasets.huggingface.co/personachat/personachat_self_original.json"
 # np.save('lm_labels.npy', lm_labels)
 # np.save('mc_labels.npy', mc_labels)
 
-input_ids = np.load('input_ids.npy', allow_pickle=True)
-mc_token_ids = np.load('mc_token_ids.npy', allow_pickle=True)
-lm_labels = np.load('lm_labels.npy', allow_pickle=True)
-mc_labels = np.load('mc_labels.npy', allow_pickle=True)
 
-
-# with open('preprocessed_dataset.json', 'w') as f:
-#     personachat = json.dump(datasets, f)
-
-print(lm_labels.shape)
-print(input_ids.shape)
-
-print(mc_token_ids.shape)
-print(mc_labels.shape)
-
-num_clients = 5
-
-batches = [np.array_split(input_ids, num_clients), np.array_split(lm_labels, num_clients), np.array_split(mc_token_ids, num_clients), np.array_split(mc_labels, num_clients)]
-
-assert len(batches) == 4
-assert len(batches[0]) == num_clients
-
-datasets = list(zip(*batches))
-
-assert len(datasets) == num_clients
-assert len(datasets[0]) == 4
-
-datasets = [tuple(dataset) for dataset in datasets]
-datasets = [tf.data.Dataset.from_tensor_slices(dataset) for dataset in datasets]
 
 
 # import urllib
