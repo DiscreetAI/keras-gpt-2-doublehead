@@ -48,6 +48,8 @@ datasets = list(zip(*batches))
 assert len(datasets) == num_clients
 assert len(datasets[0]) == 4
 
+a, b, c, d = datasets[0]
+print(a.shape, b.shape, c.shape, d.shape)
 tf_datasets = []
 # for input_ids, lm_labels, mc_token_ids, mc_labels in datasets:
 #     tf_datasets.append()
