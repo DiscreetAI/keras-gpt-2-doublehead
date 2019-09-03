@@ -77,24 +77,24 @@ sample_batch = tf.nest.map_structure(
 print(sample_batch)
 
 
-# def model_fn():
-#     model_folder = 'models/117M'
-#     config_path = os.path.join(model_folder, 'hparams.json')
-#     checkpoint_path = os.path.join(model_folder, 'model.ckpt')
-#     encoder_path = os.path.join(model_folder, 'encoder.json')
-#     vocab_path = os.path.join(model_folder, 'vocab.bpe')
+def model_fn():
+    model_folder = 'models/117M'
+    config_path = os.path.join(model_folder, 'hparams.json')
+    checkpoint_path = os.path.join(model_folder, 'model.ckpt')
+    encoder_path = os.path.join(model_folder, 'encoder.json')
+    vocab_path = os.path.join(model_folder, 'vocab.bpe')
 
-#     if not os.path.isdir(model_folder):
-#         gpt2.download_gpt2(model_name = '117M')
+    if not os.path.isdir(model_folder):
+        gpt2.download_gpt2(model_name = '117M')
 
-#     print('Load BPE from files...')
-#     bpe = get_bpe_from_files(encoder_path, vocab_path)
-#     model = load_trained_model_from_checkpoint(config_path, checkpoint_path)
-#     return tff.learning.from_compiled_keras_model(model, sample_batch)
+    print('Load BPE from files...')
+    bpe = get_bpe_from_files(encoder_path, vocab_path)
+    model = load_trained_model_from_checkpoint(config_path, checkpoint_path)
+    return tff.learning.from_compiled_keras_model(model, sample_batch)
 
-# # Simulate a few rounds of training with the selected client devices.
-# trainer = tff.learning.build_federated_averaging_process(model_fn)
-# state = trainer.initialize()
-# for _ in range(5):
-#   state, metrics = trainer.next(state, train_data)
-#   print (metrics.loss)
+# Simulate a few rounds of training with the selected client devices.
+trainer = tff.learning.build_federated_averaging_process(model_fn)
+state = trainer.initialize()
+for _ in range(5):
+  state, metrics = trainer.next(state, train_data)
+  print (metrics.loss)
