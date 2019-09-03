@@ -3,7 +3,7 @@ from tensorflow.python.keras.callbacks import BaseLogger, History
 import tensorflow as tf
 import numpy as np
 from collections import defaultdict
-import urllib
+import os
 
 model_folder = 'models/117M'
 config_path = os.path.join(model_folder, 'hparams.json')
