@@ -6,7 +6,7 @@ __all__ = [
     'metrics', 'models', 'losses', 'optimizers', 'regularizers', 'TF_KERAS', 'EAGER_MODE'
 ]
 
-TF_KERAS = False
+TF_KERAS = True
 EAGER_MODE = False
 
 if 'TF_KERAS' in os.environ and os.environ['TF_KERAS'] != '0':
