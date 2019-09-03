@@ -73,7 +73,7 @@ def model_fn():
     print('Load BPE from files...')
     bpe = get_bpe_from_files(encoder_path, vocab_path)
     model = load_trained_model_from_checkpoint(config_path, checkpoint_path)
-    return tff.learning_from_compiled_keras_model(model, sample_batch)
+    return tff.learning.from_compiled_keras_model(model, sample_batch)
 
 # Simulate a few rounds of training with the selected client devices.
 trainer = tff.learning.build_federated_averaging_process(model_fn)
