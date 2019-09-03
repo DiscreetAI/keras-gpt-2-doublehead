@@ -161,45 +161,45 @@ url = "s3://datasets.huggingface.co/personachat/personachat_self_original.json"
 # np.save('lm_labels.npy', lm_labels)
 # np.save('mc_labels.npy', mc_labels)
 
-# input_ids = np.load('input_ids.npy', allow_pickle=True)
-# mc_token_ids = np.load('mc_token_ids.npy', allow_pickle=True)
-# lm_labels = np.load('lm_labels.npy', allow_pickle=True)
-# mc_labels = np.load('mc_labels.npy', allow_pickle=True)
+input_ids = np.load('input_ids.npy', allow_pickle=True)
+mc_token_ids = np.load('mc_token_ids.npy', allow_pickle=True)
+lm_labels = np.load('lm_labels.npy', allow_pickle=True)
+mc_labels = np.load('mc_labels.npy', allow_pickle=True)
 
 
 # with open('preprocessed_dataset.json', 'w') as f:
 #     personachat = json.dump(datasets, f)
 
-# print(lm_labels.shape)
-# print(input_ids.shape)
+print(lm_labels.shape)
+print(input_ids.shape)
 
-# print(mc_token_ids.shape)
-# print(mc_labels.shape)
+print(mc_token_ids.shape)
+print(mc_labels.shape)
 
 # import urllib
 
 # import requests
 
-filenames = ['input_ids.npy', 'lm_labels.npy', 'mc_labels.npy', 'mc_token_ids.npy']
+# filenames = ['input_ids.npy', 'lm_labels.npy', 'mc_labels.npy', 'mc_token_ids.npy']
 
-import os
-import boto3
-import botocore
+# import os
+# import boto3
+# import botocore
 
-files = filenames
+# files = filenames
 
-bucket = 'persona-dataset'
+# bucket = 'persona-dataset'
 
-s3 = boto3.resource('s3')
+# s3 = boto3.resource('s3')
 
-for file in files:
-   try:
-       s3.Bucket(bucket).download_file(file, os.path.basename(file))
-   except botocore.exceptions.ClientError as e:
-       if e.response['Error']['Code'] == "404":
-           print("The object does not exist.")
-       else:
-           raise
+# for file in files:
+#    try:
+#        s3.Bucket(bucket).download_file(file, os.path.basename(file))
+#    except botocore.exceptions.ClientError as e:
+#        if e.response['Error']['Code'] == "404":
+#            print("The object does not exist.")
+#        else:
+#            raise
 
 # print('Load model from checkpoint...')
 # model = load_trained_model_from_checkpoint(config_path, checkpoint_path)
