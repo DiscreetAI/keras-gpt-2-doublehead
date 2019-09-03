@@ -1,6 +1,7 @@
 import tensorflow as tf
 tf.compat.v1.enable_v2_behavior()
 import tensorflow_federated as tff
+import tensorflow.python.keras.backend as K
 import numpy as np
 import os
 import sys
@@ -57,12 +58,12 @@ tf_datasets = []
 def dataset_map(input_ids, lm_labels, mc_token_ids, mc_labels):
     return {
         'x': {
-            'LMInput': np.array(input_ids),
-            'MCInput': np.array(mc_token_ids)
+            'LMInput': K.expand_dims(input_ids),
+            'MCInput': K.expand_dims(mc_token_ids
         },
         'y': {
-            'LMOutput': np.array(lm_labels),
-            'MCOutput': np.array(mc_labels)
+            'LMOutput': K.expand_dims(lm_labels),
+            'MCOutput': K.expand_dims(mc_labels)
         }
     }
 
