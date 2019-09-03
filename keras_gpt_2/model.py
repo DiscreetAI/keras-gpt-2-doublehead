@@ -101,17 +101,17 @@ def get_model(n_vocab,
     :return: The model.
     """
     if fixed_input_shape:
-        input_layer_shape = (batch_size, 2, n_ctx)
+        input_layer_shape = (batch_size, n_ctx)
     else:
-        input_layer_shape = (batch_size, 2, None)
+        input_layer_shape = (batch_size, None)
 
     lm_input_layer = keras.layers.Input(
-        batch_shape=(batch_size, 2, None),
+        batch_shape=input_layer_shape,
         name='LMInput',
     )
 
     mc_input_layer = keras.layers.Input(
-        batch_shape=(batch_size, 2),
+        batch_shape=input_layer_shape,
         name='MCInput',
     )
 
@@ -186,7 +186,7 @@ def get_model(n_vocab,
         optimizer=keras.optimizers.Adam(),
         loss=losses,
         loss_weights=lossWeights,
-        #metrics=metrics
+        metrics=metrics
     )
     return model
 
