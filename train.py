@@ -18,8 +18,7 @@ import gpt_2_simple as gpt2
 if not os.path.isdir(model_folder):
     gpt2.download_gpt2(model_name = '117M')
 
-print('Load model from checkpoint...')
-model = load_trained_model_from_checkpoint(config_path, checkpoint_path)
+
 
 print('Load BPE from files...')
 bpe = get_bpe_from_files(encoder_path, vocab_path)
@@ -121,12 +120,12 @@ tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
 url = "s3://datasets.huggingface.co/personachat/personachat_self_original.json"
 
 # Download and load JSON dataset
-personachat_file = 'small_dataset.json' # cached_path(url)
+personachat_file = cached_path(url)
 with open(personachat_file, "r", encoding="utf-8") as f:
     dataset = json.loads(f.read())
 
-# with open('dataset.json', "w", encoding="utf-8") as f:
-#     f.write(json.dumps(dataset))
+
+
 # dataset = {'train': dataset['train']}
 # dataset['train'] = dataset['train'][:1]
 # print('\n')
@@ -143,37 +142,42 @@ def tokenize(obj):
  
 dataset = tokenize(dataset)
 
+with open('dataset.json', "w", encoding="utf-8") as f:
+    f.write(json.dumps(dataset))
+
 # with open('dataset.json', 'r') as f:
 #     personachat = json.loads(f.read())
-datasets = get_data_loaders(dataset, tokenizer)
-arr = datasets['train']
-input_ids = arr['input_ids']
-mc_token_ids = arr['mc_token_ids']
-lm_labels = arr['lm_labels']
-mc_labels = arr['mc_labels']
+# datasets = get_data_loaders(dataset, tokenizer)
+# arr = datasets['train']
+# input_ids = arr['input_ids']
+# mc_token_ids = arr['mc_token_ids']
+# lm_labels = arr['lm_labels']
+# mc_labels = arr['mc_labels']
 
-print(lm_labels.shape)
-print(input_ids.shape)
+# print(lm_labels.shape)
+# print(input_ids.shape)
 
-print(mc_token_ids, mc_token_ids.shape)
-print(mc_labels, mc_labels.shape)
-history_output = model.fit(
-    {
-        'LMInput': input_ids,
-        'MCInput': mc_token_ids
-    },
-    {
-        'LMOutput': lm_labels,
-        'MCOutput': mc_labels
-    },
-    batch_size=1,
-    epochs=3,
-    callbacks=[BaseLogger()]
-)
+# print(mc_token_ids, mc_token_ids.shape)
+# print(mc_labels, mc_labels.shape)
+# print('Load model from checkpoint...')
+# model = load_trained_model_from_checkpoint(config_path, checkpoint_path)
+# history_output = model.fit(
+#     {
+#         'LMInput': input_ids,
+#         'MCInput': mc_token_ids
+#     },
+#     {
+#         'LMOutput': lm_labels,
+#         'MCOutput': mc_labels
+#     },
+#     batch_size=1,
+#     epochs=3,
+#     callbacks=[BaseLogger()]
+# )
 
-import json
+# import json
 
-with open('training_history.json', 'w') as f:
-    json.dump(history_output.history, f)
+# with open('training_history.json', 'w') as f:
+#     json.dump(history_output.history, f)
 
 # model.save('trained_model.h5')
