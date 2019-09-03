@@ -106,12 +106,12 @@ def get_model(n_vocab,
         input_layer_shape = (batch_size, 2, None)
 
     lm_input_layer = keras.layers.Input(
-        batch_shape=input_layer_shape,
+        batch_shape=(batch_size, 2, None),
         name='LMInput',
     )
 
     mc_input_layer = keras.layers.Input(
-        batch_shape=input_layer_shape,
+        batch_shape=(batch_size, 2),
         name='MCInput',
     )
 
