@@ -157,6 +157,14 @@ print(input_ids.shape)
 print(mc_token_ids.shape)
 print(mc_labels.shape)
 
+model = load_trained_model_from_checkpoint(config_path, checkpoint_path)
+
+model.predict(
+    {
+        'LMInput': input_ids,
+        "MCInput": mc_token_ids
+    }
+)
 
 # import urllib
 
