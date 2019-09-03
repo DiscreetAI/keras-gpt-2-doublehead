@@ -1,4 +1,4 @@
-from .backend import keras
+from .backend import keras as keras
 from keras_embed_sim import EmbeddingRet, EmbeddingSim
 from keras_pos_embd import PositionEmbedding
 from keras_layer_normalization import LayerNormalization
