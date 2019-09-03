@@ -137,7 +137,6 @@ def tokenize(obj):
     if isinstance(obj, str):
         return tokenizer.convert_tokens_to_ids(tokenizer.tokenize(obj))
     if isinstance(obj, dict):
-        print(len(obj.items()))
         return dict((n, tokenize(o)) for n, o in obj.items())
     return list(tokenize(o) for o in obj)
 
