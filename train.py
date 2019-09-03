@@ -6,6 +6,7 @@ from keras.callbacks import BaseLogger, History
 import tensorflow as tf
 import numpy as np
 from collections import defaultdict
+import urllib
 
 model_folder = 'models/117M'
 config_path = os.path.join(model_folder, 'hparams.json')
@@ -119,62 +120,87 @@ tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
 url = "s3://datasets.huggingface.co/personachat/personachat_self_original.json"
 
 # Download and load JSON dataset
-personachat_file = "dataset.json"
-with open(personachat_file, "r", encoding="utf-8") as f:
-    dataset = json.loads(f.read())
+# personachat_file = "dataset.json"
+# with open(personachat_file, "r", encoding="utf-8") as f:
+#     dataset = json.loads(f.read())
 
 
 
-# dataset = {'train': dataset['train']}
-# dataset['train'] = dataset['train'][:1]
-# print('\n')
-# print(dataset[0]['utterances'][1])
-# print('\n')
-# print(dataset[0]['utterances'][2])
-# Tokenize and encode the dataset using our loaded GPT tokenizer
-def tokenize(obj):
-    if isinstance(obj, str):
-        return tokenizer.convert_tokens_to_ids(tokenizer.tokenize(obj))
-    if isinstance(obj, dict):
-        return dict((n, tokenize(o)) for n, o in obj.items())
-    return list(tokenize(o) for o in obj)
+# # dataset = {'train': dataset['train']}
+# # dataset['train'] = dataset['train'][:1]
+# # print('\n')
+# # print(dataset[0]['utterances'][1])
+# # print('\n')
+# # print(dataset[0]['utterances'][2])
+# # Tokenize and encode the dataset using our loaded GPT tokenizer
+# def tokenize(obj):
+#     if isinstance(obj, str):
+#         return tokenizer.convert_tokens_to_ids(tokenizer.tokenize(obj))
+#     if isinstance(obj, dict):
+#         return dict((n, tokenize(o)) for n, o in obj.items())
+#     return list(tokenize(o) for o in obj)
 
-# print("Tokenizing dataset...") 
-# dataset = tokenize(dataset)
+# # print("Tokenizing dataset...") 
+# # dataset = tokenize(dataset)
 
-# with open('dataset.json', "w", encoding="utf-8") as f:
-#     f.write(json.dumps(dataset))
-print(len(dataset['train']))
-# with open('dataset.json', 'r') as f:
-#     personachat = json.loads(f.read())
-datasets = get_data_loaders(dataset, tokenizer)
+# # with open('dataset.json', "w", encoding="utf-8") as f:
+# #     f.write(json.dumps(dataset))
+# print(len(dataset['train']))
+# # with open('dataset.json', 'r') as f:
+# #     personachat = json.loads(f.read())
+# datasets = get_data_loaders(dataset, tokenizer)
 
-arr = datasets['train']
-input_ids = arr['input_ids']
-mc_token_ids = arr['mc_token_ids']
-lm_labels = arr['lm_labels']
-mc_labels = arr['mc_labels']
+# arr = datasets['train']
+# input_ids = arr['input_ids']
+# mc_token_ids = arr['mc_token_ids']
+# lm_labels = arr['lm_labels']
+# mc_labels = arr['mc_labels']
 
-np.save('input_ids.npy', input_ids)
-np.save('mc_token_ids.npy', mc_token_ids)
-np.save('lm_labels.npy', lm_labels)
-np.save('mc_labels.npy', mc_labels)
+# np.save('input_ids.npy', input_ids)
+# np.save('mc_token_ids.npy', mc_token_ids)
+# np.save('lm_labels.npy', lm_labels)
+# np.save('mc_labels.npy', mc_labels)
 
-# input_ids = np.load('input_ids.npy')
-# mc_token_ids = np.load('mc_token_ids.npy')
-# lm_labels = np.load('lm_labels.npy')
-# mc_labels = np.load('mc_labels.npy')
+# input_ids = np.load('input_ids.npy', allow_pickle=True)
+# mc_token_ids = np.load('mc_token_ids.npy', allow_pickle=True)
+# lm_labels = np.load('lm_labels.npy', allow_pickle=True)
+# mc_labels = np.load('mc_labels.npy', allow_pickle=True)
 
 
-
-# # with open('preprocessed_dataset.json', 'w') as f:
-# #     personachat = json.dump(datasets, f)
+# with open('preprocessed_dataset.json', 'w') as f:
+#     personachat = json.dump(datasets, f)
 
 # print(lm_labels.shape)
 # print(input_ids.shape)
 
 # print(mc_token_ids.shape)
 # print(mc_labels.shape)
+
+# import urllib
+
+# import requests
+
+filenames = ['input_ids.npy', 'lm_labels.npy', 'mc_labels.npy', 'mc_token_ids.npy']
+
+import os
+import boto3
+import botocore
+
+files = filenames
+
+bucket = 'persona-dataset'
+
+s3 = boto3.resource('s3')
+
+for file in files:
+   try:
+       s3.Bucket(bucket).download_file(file, os.path.basename(file))
+   except botocore.exceptions.ClientError as e:
+       if e.response['Error']['Code'] == "404":
+           print("The object does not exist.")
+       else:
+           raise
+
 # print('Load model from checkpoint...')
 # model = load_trained_model_from_checkpoint(config_path, checkpoint_path)
 # history_output = model.fit(
