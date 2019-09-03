@@ -10,6 +10,7 @@ from keras.callbacks import BaseLogger, History
 from collections import defaultdict
 import urllib
 import gpt_2_simple as gpt2
+import requests
 
 filenames = ['input_ids.json', 'lm_labels.json', 'mc_labels.json', 'mc_token_ids.json']
 
