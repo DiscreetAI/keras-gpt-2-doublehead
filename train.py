@@ -176,6 +176,22 @@ print(input_ids.shape)
 print(mc_token_ids.shape)
 print(mc_labels.shape)
 
+num_clients = 5
+
+batches = [np.array_split(input_ids, num_clients), np.array_split(lm_labels, num_clients), np.array_split(mc_token_ids, num_clients), np.array_split(mc_labels, num_clients)]
+
+assert len(batches) == 4
+assert len(batches[0]) == num_clients
+
+datasets = list(zip(*batches))
+
+assert len(datasets) == num_clients
+assert len(datasets[0]) == 4
+
+datasets = [tuple(dataset) for dataset in datasets]
+datasets = [tf.data.Dataset.from_tensor_slices(dataset) for dataset in datasets]
+
+
 # import urllib
 
 # import requests
