@@ -12,72 +12,88 @@ import urllib
 import gpt_2_simple as gpt2
 import requests
 
-filenames = ['input_ids.json', 'lm_labels.json', 'mc_labels.json', 'mc_token_ids.json']
+# filenames = ['input_ids.json', 'lm_labels.json', 'mc_labels.json', 'mc_token_ids.json']
 
-url = "https://persona-dataset.s3.amazonaws.com/{}"
+# url = "https://persona-dataset.s3.amazonaws.com/{}"
 
-data = []
+# data = []
 
-for name in filenames:
-    full_url = url.format(name)
-    json_data = requests.get(full_url).json()
-    data.append(np.array(json_data))
-    print("Done")
+# for name in filenames:
+#     full_url = url.format(name)
+#     json_data = requests.get(full_url).json()
+#     data.append(np.array(json_data))
+#     print("Done")
 
-input_ids, lm_labels, mc_labels, mc_token_ids = data
+# input_ids, lm_labels, mc_labels, mc_token_ids = data
 
 
-# with open('preprocessed_dataset.json', 'w') as f:
-#     personachat = json.dump(datasets, f)
+# # with open('preprocessed_dataset.json', 'w') as f:
+# #     personachat = json.dump(datasets, f)
 
-print(lm_labels.shape)
-print(input_ids.shape)
+# print(lm_labels.shape)
+# print(input_ids.shape)
 
-print(mc_token_ids.shape)
-print(mc_labels.shape)
+# print(mc_token_ids.shape)
+# print(mc_labels.shape)
 
-num_clients = 5
+# num_clients = 5
 
-batches = [np.array_split(input_ids, num_clients), np.array_split(lm_labels, num_clients), np.array_split(mc_token_ids, num_clients), np.array_split(mc_labels, num_clients)]
+# batches = [np.array_split(input_ids, num_clients), np.array_split(lm_labels, num_clients), np.array_split(mc_token_ids, num_clients), np.array_split(mc_labels, num_clients)]
 
-assert len(batches) == 4
-assert len(batches[0]) == num_clients
+# assert len(batches) == 4
+# assert len(batches[0]) == num_clients
 
-datasets = list(zip(*batches))
+# datasets = list(zip(*batches))
 
-assert len(datasets) == num_clients
-assert len(datasets[0]) == 4
+# assert len(datasets) == num_clients
+# assert len(datasets[0]) == 4
 
-#datasets = [tuple(dataset) for dataset in datasets]
-datasets = [tf.data.Dataset.from_tensor_slices(dataset) for dataset in datasets]
+# datasets = [list(dataset) for dataset in datasets]
+# datasets = [tf.data.Dataset.from_tensor_slices(dataset) for dataset in datasets]
 
-train_data = datasets
+# train_data = datasets
+
+# Grab a single batch of data so that TFF knows what data looks like.
+# sample_batch = tf.nest.map_structure(
+#     lambda x: x.numpy(), iter(train_data[0]).next())
+
+# print(sample_batch)
+# Load simulation data.
+source, _ = tff.simulation.datasets.emnist.load_data()
+def client_data(n):
+  return source.create_tf_dataset_for_client(source.client_ids[n]).map(
+      lambda e: {
+          'x': tf.reshape(e['pixels'], [-1]),
+          'y': e['label'],
+  }).repeat(10).batch(20)
+
+# Pick a subset of client devices to participate in training.
+train_data = [client_data(n) for n in range(3)]
 
 # Grab a single batch of data so that TFF knows what data looks like.
 sample_batch = tf.nest.map_structure(
     lambda x: x.numpy(), iter(train_data[0]).next())
 
+print(sample_batch)
 
+# def model_fn():
+#     model_folder = 'models/117M'
+#     config_path = os.path.join(model_folder, 'hparams.json')
+#     checkpoint_path = os.path.join(model_folder, 'model.ckpt')
+#     encoder_path = os.path.join(model_folder, 'encoder.json')
+#     vocab_path = os.path.join(model_folder, 'vocab.bpe')
 
+#     if not os.path.isdir(model_folder):
+#         gpt2.download_gpt2(model_name = '117M')
 
-def model_fn():
-    model_folder = 'models/117M'
-    config_path = os.path.join(model_folder, 'hparams.json')
-    checkpoint_path = os.path.join(model_folder, 'model.ckpt')
-    encoder_path = os.path.join(model_folder, 'encoder.json')
-    vocab_path = os.path.join(model_folder, 'vocab.bpe')
+#     print('Load BPE from files...')
+#     bpe = get_bpe_from_files(encoder_path, vocab_path)
+#     model = load_trained_model_from_checkpoint(config_path, checkpoint_path)
+#     return tff.learning.from_compiled_keras_model(model, sample_batch)
 
-    if not os.path.isdir(model_folder):
-        gpt2.download_gpt2(model_name = '117M')
-
-    print('Load BPE from files...')
-    bpe = get_bpe_from_files(encoder_path, vocab_path)
-    model = load_trained_model_from_checkpoint(config_path, checkpoint_path)
-    return tff.learning.from_compiled_keras_model(model, sample_batch)
-
-# Simulate a few rounds of training with the selected client devices.
-trainer = tff.learning.build_federated_averaging_process(model_fn)
-state = trainer.initialize()
-for _ in range(5):
-  state, metrics = trainer.next(state, train_data)
-  print (metrics.loss)
+# # Simulate a few rounds of training with the selected client devices.
+# trainer = tff.learning.build_federated_averaging_process(model_fn)
+# state = trainer.initialize()
+# for _ in range(5):
+#   state, metrics = trainer.next(state, train_data)
+#   print (metrics.loss)
