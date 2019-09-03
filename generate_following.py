@@ -8,7 +8,7 @@ if len(sys.argv) != 2:
     sys.exit(-1)
 
 
-model_folder = sys.argv[1]
+model_folder = 'models/117M'
 config_path = os.path.join(model_folder, 'hparams.json')
 checkpoint_path = os.path.join(model_folder, 'model.ckpt')
 encoder_path = os.path.join(model_folder, 'encoder.json')

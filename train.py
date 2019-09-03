@@ -61,7 +61,7 @@ def build_input_from_segments(persona, history, reply, tokenizer, lm_labels=Fals
         instance["lm_labels"] = ([-1] * sum(len(s) for s in sequence[:-1])) + [-1] + sequence[-1][1:]
     return instance, sequence
 
-def get_data_loaders(personachat, tokenizer, args_num_candidates=1, args_personality_permutations=1, args_max_history=2):
+def get_data_loaders(personachat, tokenizer, args_num_candidates=2, args_personality_permutations=1, args_max_history=2):
     """ Prepare the dataset for training and evaluation """
    
 
@@ -95,8 +95,8 @@ def get_data_loaders(personachat, tokenizer, args_num_candidates=1, args_persona
         dataset = pad_dataset(dataset, padding=tokenizer.convert_tokens_to_ids('<pad>'))
         for input_name in MODEL_INPUTS:
             tensor = np.array(dataset[input_name])
-            # if input_name == "mc_ldsfaabels":
-            #     tensor = tensor.reshape((-1, datasets[dataset_name]["n_candidates"]) + tensor.shape[1:])
+            if input_name != "mc_labels":
+                tensor = tensor.reshape((-1, datasets[dataset_name]["n_candidates"]) + tensor.shape[1:])
             dataset[input_name] = tensor
 
     return datasets
@@ -110,9 +110,9 @@ tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
 url = "s3://datasets.huggingface.co/personachat/personachat_self_original.json"
 
 # Download and load JSON dataset
-# personachat_file = "dataset.json"
-# with open(personachat_file, "r", encoding="utf-8") as f:
-#     dataset = json.loads(f.read())
+personachat_file = "small_dataset.json"
+with open(personachat_file, "r", encoding="utf-8") as f:
+    dataset = json.loads(f.read())
 
 
 
@@ -123,35 +123,39 @@ url = "s3://datasets.huggingface.co/personachat/personachat_self_original.json"
 # # print('\n')
 # # print(dataset[0]['utterances'][2])
 # # Tokenize and encode the dataset using our loaded GPT tokenizer
-# def tokenize(obj):
-#     if isinstance(obj, str):
-#         return tokenizer.convert_tokens_to_ids(tokenizer.tokenize(obj))
-#     if isinstance(obj, dict):
-#         return dict((n, tokenize(o)) for n, o in obj.items())
-#     return list(tokenize(o) for o in obj)
+def tokenize(obj):
+    if isinstance(obj, str):
+        return tokenizer.convert_tokens_to_ids(tokenizer.tokenize(obj))
+    if isinstance(obj, dict):
+        return dict((n, tokenize(o)) for n, o in obj.items())
+    return list(tokenize(o) for o in obj)
 
 # # print("Tokenizing dataset...") 
-# # dataset = tokenize(dataset)
+dataset = tokenize(dataset)
 
 # # with open('dataset.json', "w", encoding="utf-8") as f:
 # #     f.write(json.dumps(dataset))
 # print(len(dataset['train']))
 # # with open('dataset.json', 'r') as f:
 # #     personachat = json.loads(f.read())
-# datasets = get_data_loaders(dataset, tokenizer)
+datasets = get_data_loaders(dataset, tokenizer)
 
-# arr = datasets['train']
-# input_ids = arr['input_ids']
-# mc_token_ids = arr['mc_token_ids']
-# lm_labels = arr['lm_labels']
-# mc_labels = arr['mc_labels']
+arr = datasets['train']
+input_ids = arr['input_ids']
+mc_token_ids = arr['mc_token_ids']
+lm_labels = arr['lm_labels']
+mc_labels = arr['mc_labels']
 
 # np.save('input_ids.npy', input_ids)
 # np.save('mc_token_ids.npy', mc_token_ids)
 # np.save('lm_labels.npy', lm_labels)
 # np.save('mc_labels.npy', mc_labels)
 
+print(lm_labels.shape)
+print(input_ids.shape)
 
+print(mc_token_ids.shape)
+print(mc_labels.shape)
 
 
 # import urllib
