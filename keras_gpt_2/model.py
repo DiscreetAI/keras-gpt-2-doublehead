@@ -1,4 +1,4 @@
-from .backend import keras as keras
+#from .backend import keras
 from keras_embed_sim import EmbeddingRet, EmbeddingSim
 from keras_pos_embd import PositionEmbedding
 from keras_layer_normalization import LayerNormalization
@@ -15,6 +15,8 @@ from .metrics import get_metrics
 from tensorflow import one_hot
 import tensorflow as tf
 import numpy as np
+
+import tensorflow.python.keras as keras
 
 __all__ = ['get_model', 'get_custom_objects']
 
