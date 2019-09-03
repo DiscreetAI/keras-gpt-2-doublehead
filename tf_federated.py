@@ -57,12 +57,12 @@ tf_datasets = []
 def dataset_map(input_ids, lm_labels, mc_token_ids, mc_labels):
     return {
         'x': {
-            'LMInput': input_ids,
-            'MCInput': mc_token_ids
+            'LMInput': np.array(input_ids),
+            'MCInput': np.array(mc_token_ids)
         },
         'y': {
-            'LMOutput': lm_labels,
-            'MCOutput': mc_labels
+            'LMOutput': np.array(lm_labels),
+            'MCOutput': np.array(mc_labels)
         }
     }
 
