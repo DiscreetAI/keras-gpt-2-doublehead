@@ -48,7 +48,7 @@ datasets = list(zip(*batches))
 assert len(datasets) == num_clients
 assert len(datasets[0]) == 4
 
-datasets = [tuple(dataset) for dataset in datasets]
+#datasets = [tuple(dataset) for dataset in datasets]
 datasets = [tf.data.Dataset.from_tensor_slices(dataset) for dataset in datasets]
 
 train_data = datasets
