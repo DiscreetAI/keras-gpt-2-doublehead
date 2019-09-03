@@ -1,8 +1,8 @@
 import os
 import sys
 from keras_gpt_2 import load_trained_model_from_checkpoint, get_bpe_from_files, generate
-from keras.models import load_model
-from keras.callbacks import BaseLogger, History
+from tensorflow.python.keras.models import load_model
+from tensorflow.python.keras.callbacks import BaseLogger, History
 import tensorflow as tf
 import numpy as np
 from collections import defaultdict
