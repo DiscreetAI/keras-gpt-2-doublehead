@@ -34,7 +34,7 @@ def _wrap_layer(name, input_layer, build_func, trainable=True):
         name='%s-Norm' % name,
     )(input_layer)
     build_output = build_func(normal_layer)
-    return tensorflow.python.keras.layers.Add(name='%s-Add' % name)([input_layer, build_output])
+    return tf.python.keras.layers.Add(name='%s-Add' % name)([input_layer, build_output])
 
 
 def _get_encoder_component(name,
@@ -106,12 +106,12 @@ def get_model(n_vocab,
     else:
         input_layer_shape = (batch_size, None)
 
-    lm_input_layer = tensorflow.python.keras.layers.Input(
+    lm_input_layer = tf.python.keras.layers.Input(
         batch_shape=input_layer_shape,
         name='LMInput',
     )
 
-    mc_input_layer = tensorflow.python.keras.layers.Input(
+    mc_input_layer = tf.python.keras.layers.Input(
         batch_shape=input_layer_shape,
         name='MCInput',
     )
@@ -182,9 +182,9 @@ def get_model(n_vocab,
         "MCOutput": get_metrics(is_mc=True)
     }
 
-    model = tensorflow.python.keras.models.Model(inputs=[lm_input_layer, mc_input_layer], outputs=[lm_head, mc_head])
+    model = tf.python.keras.models.Model(inputs=[lm_input_layer, mc_input_layer], outputs=[lm_head, mc_head])
     model.compile(
-        optimizer=tensorflow.python.keras.optimizers.Adam(),
+        optimizer=tf.python.keras.optimizers.Adam(),
         loss=losses,
         loss_weights=lossWeights,
         metrics=metrics
