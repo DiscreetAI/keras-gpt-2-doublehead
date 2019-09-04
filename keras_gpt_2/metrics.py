@@ -1,8 +1,8 @@
 import tensorflow as tf
-from tf.keras import backend as K
-from tf.keras.metrics import top_k_categorical_accuracy
-from tf import one_hot
-from tf.keras.callbacks import Callback
+from tensorflow.keras import backend as K
+from tensorflow.keras.metrics import top_k_categorical_accuracy
+from tensorflow import one_hot
+from tensorflow.keras.callbacks import Callback
 
 def perplexity(y_true, y_pred):
     """
