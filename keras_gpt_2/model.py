@@ -87,7 +87,10 @@ class DummyLayer(Layer):
         return (2, None, None, None)
 
     def call(self, inputs):
-        return inputs
+        lm, mc = inputs
+        lm = lm.reshape(lm, (1, 50257))
+        mc = mc.reshape(mc, (1, 1))
+        return K.concatenate(lm, mc, axis=0)
 
 def get_model(n_vocab,
               n_ctx=1024,
