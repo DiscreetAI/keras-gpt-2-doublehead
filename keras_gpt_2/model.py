@@ -82,6 +82,12 @@ def _get_encoder_component(name,
     )
     return feed_forward_layer
 
+class DummyLayer(Layer):
+    def compute_output_shape(self, input_shape):
+        return (2, None, None, None)
+
+    def call(self, inputs):
+        return inputs
 
 def get_model(n_vocab,
               n_ctx=1024,
@@ -165,14 +171,13 @@ def get_model(n_vocab,
         name='MCOutput'
     )(mc_linear)
 
-    output = Lambda(
-        lambda x: (x[0], x[1]),
+    output = DummyLayer(
         name='Output'
-    )([lm_head, mc_head])
+    )
 
     print(output.output_shape, "output_shape")
 
-
+    output = output([lm_head, mc_head])
     # output_layer = 
 
     losses = {
