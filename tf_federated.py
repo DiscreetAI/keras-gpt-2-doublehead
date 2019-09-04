@@ -58,14 +58,8 @@ tf_datasets = []
 
 def dataset_map(input_ids, lm_labels, mc_token_ids, mc_labels):
     return OrderedDict([
-        ('x',  OrderedDict([
-            ('LMInput', K.expand_dims(input_ids)),
-            ('MCInput', K.expand_dims(mc_token_ids))
-        ])),
-        ('y', OrderedDict([
-            ('LMOutput', K.expand_dims(lm_labels)),
-            ('MCOutput', K.expand_dims(mc_labels))
-        ]))
+        ('x', input_ids),
+        ('y', lm_labels)
     ])
 
 #datasets = [tuple(dataset) for dataset in datasets]

@@ -182,11 +182,11 @@ def get_model(n_vocab,
         "MCOutput": get_metrics(is_mc=True)
     }
 
-    model = tf.python.keras.models.Model(inputs=[lm_input_layer, mc_input_layer], outputs=[lm_head, mc_head])
+    model = tf.python.keras.models.Model(inputs=[lm_input_layer], outputs=[lm_head])
     model.compile(
         optimizer=tf.keras.optimizers.SGD(),
-        loss=losses,
-        loss_weights=lossWeights,
+        loss=lm_loss_function,
+        #loss_weights=lossWeights,
         #metrics=metrics
     )
     return model
