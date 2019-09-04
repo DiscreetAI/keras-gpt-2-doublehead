@@ -5,9 +5,9 @@ from keras_layer_normalization import LayerNormalization
 from keras_transformer import gelu, attention_builder, feed_forward_builder
 from keras_transformer import get_custom_objects as get_transformer_custom_objects
 
-from tensorflow.python.keras.layers import Dense, Layer, Dropout
-from tensorflow.python.keras.utils import to_categorical
-from tensorflow.python.keras import backend as K
+from tensorflow.keras.layers import Dense, Layer, Dropout
+from tensorflow.keras.utils import to_categorical
+from tensorflow.keras import backend as K
 from .sequence_summary import SequenceSummary
 from .metrics import get_metrics
 
@@ -34,7 +34,7 @@ def _wrap_layer(name, input_layer, build_func, trainable=True):
         name='%s-Norm' % name,
     )(input_layer)
     build_output = build_func(normal_layer)
-    return tf.python.keras.layers.Add(name='%s-Add' % name)([input_layer, build_output])
+    return tf.keras.layers.Add(name='%s-Add' % name)([input_layer, build_output])
 
 
 def _get_encoder_component(name,
@@ -106,7 +106,7 @@ def get_model(n_vocab,
     else:
         input_layer_shape = (batch_size, None)
 
-    lm_input_layer = tf.python.keras.layers.Input(
+    lm_input_layer = tf.keras.layers.Input(
         batch_shape=input_layer_shape,
         name='LMInput',
     )
@@ -162,7 +162,7 @@ def get_model(n_vocab,
         "MCOutput": get_metrics(is_mc=True)
     }
 
-    model = tf.python.keras.models.Model(inputs=lm_input_layer, outputs=lm_head)
+    model = tf.keras.models.Model(inputs=lm_input_layer, outputs=lm_head)
     model.compile(
         optimizer=tf.keras.optimizers.SGD(),
         loss=lm_loss_function,
