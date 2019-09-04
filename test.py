@@ -44,7 +44,7 @@ with strategy.scope():
     history_output = model.fit(
         input_ids,
         lm_labels,
-        batch_size=1,
+        batch_size=8,
         epochs=3,
         callbacks=[BaseLogger()]
     )
