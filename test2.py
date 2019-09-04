@@ -39,7 +39,7 @@ input_ids, lm_labels, mc_labels, mc_token_ids = data
 if not os.path.isdir(model_folder):
     gpt2.download_gpt2(model_name = '117M')
 
-batch_size=1
+batch_size=2
 model = load_trained_model_from_checkpoint(config_path, checkpoint_path, batch_size=batch_size)
 print("starting fit")
 history_output = model.fit(
