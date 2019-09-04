@@ -62,10 +62,7 @@ def dataset_map(input_ids, lm_labels, mc_token_ids, mc_labels):
             ('LMInput', K.expand_dims(input_ids)),
             ('MCInput', K.expand_dims(mc_token_ids))
         ])),
-        ('y', OrderedDict([
-            (0, K.expand_dims(lm_labels)),
-            (1, K.expand_dims(mc_labels))
-        ]))
+        ('y', K.concatenate(K.expand_dims(lm_labels), K.expand_dims(mc_labels)))
     ])
     print(result.get('y')[0])
     return result
