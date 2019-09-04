@@ -11,7 +11,7 @@ __all__ = ['load_trained_model_from_checkpoint']
 def load_trained_model_from_checkpoint(config_path,
                                        checkpoint_path,
                                        seq_len=None,
-                                       batch_size=None,
+                                       batch_size=1,
                                        fixed_input_shape=False):
     """Load trained official model from checkpoint.
 
@@ -38,7 +38,6 @@ def load_trained_model_from_checkpoint(config_path,
         "resid_pdrop": 0.1,
         'n_vocab': 50257
     }
-
     if seq_len is None:
         n_ctx = config['n_ctx']
     else:
@@ -50,7 +49,7 @@ def load_trained_model_from_checkpoint(config_path,
         n_embd=config['n_embd'],
         n_head=config['n_head'],
         n_layer=config['n_layer'],
-        batch_size=1,
+        batch_size=batch_size,
         fixed_input_shape=fixed_input_shape,
     )
 

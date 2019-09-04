@@ -19,7 +19,8 @@ config_path = os.path.join(model_folder, 'hparams.json')
 checkpoint_path = os.path.join(model_folder, 'model.ckpt')
 encoder_path = os.path.join(model_folder, 'encoder.json')
 vocab_path = os.path.join(model_folder, 'vocab.bpe')
-
+checkpoint_dir = './training_checkpoints'
+checkpoint_prefix = os.path.join(checkpoint_dir, "ckpt_{epoch}")
 filenames = ['input_ids.json', 'lm_labels.json', 'mc_labels.json', 'mc_token_ids.json']
 
 url = "https://persona-dataset.s3.amazonaws.com/{}"
@@ -40,9 +41,9 @@ if not os.path.isdir(model_folder):
 strategy = tf.distribute.MirroredStrategy()
 
 print('Number of devices: {}'.format(strategy.num_replicas_in_sync))
-
+batch_size = 1
 with strategy.scope():
-    model = load_trained_model_from_checkpoint(config_path, checkpoint_path)
+    model = load_trained_model_from_checkpoint(config_path, checkpoint_path, batch_size=batch_size)
     print("starting fit")
     history_output = model.fit(
         {
@@ -53,9 +54,12 @@ with strategy.scope():
             'LMOutput': lm_labels,
             'MCOutput': mc_labels
         },
-        batch_size=8,
-        epochs=10,
-        callbacks=[BaseLogger()]
+        batch_size=batch_size * strategy.num_replicas_in_sync,
+        epochs=3,
+        callbacks=[BaseLogger(),
+            tf.keras.callbacks.TensorBoard(log_dir='./logs'),
+            tf.keras.callbacks.ModelCheckpoint(filepath=checkpoint_prefix,
+                                       save_weights_only=True)]
     )
     import json
 
