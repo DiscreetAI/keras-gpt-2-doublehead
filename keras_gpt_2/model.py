@@ -208,8 +208,8 @@ def cross_entropy(logits, labels, ignore_index=None):
         labels = K.reshape(tf.cast(one_hot(labels, 50257, axis=-1), tf.float32), (-1, 50257))
         xentropy = sigmoid_crossentropy_ignore_index(labels, logits)
     else:
-        print(K.int_shape(logits), "LOGITS")
-        print(K.int_shape(labels), "LABELS")
+        # print(K.int_shape(logits), "LOGITS")
+        # print(K.int_shape(labels), "LABELS")
         xentropy = K.mean(
                         tf.nn.sigmoid_cross_entropy_with_logits(
                             labels=K.reshape(tf.cast(labels, tf.float32), (-1, 1)),

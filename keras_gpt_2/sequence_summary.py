@@ -36,12 +36,9 @@ class SequenceSummary(Layer):
                     we take the last token of the sequence as classification token
         """
         hidden_states, cls_index = inputs
-        print(K.int_shape(hidden_states), "ZERO")
-        print(hidden_states, cls_index)
-        print(K.int_shape(cls_index), "ONE")
+
         if self.summary_type == 'last':
             output = hidden_states[:, -1]
-            print(K.int_shape(output), "TWO")
         elif self.summary_type == 'first':
             output = hidden_states[:, 0]
         elif self.summary_type == 'mean':
@@ -50,13 +47,9 @@ class SequenceSummary(Layer):
             if cls_index is None:
                 cls_index = torch.full_like(hidden_states[..., :1, :], hidden_states.shape[-2]-1, dtype=torch.long)
             else:
-                print(K.int_shape(cls_index), "ONE")
                 cls_index = K.expand_dims(K.expand_dims(cls_index, -1), -1)
-                print(K.int_shape(cls_index), "TWO")
                 args = (1,) * (len(K.int_shape(cls_index)) - 1) + (K.int_shape(hidden_states)[-1],)
-                print("args", args)
                 cls_index = K.tile(cls_index, args)
-                print(K.int_shape(cls_index), "THREE")
             # shape of cls_index: (bsz, XX, 1, hidden_size) where XX are optional leading dim of hidden_states
             output = K.squeeze(tf.gather(params=hidden_states, indices=tf.cast(cls_index, tf.int32), axis=-1), -2) # shape (bsz, XX, hidden_size)
         elif self.summary_type == 'attn':
