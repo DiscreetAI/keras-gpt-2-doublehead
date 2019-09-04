@@ -241,6 +241,11 @@ def loss_function(labels, logits):
     lm_logits, mc_logits = tf.split(logits, 2, axis=0)
     lm_labels, mc_labels = tf.split(labels, 2, axis=0)
 
+    print(lm_logits.shape)
+    print(lm_labels.shape)
+    print(mc_logits.shape)
+    print(mc_labels.shape)
+
     lm_loss = lm_loss_function(lm_labels, lm_logits)
     mc_loss = mc_loss_function(mc_labels, mc_logits)
 
