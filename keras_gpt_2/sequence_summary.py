@@ -53,6 +53,8 @@ class SequenceSummary(Layer):
                 print(hidden_states.shape, "HIDDEN_STATES")
                 print(cls_index.shape, "CLS_INDEX")
             # shape of cls_index: (bsz, XX, 1, hidden_size) where XX are optional leading dim of hidden_states
+            gather_shape = tf.gather(params=hidden_states, indices=tf.cast(cls_index, tf.int32), axis=-2)
+            print(gather_shape.shape)
             output = K.squeeze(tf.gather(params=hidden_states, indices=tf.cast(cls_index, tf.int32), axis=-2), -2) # shape (bsz, XX, hidden_size)
             print(output.shape, "SEQUENCE")
         elif self.summary_type == 'attn':
