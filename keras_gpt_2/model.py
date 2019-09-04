@@ -168,7 +168,7 @@ def get_model(n_vocab,
     output = Lambda(
         lambda x,y: (x,y),
         name='Output'
-    )(lm_head, mc_head)
+    )([lm_head, mc_head])
 
 
     # output_layer = 
