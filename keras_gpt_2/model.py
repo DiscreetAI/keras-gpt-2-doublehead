@@ -111,11 +111,6 @@ def get_model(n_vocab,
         name='LMInput',
     )
 
-    mc_input_layer = tf.python.keras.layers.Input(
-        batch_shape=input_layer_shape,
-        name='MCInput',
-    )
-
     embed_token, embeddings = EmbeddingRet(
         input_dim=n_vocab,
         output_dim=n_embd,
@@ -182,7 +177,7 @@ def get_model(n_vocab,
         "MCOutput": get_metrics(is_mc=True)
     }
 
-    model = tf.python.keras.models.Model(inputs=[lm_input_layer], outputs=[lm_head])
+    model = tf.python.keras.models.Model(inputs=lm_input_layer, outputs=lm_head)
     model.compile(
         optimizer=tf.keras.optimizers.SGD(),
         loss=lm_loss_function,
