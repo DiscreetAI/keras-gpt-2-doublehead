@@ -145,6 +145,8 @@ def get_model(n_vocab,
         name='Norm',
     )(last_layer)
 
+    print(norm_layer.shape, "NORM")
+
     lm_head = EmbeddingSim(
         use_bias=False,
         name='LMOutput',
@@ -164,6 +166,8 @@ def get_model(n_vocab,
         rate=0.1,
         name='MCOutput'
     )(mc_linear)
+
+    print(mc_head.shape, "OUTPUT")
 
 
     # output_layer = 
