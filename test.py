@@ -44,9 +44,15 @@ print('Number of devices: {}'.format(strategy.num_replicas_in_sync))
 with strategy.scope():
     model = load_trained_model_from_checkpoint(config_path, checkpoint_path)
     history_output = model.fit(
-        input_ids,
-        lm_labels,
-        batch_size=8,
-        epochs=3,
-        callbacks=[BaseLogger()]
-    )
+    {
+        'LMInput': input_ids,
+        'MCInput': mc_token_ids
+    },
+    {
+        'LMOutput': lm_labels,
+        'MCOutput': mc_labels
+    },
+    batch_size=8,
+    epochs=10,
+    callbacks=[BaseLogger()]
+)

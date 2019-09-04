@@ -111,6 +111,11 @@ def get_model(n_vocab,
         name='LMInput',
     )
 
+    mc_input_layer = tf.keras.layers.Input(
+        batch_shape=input_layer_shape,
+        name='MCInput',
+    )
+
     embed_token, embeddings = EmbeddingRet(
         input_dim=n_vocab,
         output_dim=n_embd,
@@ -145,6 +150,21 @@ def get_model(n_vocab,
         name='LMOutput',
     )([norm_layer, embeddings])
 
+    mc_sequence_summary = SequenceSummary(
+        name='MCSequenceSummary'
+    )([norm_layer, mc_input_layer])
+
+    mc_linear = Dense(
+        units=1,
+        input_shape=(n_embd,),
+        name='MCDense'
+    )(mc_sequence_summary)
+
+    mc_head = Dropout(
+        rate=0.1,
+        name='MCOutput'
+    )(mc_linear)
+
 
     # output_layer = 
 
@@ -162,12 +182,12 @@ def get_model(n_vocab,
         "MCOutput": get_metrics(is_mc=True)
     }
 
-    model = tf.keras.models.Model(inputs=lm_input_layer, outputs=lm_head)
+    model = tf.keras.models.Model(inputs=[lm_input_layer, mc_input_layer], outputs=[lm_head, mc_head])
     model.compile(
-        optimizer=tf.keras.optimizers.SGD(),
-        loss=lm_loss_function,
-        #loss_weights=lossWeights,
-        #metrics=metrics
+        optimizer=tf.keras.optimizers.Adam(),
+        loss=losses,
+        loss_weights=lossWeights,
+        metrics=metrics
     )
     return model
 
