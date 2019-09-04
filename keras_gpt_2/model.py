@@ -238,7 +238,7 @@ def lm_loss_function(lm_labels, lm_logits):
     return lm_loss
 
 def loss_function(labels, logits):
-    lm_logits, mc_logits = logits
+    lm_logits, mc_logits = tf.split(logits, 2, axis=0)
     lm_labels, mc_labels = tf.split(labels, 2, axis=0)
 
     lm_loss = lm_loss_function(lm_labels, lm_logits)
