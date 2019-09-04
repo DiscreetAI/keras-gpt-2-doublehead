@@ -13,7 +13,29 @@ checkpoint_path = os.path.join(model_folder, 'model.ckpt')
 encoder_path = os.path.join(model_folder, 'encoder.json')
 vocab_path = os.path.join(model_folder, 'vocab.bpe')
 
-model = load_trained_model_from_checkpoint(config_path, checkpoint_path)
+filenames = ['input_ids.json', 'lm_labels.json', 'mc_labels.json', 'mc_token_ids.json']
 
-for layer in model.layers:
-    print(layer.get_weights())
+url = "https://persona-dataset.s3.amazonaws.com/{}"
+
+data = []
+
+for name in filenames:
+    full_url = url.format(name)
+    json_data = requests.get(full_url).json()
+    data.append(np.array(json_data))
+    print("Done")
+
+input_ids, lm_labels, mc_labels, mc_token_ids = data
+
+
+strategy = tf.distribute.MirroredStrategy()
+
+with strategy.scope():
+    model = load_trained_model_from_checkpoint(config_path, checkpoint_path)
+    history_output = model.fit(
+        input_ids,
+        lm_labels
+        batch_size=1,
+        epochs=3,
+        callbacks=[BaseLogger()]
+    )
