@@ -71,7 +71,7 @@ def dataset_map(input_ids, lm_labels, mc_token_ids, mc_labels):
     return result
         
 #datasets = [tuple(dataset) for dataset in datasets]
-datasets = [tf.data.Dataset.from_tensor_slices({'LMInput': K.expand_dims(a), 'MCInput': K.expand_dims(b)}, {'LMOutput': K.expand_dims(c), 'MCOutput': K.expand_dims(d)}) for a,b,c,d in datasets]
+datasets = [tf.data.Dataset.from_tensor_slices(({'LMInput': K.expand_dims(a), 'MCInput': K.expand_dims(b)}, {'LMOutput': K.expand_dims(c), 'MCOutput': K.expand_dims(d)})) for a,b,c,d in datasets]
 #datasets = [dataset.map(dataset_map) for dataset in datasets]
 
 train_data = datasets
