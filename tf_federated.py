@@ -12,6 +12,7 @@ from collections import defaultdict
 import urllib
 import gpt_2_simple as gpt2
 import requests
+from collections import OrderedDict
 
 filenames = ['input_ids.json', 'lm_labels.json', 'mc_labels.json', 'mc_token_ids.json']
 
@@ -56,16 +57,16 @@ tf_datasets = []
 #     tf_datasets.append()
 
 def dataset_map(input_ids, lm_labels, mc_token_ids, mc_labels):
-    return {
-        'x': {
-            'LMInput': K.expand_dims(input_ids),
-            'MCInput': K.expand_dims(mc_token_ids)
-        },
-        'y': {
-            'LMOutput': K.expand_dims(lm_labels),
-            'MCOutput': K.expand_dims(mc_labels)
-        }
-    }
+    return OrderedDict([
+        ('x',  OrderedDict([
+            ('LMInput', K.expand_dims(input_ids)),
+            ('MCInput', K.expand_dims(mc_token_ids))
+        ])),
+        ('y', OrderedDict([
+            ('LMOutput', K.expand_dims(lm_labels)),
+            ('MCOutput', K.expand_dims(mc_labels))
+        ]))
+    ])
 
 #datasets = [tuple(dataset) for dataset in datasets]
 datasets = [tf.data.Dataset.from_tensor_slices(dataset) for dataset in datasets]
