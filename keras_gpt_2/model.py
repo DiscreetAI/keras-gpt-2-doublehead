@@ -87,7 +87,7 @@ class DummyLayer(Layer):
         return (2, None, None, None)
 
     def call(self, inputs):
-        return inputs
+        return K.concatenate(inputs, axis=0)
 
 def get_model(n_vocab,
               n_ctx=1024,
