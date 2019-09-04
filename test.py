@@ -6,7 +6,7 @@ from collections import defaultdict
 import os
 from keras_gpt_2 import load_trained_model_from_checkpoint, get_bpe_from_files, generate
 import requests
-import gpt_2_simple as gpt_2
+import gpt_2_simple as gpt2
 
 from tensorflow.python.client import device_lib
 def get_available_devices():
