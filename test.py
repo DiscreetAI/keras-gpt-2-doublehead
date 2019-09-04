@@ -35,7 +35,7 @@ input_ids, lm_labels, mc_labels, mc_token_ids = data
 
 
 
-strategy = tf.distribute.MirroredStrategy()
+strategy = tf.distribute.MirroredStrategy(devices=['/gpu:{}'.format(i) for i in range(8)])
 
 print('Number of devices: {}'.format(strategy.num_replicas_in_sync))
 
