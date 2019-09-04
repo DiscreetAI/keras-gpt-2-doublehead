@@ -7,7 +7,7 @@ import os
 from keras_gpt_2 import load_trained_model_from_checkpoint, get_bpe_from_files, generate
 import requests
 
-from tensorflow.client import device_lib
+from tensorflow.python.client import device_lib
 def get_available_devices():
     local_device_protos = device_lib.list_local_devices()
     return [x.name for x in local_device_protos]
