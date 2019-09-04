@@ -42,7 +42,7 @@ if not os.path.isdir(model_folder):
 strategy = tf.distribute.MirroredStrategy()
 
 print('Number of devices: {}'.format(strategy.num_replicas_in_sync))
-batch_size = 2
+batch_size = 1
 with strategy.scope():
     model = load_trained_model_from_checkpoint(config_path, checkpoint_path, batch_size=batch_size)
     print("starting fit")
