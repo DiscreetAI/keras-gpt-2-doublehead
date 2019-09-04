@@ -89,7 +89,10 @@ vocab_path = os.path.join(model_folder, 'vocab.bpe')
 
 model = load_trained_model_from_checkpoint(config_path, checkpoint_path)
 
-y = model.predict(sample_batch.get('x'))
+x_val = sample_batch.get('x')
+print(x_val.shape)
+print("Starting forward pass")
+y = model.predict(x_val)
 
 print(sample_batch)
 
