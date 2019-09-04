@@ -43,6 +43,7 @@ print('Number of devices: {}'.format(strategy.num_replicas_in_sync))
 
 with strategy.scope():
     model = load_trained_model_from_checkpoint(config_path, checkpoint_path)
+    print("starting fit")
     history_output = model.fit(
         {
             'LMInput': input_ids,
