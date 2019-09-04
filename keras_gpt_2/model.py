@@ -170,6 +170,8 @@ def get_model(n_vocab,
         name='Output'
     )([lm_head, mc_head])
 
+    print(output.output_shape, "output_shape")
+
 
     # output_layer = 
 
