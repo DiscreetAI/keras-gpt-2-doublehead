@@ -6,6 +6,7 @@ from collections import defaultdict
 import os
 from keras_gpt_2 import load_trained_model_from_checkpoint, get_bpe_from_files, generate
 import requests
+import gpt_2_simple
 
 from tensorflow.python.client import device_lib
 def get_available_devices():
@@ -33,9 +34,10 @@ for name in filenames:
 
 input_ids, lm_labels, mc_labels, mc_token_ids = data
 
+if not os.path.isdir(model_folder):
+    gpt2.download_gpt2(model_name = '117M')
 
-
-strategy = tf.distribute.MirroredStrategy(devices=['/gpu:{}'.format(i) for i in range(8)])
+strategy = tf.distribute.MirroredStrategy()
 
 print('Number of devices: {}'.format(strategy.num_replicas_in_sync))
 
