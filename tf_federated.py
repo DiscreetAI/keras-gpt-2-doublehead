@@ -57,7 +57,7 @@ tf_datasets = []
 #     tf_datasets.append()
 
 def dataset_map(input_ids, lm_labels, mc_token_ids, mc_labels):
-    result = OrderedDict([
+    return OrderedDict([
         ('x',  OrderedDict([
             ('LMInput', K.expand_dims(input_ids)),
             ('MCInput', K.expand_dims(mc_token_ids))
