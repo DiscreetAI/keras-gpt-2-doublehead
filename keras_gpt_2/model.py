@@ -166,7 +166,7 @@ def get_model(n_vocab,
     )(mc_linear)
 
     output = Lambda(
-        lambda x,y: (x,y),
+        lambda x: x,
         name='Output'
     )([lm_head, mc_head])
 
