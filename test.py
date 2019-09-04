@@ -7,6 +7,7 @@ import os
 from keras_gpt_2 import load_trained_model_from_checkpoint, get_bpe_from_files, generate
 import requests
 import gpt_2_simple as gpt2
+from keras_gpt_2 import Metrics
 
 from tensorflow.python.client import device_lib
 def get_available_devices():
@@ -56,7 +57,7 @@ with strategy.scope():
         },
         batch_size=batch_size * strategy.num_replicas_in_sync,
         epochs=3,
-        callbacks=[BaseLogger(),
+        callbacks=[Metrics(input_ids, lm_labels, mc_token_ids, mc_labels),
             tf.keras.callbacks.TensorBoard(log_dir='./logs'),
             tf.keras.callbacks.ModelCheckpoint(filepath=checkpoint_prefix,
                                        save_weights_only=True)]

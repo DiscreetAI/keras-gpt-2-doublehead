@@ -1,8 +1,8 @@
-from tensorflow.python.keras import backend as K
-from tensorflow.python.keras.metrics import top_k_categorical_accuracy
-from tensorflow import one_hot
-
 import tensorflow as tf
+from tf.keras import backend as K
+from tf.keras.metrics import top_k_categorical_accuracy
+from tf import one_hot
+from tf.keras.callbacks import Callback
 
 def perplexity(y_true, y_pred):
     """
@@ -83,8 +83,8 @@ def top_1_lm(y_true, y_pred):
     return top_1(y_true, y_pred)
 
 def top_1_mc(y_true, y_pred):
-    y_true = K.reshape(tf.cast(y_true, tf.float32), (1, -1))
-    y_pred = K.reshape(y_pred, (1, -1))
+    y_true = K.reshape(tf.cast(y_true, tf.float32), (2, -1))
+    y_pred = K.reshape(y_pred, (2, -1))
     return top_1(y_true, y_pred)
 
 def top_3_lm(y_true, y_pred):
@@ -94,8 +94,8 @@ def top_3_lm(y_true, y_pred):
     return top_3(y_true, y_pred)
 
 def top_3_mc(y_true, y_pred):
-    y_true = K.reshape(tf.cast(y_true, tf.float32), (1, -1))
-    y_pred = K.reshape(y_pred, (1, -1))
+    y_true = K.reshape(tf.cast(y_true, tf.float32), (2, -1))
+    y_pred = K.reshape(y_pred, (2, -1))
     return top_3(y_true, y_pred)
 
 def precision_lm(y_true, y_pred):
@@ -104,30 +104,71 @@ def precision_lm(y_true, y_pred):
     
     y_pred = K.argmax(y_pred, axis=-1)
     
-    y_true = K.reshape(y_true, (1, -1))
+    y_true = K.reshape(y_true, (2, -1))
     
     return precision_m(y_true, y_pred)
 
 def precision_mc(y_true, y_pred):
     y_true = tf.cast(y_true, tf.int64)
-    y_pred = K.reshape(y_pred, (1, -1))
+    y_pred = K.reshape(y_pred, (2, -1))
     y_pred = K.argmax(y_pred, axis=-1)
-    y_true = K.reshape(y_true, (1,))
+    y_true = K.reshape(y_true, (2,))
     return precision_m(y_true, y_pred)
 
 def f1_score_lm(y_true, y_pred):
     y_true = tf.cast(y_true, tf.int64)
     # y_true = K.reshape(tf.cast(one_hot(y_true, 50257, axis=-1), tf.float32), (-1, 50257))
     y_pred = K.argmax(y_pred, axis=-1)
-    y_true = K.reshape(y_true, (1, -1))
+    y_true = K.reshape(y_true, (2, -1))
     return f1_m(y_true, y_pred)
 
 def f1_score_mc(y_true, y_pred):
     y_true = tf.cast(y_true, tf.int64)
-    y_pred = K.reshape(y_pred, (1, -1))
+    y_pred = K.reshape(y_pred, (2, -1))
     y_pred = K.argmax(y_pred, axis=-1)
-    y_true = K.reshape(y_true, (1,))
+    y_true = K.reshape(y_true, (2,))
     return f1_m(y_true, y_pred)
+
+class Metrics(Callback):
+    def __init__(self, input_ids, lm_labels, mc_token_ids, mc_labels):
+        self.input_ids = input_ids
+        self.lm_labels = lm_labels
+        self.mc_token_ids = mc_token_ids
+        self.mc_labels = mc_labels
+
+    def on_train_begin(self, logs={}):
+        self.batch_loss = []
+
+        lm_name = "LMOutput"
+        mc_name = "MCOutput"
+        endings = ["_perplexity", "_precision", "_top_1", "_top_3", "_f1_score"]
+        names = [lm_name + ending for ending in endings] + [mc_name + ending for ending in endings]
+        self.metrics = {name:[] for name in names}
+        self.metrics['loss'] = []
+        functions = [perplexity_lm, precision_lm, top_1_lm, top_3_lm, f1_score_lm, perplexity_mc, precision_mc, top_1_mc, top_3_mc, f1_score_mc]
+        self.functions = dict(zip(names, functions))
+        print("Initialized metrics!")
+        print(metrics)
+        print(functions)
+
+    def on_batch_end(self, logs={}):
+        self.batch_loss.append(logs.get('loss'))
+        print("Loss", logs.get('loss'))
+
+    def on_epoch_end(self, logs={}):
+        lm_logits, mc_logits = self.model.predict([self.input_ids, self.mc_token_ids])
+        for name, function in self.functions.items():
+            if name[:2] == 'LM':
+                metric = function(self.lm_labels, lm_logits)
+                self.metrics[name].append(metric)
+                
+            else:
+                metric = function(self.mc_labels, mc_logits)
+                self.metrics[name].append()
+            print(name, metric)
+        self.metrics['loss'].append(self.batch_loss)
+        self.batch_loss = []
+            
 
 def get_metrics(is_mc=False):
     return [perplexity_mc, precision_mc, f1_score_mc, top_1_mc, top_3_mc] if is_mc else [perplexity_lm, precision_lm, f1_score_lm, top_1_lm, top_3_lm]
