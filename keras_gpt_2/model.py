@@ -5,7 +5,7 @@ from keras_layer_normalization import LayerNormalization
 from keras_transformer import gelu, attention_builder, feed_forward_builder
 from keras_transformer import get_custom_objects as get_transformer_custom_objects
 
-from tensorflow.python.keras.layers import Dense, Layer, Dropout, Lambda
+from tensorflow.python.keras.layers import Dense, Layer, Dropout
 from tensorflow.python.keras.utils import to_categorical
 from tensorflow.python.keras import backend as K
 from .sequence_summary import SequenceSummary
@@ -82,15 +82,6 @@ def _get_encoder_component(name,
     )
     return feed_forward_layer
 
-class DummyLayer(Layer):
-    def compute_output_shape(self, input_shape):
-        return (2, None, None, None)
-
-    def call(self, inputs):
-        lm, mc = inputs
-        lm = K.reshape(lm, (1, 50257))
-        mc = K.reshape(mc, (1, 1))
-        return K.concatenate([lm, mc], axis=0)
 
 def get_model(n_vocab,
               n_ctx=1024,
@@ -174,12 +165,7 @@ def get_model(n_vocab,
         name='MCOutput'
     )(mc_linear)
 
-    output = DummyLayer(
-        name='Output'
-    )
 
-
-    output = output([lm_head, mc_head])
     # output_layer = 
 
     losses = {
@@ -196,10 +182,11 @@ def get_model(n_vocab,
         "MCOutput": get_metrics(is_mc=True)
     }
 
-    model = tf.python.keras.models.Model(inputs=[lm_input_layer, mc_input_layer], outputs=[output])
+    model = tf.python.keras.models.Model(inputs=[lm_input_layer, mc_input_layer], outputs=[lm_head, mc_head])
     model.compile(
         optimizer=tf.keras.optimizers.SGD(),
-        loss=loss_function
+        loss=losses,
+        loss_weights=lossWeights,
         #metrics=metrics
     )
     return model
@@ -217,8 +204,8 @@ def cross_entropy(logits, labels, ignore_index=None):
         labels = K.reshape(tf.cast(one_hot(labels, 50257, axis=-1), tf.float32), (-1, 50257))
         xentropy = sigmoid_crossentropy_ignore_index(labels, logits)
     else:
-        # print(K.int_shape(logits), "LOGITS")
-        # print(K.int_shape(labels), "LABELS")
+        print(K.int_shape(logits), "LOGITS")
+        print(K.int_shape(labels), "LABELS")
         xentropy = K.mean(
                         tf.nn.sigmoid_cross_entropy_with_logits(
                             labels=K.reshape(tf.cast(labels, tf.float32), (-1, 1)),
@@ -245,20 +232,6 @@ def lm_loss_function(lm_labels, lm_logits):
     )
 
     return lm_loss
-
-def loss_function(labels, logits):
-    lm_logits, mc_logits = tf.split(logits, 2, axis=0)
-    lm_labels, mc_labels = tf.split(labels, 2, axis=0)
-    mc_logits = K.reshape(mc_logits, (-1, 1))
-    print(lm_logits.shape)
-    print(lm_labels.shape)
-    print(mc_logits.shape)
-    print(mc_labels.shape)
-
-    lm_loss = lm_loss_function(lm_labels, lm_logits)
-    mc_loss = mc_loss_function(mc_labels, mc_logits)
-
-    return 2*lm_loss + mc_loss 
 
 
 
