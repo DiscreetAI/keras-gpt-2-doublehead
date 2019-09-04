@@ -59,5 +59,4 @@ class SequenceSummary(Layer):
         # output = self.summary(output)
         # output = self.activation(output)
         # output = self.last_dropout(output)
-        output = K.reshape(output, (1, -1, 1))
         return output
