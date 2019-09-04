@@ -14,3 +14,6 @@ encoder_path = os.path.join(model_folder, 'encoder.json')
 vocab_path = os.path.join(model_folder, 'vocab.bpe')
 
 model = load_trained_model_from_checkpoint(config_path, checkpoint_path)
+
+for layer in model.layers:
+    print(layer.get_weights())
