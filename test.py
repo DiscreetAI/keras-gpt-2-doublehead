@@ -28,7 +28,10 @@ for name in filenames:
 input_ids, lm_labels, mc_labels, mc_token_ids = data
 
 
+
 strategy = tf.distribute.MirroredStrategy()
+
+print('Number of devices: {}'.format(strategy.num_replicas_in_sync))
 
 with strategy.scope():
     model = load_trained_model_from_checkpoint(config_path, checkpoint_path)
