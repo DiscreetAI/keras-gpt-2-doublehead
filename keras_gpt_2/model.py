@@ -5,7 +5,7 @@ from keras_layer_normalization import LayerNormalization
 from keras_transformer import gelu, attention_builder, feed_forward_builder
 from keras_transformer import get_custom_objects as get_transformer_custom_objects
 
-from tensorflow.python.keras.layers import Dense, Layer, Dropout
+from tensorflow.python.keras.layers import Dense, Layer, Dropout, Lambda
 from tensorflow.python.keras.utils import to_categorical
 from tensorflow.python.keras import backend as K
 from .sequence_summary import SequenceSummary
@@ -165,6 +165,11 @@ def get_model(n_vocab,
         name='MCOutput'
     )(mc_linear)
 
+    output = Lambda(
+        lambda x,y: (x,y),
+        name='Output'
+    )(lm_head, mc_head)
+
 
     # output_layer = 
 
@@ -182,11 +187,10 @@ def get_model(n_vocab,
         "MCOutput": get_metrics(is_mc=True)
     }
 
-    model = tf.python.keras.models.Model(inputs=[lm_input_layer, mc_input_layer], outputs=[lm_head, mc_head])
+    model = tf.python.keras.models.Model(inputs=[lm_input_layer, mc_input_layer], outputs=[output])
     model.compile(
         optimizer=tf.keras.optimizers.SGD(),
-        loss=losses,
-        loss_weights=lossWeights,
+        loss=loss_function
         #metrics=metrics
     )
     return model
@@ -232,6 +236,15 @@ def lm_loss_function(lm_labels, lm_logits):
     )
 
     return lm_loss
+
+def loss_function(labels, logits):
+    lm_logits, mc_logits = logits
+    lm_labels, mc_labels = tf.split(labels, 2, axis=0)
+
+    lm_loss = lm_loss_function(lm_labels, lm_logits)
+    mc_loss = mc_loss_function(mc_labels, mc_logits)
+
+    return 2*lm_loss + mc_loss 
 
 
 
