@@ -1,7 +1,4 @@
 import os
-os.environ['TF_KERAS'] = 1
-os.environ['TF_FORCE_GPU_ALLOW_GROWTH'] = True
-
 from tensorflow.keras.models import load_model
 from tensorflow.keras.callbacks import BaseLogger, History
 import tensorflow as tf
