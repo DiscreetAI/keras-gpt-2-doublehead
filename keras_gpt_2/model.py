@@ -187,7 +187,6 @@ def get_model(n_vocab,
         optimizer=tf.keras.optimizers.Adam(),
         loss=losses,
         loss_weights=lossWeights,
-        metrics=metrics
     )
     return model
 

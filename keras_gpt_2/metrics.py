@@ -153,6 +153,7 @@ class Metrics(Callback):
 
     def on_batch_end(self, logs={}):
         self.batch_loss.append(logs.get('loss'))
+        print(logs.keys())
         print("Loss", logs.get('loss'))
 
     def on_epoch_end(self, logs={}):
