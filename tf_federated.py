@@ -63,16 +63,16 @@ def dataset_map(input_ids, lm_labels, mc_token_ids, mc_labels):
             ('MCInput', K.expand_dims(mc_token_ids))
         ])),
         ('y', OrderedDict([
-            ('LMOutput', K.expand_dims(lm_labels)),
-            ('MCOutput', K.expand_dims(mc_labels))
+            (0, K.expand_dims(lm_labels)),
+            (1, K.expand_dims(mc_labels))
         ]))
     ])
     print(result.get('y')[0])
     return result
-        
+
 #datasets = [tuple(dataset) for dataset in datasets]
-datasets = [tf.data.Dataset.from_tensor_slices(({'LMInput': K.expand_dims(a), 'MCInput': K.expand_dims(b)}, {'LMOutput': K.expand_dims(c), 'MCOutput': K.expand_dims(d)})) for a,b,c,d in datasets]
-#datasets = [dataset.map(dataset_map) for dataset in datasets]
+datasets = [tf.data.Dataset.from_tensor_slices(dataset) for dataset in datasets]
+datasets = [dataset.map(dataset_map) for dataset in datasets]
 
 train_data = datasets
 
