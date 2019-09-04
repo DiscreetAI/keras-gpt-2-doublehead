@@ -34,7 +34,7 @@ with strategy.scope():
     model = load_trained_model_from_checkpoint(config_path, checkpoint_path)
     history_output = model.fit(
         input_ids,
-        lm_labels
+        lm_labels,
         batch_size=1,
         epochs=3,
         callbacks=[BaseLogger()]
