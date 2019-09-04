@@ -184,7 +184,7 @@ def get_model(n_vocab,
 
     model = tf.python.keras.models.Model(inputs=[lm_input_layer, mc_input_layer], outputs=[lm_head, mc_head])
     model.compile(
-        optimizer=tf.python.keras.optimizers.Adam(),
+        optimizer=tf.train.AdamOptimizer()
         loss=losses,
         loss_weights=lossWeights,
         #metrics=metrics

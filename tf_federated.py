@@ -77,9 +77,6 @@ train_data = datasets
 sample_batch = tf.nest.map_structure(
     lambda x: x.numpy(), iter(train_data[0]).next())
 
-print(sample_batch)
-
-
 def model_fn():
     model_folder = 'models/117M'
     config_path = os.path.join(model_folder, 'hparams.json')
