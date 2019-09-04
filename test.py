@@ -1,9 +1,12 @@
+import os
+os.environ['TF_KERAS'] = 1
+os.environ['TF_FORCE_GPU_ALLOW_GROWTH'] = True
+
 from tensorflow.keras.models import load_model
 from tensorflow.keras.callbacks import BaseLogger, History
 import tensorflow as tf
 import numpy as np
 from collections import defaultdict
-import os
 from keras_gpt_2 import load_trained_model_from_checkpoint, get_bpe_from_files, generate
 import requests
 import gpt_2_simple as gpt2
