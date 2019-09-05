@@ -148,8 +148,8 @@ class Metrics(Callback):
         functions = [perplexity_lm, precision_lm, top_1_lm, top_3_lm, f1_score_lm, perplexity_mc, precision_mc, top_1_mc, top_3_mc, f1_score_mc]
         self.functions = dict(zip(names, functions))
         print("Initialized metrics!")
-        print(metrics)
-        print(functions)
+        print(self.metrics)
+        print(self.functions)
 
     def on_batch_end(self, logs={}):
         self.batch_loss.append(logs.get('loss'))
