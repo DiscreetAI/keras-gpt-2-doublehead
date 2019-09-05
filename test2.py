@@ -35,10 +35,10 @@ for name in filenames:
     print("Done")
 
 input_ids, lm_labels, mc_labels, mc_token_ids = data
-input_ids = input_ids[:5]
-lm_labels = lm_labels[:5]
-mc_labels = mc_labels[:5]
-mc_token_ids = mc_token_ids[:5]
+input_ids = input_ids[:6]
+lm_labels = lm_labels[:6]
+mc_labels = mc_labels[:6]
+mc_token_ids = mc_token_ids[:6]
 
 print(lm_labels.shape)
 print(input_ids.shape)
