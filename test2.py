@@ -63,14 +63,25 @@ import json
 with open('training_history.json', 'w') as f:
     json.dump(history_output.history, f)
     
-# def gather(params, indices, axis):
+# def gather(params, indices):
 #     indices_dims = [1, 278, 1, 768]
 #     params_dims = [1, 278, 768]
 #     indices = K.squeeze(indices, -2)
 
+#     aa = tf.Variable(tf.zeros((params_dims)))
+#     for i in range(params_dims[0]):
+#         for j in range(params_dims[1]):
+#             for k in range(params_dims[2]):
+#                 aa = aa[i, j, k].assign(params[i, indices[i, j, k], k])
+#     return aa
+
 
 # import tensorflow as tf
 # from tensorflow.keras import backend as K
-# aa=tf.Variable(tf.zeros(3, tf.int32))
-# aa=aa[2].assign(1)
-# print(aa)
+
+# a = tf.ones((1, 278, 768))
+# b = tf.zeros((1, 278, 1, 768))
+
+# c = gather(a, b)
+
+# print(c.shape)
