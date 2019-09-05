@@ -35,10 +35,14 @@ for name in filenames:
     print("Done")
 
 input_ids, lm_labels, mc_labels, mc_token_ids = data
-input_ids = input_ids[:16]
-lm_labels = lm_labels[:16]
-mc_labels = mc_labels[:16]
-mc_token_ids = mc_token_ids[:16]
+
+index = (131438 // 16) * 16
+print(index) 
+
+input_ids = input_ids[:index]
+lm_labels = lm_labels[:index]
+mc_labels = mc_labels[:index]
+mc_token_ids = mc_token_ids[:index]
 
 if not os.path.isdir(model_folder):
     gpt2.download_gpt2(model_name = '117M')
@@ -61,12 +65,10 @@ with strategy.scope():
         },
         batch_size=batch_size * strategy.num_replicas_in_sync,
         epochs=1,
-        callbacks=[Metrics(input_ids, lm_labels, mc_token_ids, mc_labels),
-            tf.keras.callbacks.TensorBoard(log_dir='./logs'),
-            tf.keras.callbacks.ModelCheckpoint(filepath=checkpoint_prefix,
+        callbacks=[tf.keras.callbacks.ModelCheckpoint(filepath=checkpoint_prefix,
                                        save_weights_only=True)]
     )
-    import json
+    # import json
 
-    with open('training_history.json', 'w') as f:
-        json.dump(history_output.history, f)
+    # with open('training_history.json', 'w') as f:
+    #     json.dump(history_output.history, f)
