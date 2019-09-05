@@ -162,6 +162,8 @@ class Metrics(Callback):
 
     def on_epoch_end(self, epoch, logs={}):
         lm_logits, mc_logits = self.model.predict([self.input_ids, self.mc_token_ids])
+        print(lm_logits.shape)
+        print(mc_logits.shape)
         for name, function in self.functions.items():
             if name[:2] == 'LM':
                 metric = function(tf.convert_to_tensor(self.lm_labels), tf.convert_to_tensor(lm_logits))
