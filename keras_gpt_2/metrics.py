@@ -104,13 +104,12 @@ def precision_lm(y_true, y_pred):
     
     y_pred = K.argmax(y_pred, axis=-1)
     
-    y_true = K.reshape(y_true, (2, -1))
+    # y_true = K.reshape(y_true, (2, -1))
     
     return precision_m(y_true, y_pred)
 
 def precision_mc(y_true, y_pred):
     y_true = tf.cast(y_true, tf.int64)
-    y_pred = K.reshape(y_pred, (2, -1))
     y_pred = K.argmax(y_pred, axis=-1)
     y_true = K.reshape(y_true, (2,))
     return precision_m(y_true, y_pred)
@@ -119,14 +118,14 @@ def f1_score_lm(y_true, y_pred):
     y_true = tf.cast(y_true, tf.int64)
     # y_true = K.reshape(tf.cast(one_hot(y_true, 50257, axis=-1), tf.float32), (-1, 50257))
     y_pred = K.argmax(y_pred, axis=-1)
-    y_true = K.reshape(y_true, (2, -1))
+    # y_true = K.reshape(y_true, (2, -1))
     return f1_m(y_true, y_pred)
 
 def f1_score_mc(y_true, y_pred):
     y_true = tf.cast(y_true, tf.int64)
-    y_pred = K.reshape(y_pred, (2, -1))
+    # y_pred = K.reshape(y_pred, (2, -1))
     y_pred = K.argmax(y_pred, axis=-1)
-    y_true = K.reshape(y_true, (2,))
+    # y_true = K.reshape(y_true, (2,))
     return f1_m(y_true, y_pred)
 
 class Metrics(Callback):
