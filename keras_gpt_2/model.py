@@ -104,7 +104,7 @@ def get_model(n_vocab,
     if fixed_input_shape:
         input_layer_shape = (batch_size, n_ctx)
     else:
-        input_layer_shape = (batch_size, None)
+        input_layer_shape = (batch_size,)
 
     lm_input_layer = tf.keras.layers.Input(
         batch_shape=input_layer_shape,
