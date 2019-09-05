@@ -112,7 +112,7 @@ def precision_lm(y_true, y_pred):
 def precision_mc(y_true, y_pred):
     y_true = tf.cast(y_true, tf.int64)
     y_pred = K.argmax(y_pred, axis=-1)
-    y_true = K.reshape(y_true, (2,))
+    #y_true = K.reshape(y_true, (2,))
     return precision_m(y_true, y_pred)
 
 def f1_score_lm(y_true, y_pred):
