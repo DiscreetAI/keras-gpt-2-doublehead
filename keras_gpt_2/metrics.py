@@ -164,11 +164,11 @@ class Metrics(Callback):
         lm_logits, mc_logits = self.model.predict([self.input_ids, self.mc_token_ids])
         for name, function in self.functions.items():
             if name[:2] == 'LM':
-                metric = function(self.lm_labels, lm_logits)
+                metric = function(tf.convert_to_tensor(self.lm_labels), tf.convert_to_tensor(lm_logits))
                 self.metrics[name].append(metric)
                 
             else:
-                metric = function(self.mc_labels, mc_logits)
+                metric = function(tf.convert_to_tensor(self.mc_labels), tf.convert_to_tensor(mc_logits))
                 self.metrics[name].append()
             print(name, metric)
         self.metrics['loss'].append(self.batch_loss)
