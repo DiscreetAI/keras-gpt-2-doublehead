@@ -151,12 +151,12 @@ class Metrics(Callback):
         print(self.metrics)
         print(self.functions)
 
-    def on_batch_end(self, logs={}):
+    def on_batch_end(self, batch, logs={}):
         self.batch_loss.append(logs.get('loss'))
         print(logs.keys())
         print("Loss", logs.get('loss'))
 
-    def on_epoch_end(self, logs={}):
+    def on_epoch_end(self, epoch, logs={}):
         lm_logits, mc_logits = self.model.predict([self.input_ids, self.mc_token_ids])
         for name, function in self.functions.items():
             if name[:2] == 'LM':
