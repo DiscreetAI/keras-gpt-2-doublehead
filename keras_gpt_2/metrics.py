@@ -171,7 +171,7 @@ class Metrics(Callback):
                 
             else:
                 metric = function(tf.convert_to_tensor(self.mc_labels), tf.convert_to_tensor(mc_logits))
-                self.metrics[name].append()
+                self.metrics[name].append(metric)
             print(name, metric)
         self.metrics['loss'].append(self.batch_loss)
         self.metrics['LMOutput_loss'].append(self.batch_lm_loss)
