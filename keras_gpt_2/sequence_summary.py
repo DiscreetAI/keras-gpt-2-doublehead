@@ -7,7 +7,7 @@ class SequenceSummary(Layer):
     def __init__(self, name):
         super(SequenceSummary, self).__init__(name=name)
 
-        self.summary_type = 'cls_index'
+        self.summary_type = 'last'
         # self.summary = Identity()
         # if hasattr(config, 'summary_use_proj') and config.summary_use_proj:
         #     if hasattr(config, 'summary_proj_to_labels') and config.summary_proj_to_labels and config.num_labels > 0:
