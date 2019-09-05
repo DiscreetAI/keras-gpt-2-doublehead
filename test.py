@@ -64,7 +64,7 @@ with strategy.scope():
             'MCOutput': mc_labels
         },
         batch_size=batch_size * strategy.num_replicas_in_sync,
-        epochs=1,
+        epochs=2,
         callbacks=[tf.keras.callbacks.ModelCheckpoint(filepath=checkpoint_prefix,
                                        save_weights_only=True)]
     )
