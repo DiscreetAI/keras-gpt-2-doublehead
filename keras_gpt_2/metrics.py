@@ -138,6 +138,8 @@ class Metrics(Callback):
 
     def on_train_begin(self, logs={}):
         self.batch_loss = []
+        self.batch_lm_loss = []
+        self.batch_mc_loss = []
 
         lm_name = "LMOutput"
         mc_name = "MCOutput"
@@ -145,6 +147,8 @@ class Metrics(Callback):
         names = [lm_name + ending for ending in endings] + [mc_name + ending for ending in endings]
         self.metrics = {name:[] for name in names}
         self.metrics['loss'] = []
+        self.metrics['LMOutput_loss'] = []
+        self.metrics['MCOutput_loss'] = []
         functions = [perplexity_lm, precision_lm, top_1_lm, top_3_lm, f1_score_lm, perplexity_mc, precision_mc, top_1_mc, top_3_mc, f1_score_mc]
         self.functions = dict(zip(names, functions))
         print("Initialized metrics!")
@@ -153,8 +157,8 @@ class Metrics(Callback):
 
     def on_batch_end(self, batch, logs={}):
         self.batch_loss.append(logs.get('loss'))
-        print(logs.keys())
-        print("Loss", logs.get('loss'))
+        self.batch_lm_loss.append(logs.get('LMOutput_loss'))
+        self.batch_mc_loss.append(logs.get('MCOutput_loss'))
 
     def on_epoch_end(self, epoch, logs={}):
         lm_logits, mc_logits = self.model.predict([self.input_ids, self.mc_token_ids])
@@ -168,7 +172,11 @@ class Metrics(Callback):
                 self.metrics[name].append()
             print(name, metric)
         self.metrics['loss'].append(self.batch_loss)
+        self.metrics['LMOutput_loss'].append(self.batch_lm_loss)
+        self.metrics['MCOutput_loss'].append(self.batch_mc_loss)
         self.batch_loss = []
+        self.batch_lm_loss = []
+        self.batch_mc_loss = []
             
 
 def get_metrics(is_mc=False):
