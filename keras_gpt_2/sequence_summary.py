@@ -59,6 +59,7 @@ class SequenceSummary(Layer):
             output1, output2 = tf.split(hidden_states, 2)
             cls_index = tf.cast(cls_index, tf.int32)
             idx = tf.stack([tf.range(tf.shape(cls_index)[0]),cls_index[:,0]],axis=-1)
+            output = tf.gather_nd(hidden_states, idx)
             output1 = tf.gather_nd(output1,idx)
             output2 = tf.gather_nd(output2,idx)
             final_gather = K.concatenate([output1, output2], axis=0)
