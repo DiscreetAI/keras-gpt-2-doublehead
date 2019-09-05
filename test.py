@@ -57,7 +57,7 @@ with strategy.scope():
         },
         batch_size=batch_size * strategy.num_replicas_in_sync,
         epochs=3,
-        callbacks=[Metrics(),
+        callbacks=[Metrics(input_ids, lm_labels, mc_token_ids, mc_labels),
             tf.keras.callbacks.TensorBoard(log_dir='./logs'),
             tf.keras.callbacks.ModelCheckpoint(filepath=checkpoint_prefix,
                                        save_weights_only=True)]
