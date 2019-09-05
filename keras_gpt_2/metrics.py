@@ -162,18 +162,18 @@ class Metrics(Callback):
         self.batch_mc_loss.append(logs.get('MCOutput_loss'))
 
     def on_epoch_end(self, epoch, logs={}):
-        # lm_logits, mc_logits = self.model.predict([self.input_ids, self.mc_token_ids])
-        # print(lm_logits.shape)
-        # print(mc_logits.shape)
-        # for name, function in self.functions.items():
-        #     if name[:2] == 'LM':
-        #         metric = function(tf.convert_to_tensor(self.lm_labels), tf.convert_to_tensor(lm_logits))
-        #         self.metrics[name].append(metric)
+        lm_logits, mc_logits = self.model.predict([self.input_ids, self.mc_token_ids])
+        print(lm_logits.shape)
+        print(mc_logits.shape)
+        for name, function in self.functions.items():
+            if name[:2] == 'LM':
+                metric = function(tf.convert_to_tensor(self.lm_labels), tf.convert_to_tensor(lm_logits))
+                self.metrics[name].append(metric)
                 
-        #     else:
-        #         metric = function(tf.convert_to_tensor(self.mc_labels), tf.convert_to_tensor(mc_logits))
-        #         self.metrics[name].append(metric)
-        #     print(name, metric)
+            else:
+                metric = function(tf.convert_to_tensor(self.mc_labels), tf.convert_to_tensor(mc_logits))
+                self.metrics[name].append(metric)
+            print(name, metric)
         self.metrics['loss'].append(self.batch_loss)
         self.metrics['LMOutput_loss'].append(self.batch_lm_loss)
         self.metrics['MCOutput_loss'].append(self.batch_mc_loss)
