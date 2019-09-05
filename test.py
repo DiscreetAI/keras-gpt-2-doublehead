@@ -35,6 +35,10 @@ for name in filenames:
     print("Done")
 
 input_ids, lm_labels, mc_labels, mc_token_ids = data
+input_ids = input_ids[:8]
+lm_labels = lm_labels[:8]
+mc_labels = mc_labels[:8]
+mc_token_ids = mc_token_ids[:8]
 
 if not os.path.isdir(model_folder):
     gpt2.download_gpt2(model_name = '117M')

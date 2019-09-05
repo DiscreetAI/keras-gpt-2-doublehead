@@ -71,8 +71,6 @@ def get_data_loaders(personachat, tokenizer, args_num_candidates=1, args_persona
         num_candidates = len(dataset[0]["utterances"][0]["candidates"])
         if args_num_candidates > 0 and dataset_name == 'train':
             num_candidates = min(args_num_candidates, num_candidates)
-        if dataset_name == 'valid':
-            continue
         for dialog in dataset:
             persona = dialog["personality"].copy()
             for _ in range(args_personality_permutations):
@@ -94,7 +92,7 @@ def get_data_loaders(personachat, tokenizer, args_num_candidates=1, args_persona
             continue
         dataset = pad_dataset(dataset, padding=tokenizer.convert_tokens_to_ids('<pad>'))
         for input_name in MODEL_INPUTS:
-            tensor = np.array(dataset[input_name])
+            tensor = dataset[input_name]
             # if input_name == "mc_ldsfaabels":
             #     tensor = tensor.reshape((-1, datasets[dataset_name]["n_candidates"]) + tensor.shape[1:])
             dataset[input_name] = tensor
@@ -109,10 +107,9 @@ from keras_gpt_2 import load_trained_model_from_checkpoint, get_bpe_from_files, 
 tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
 url = "s3://datasets.huggingface.co/personachat/personachat_self_original.json"
 
-# Download and load JSON dataset
-# personachat_file = "dataset.json"
-# with open(personachat_file, "r", encoding="utf-8") as f:
-#     dataset = json.loads(f.read())
+personachat_file = cached_path(url)
+with open(personachat_file, "r", encoding="utf-8") as f:
+    dataset = json.loads(f.read())
 
 
 
@@ -122,30 +119,42 @@ url = "s3://datasets.huggingface.co/personachat/personachat_self_original.json"
 # # print(dataset[0]['utterances'][1])
 # # print('\n')
 # # print(dataset[0]['utterances'][2])
-# # Tokenize and encode the dataset using our loaded GPT tokenizer
-# def tokenize(obj):
-#     if isinstance(obj, str):
-#         return tokenizer.convert_tokens_to_ids(tokenizer.tokenize(obj))
-#     if isinstance(obj, dict):
-#         return dict((n, tokenize(o)) for n, o in obj.items())
-#     return list(tokenize(o) for o in obj)
+# Tokenize and encode the dataset using our loaded GPT tokenizer
+def tokenize(obj):
+    if isinstance(obj, str):
+        return tokenizer.convert_tokens_to_ids(tokenizer.tokenize(obj))
+    if isinstance(obj, dict):
+        return dict((n, tokenize(o)) for n, o in obj.items())
+    return list(tokenize(o) for o in obj)
 
-# # print("Tokenizing dataset...") 
-# # dataset = tokenize(dataset)
+print("Tokenizing dataset...") 
+dataset = tokenize(dataset)
 
-# # with open('dataset.json', "w", encoding="utf-8") as f:
-# #     f.write(json.dumps(dataset))
+with open('dataset.json', "w", encoding="utf-8") as f:
+    f.write(json.dumps(dataset))
 # print(len(dataset['train']))
 # # with open('dataset.json', 'r') as f:
 # #     personachat = json.loads(f.read())
-# datasets = get_data_loaders(dataset, tokenizer)
+datasets = get_data_loaders(dataset, tokenizer)
 
-# arr = datasets['train']
-# input_ids = arr['input_ids']
-# mc_token_ids = arr['mc_token_ids']
-# lm_labels = arr['lm_labels']
-# mc_labels = arr['mc_labels']
+arr = datasets['valid']
+input_ids = arr['input_ids']
+mc_token_ids = arr['mc_token_ids']
+lm_labels = arr['lm_labels']
+mc_labels = arr['mc_labels']
 
+
+with open('input_ids.json', 'w') as f:
+    json.dump(input_ids, f)
+
+with open('lm_labels.json', 'w') as f:
+    json.dump(lm_labels, f)
+
+with open('mc_token_ids.json', 'w') as f:
+    json.dump(mc_token_ids, f)
+
+with open('mc_labels.json', 'w') as f:
+    json.dump(mc_labels, f)
 # np.save('input_ids.npy', input_ids)
 # np.save('mc_token_ids.npy', mc_token_ids)
 # np.save('lm_labels.npy', lm_labels)
