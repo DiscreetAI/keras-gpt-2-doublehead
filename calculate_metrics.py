@@ -103,18 +103,18 @@ with strategy.scope():
 # mc_logits = tf.convert_to_tensor(current_mc)
 
 
-lm_logits = tf.convert_to_tensor(lm_logits)
-mc_logits = tf.convert_to_tensor(mc_logits)
-lm_labels = tf.convert_to_tensor(lm_labels)
-mc_labels = tf.convert_to_tensor(mc_labels)
+# lm_logits = tf.convert_to_tensor(lm_logits)
+# mc_logits = tf.convert_to_tensor(mc_logits)
+# lm_labels = tf.convert_to_tensor(lm_labels)
+# mc_labels = tf.convert_to_tensor(mc_labels)
 
-ppl = perplexity_lm(lm_labels, lm_logits)
-f1 = f1_score_lm(lm_labels, lm_logits)
-top_1 = top_1_mc(mc_labels, mc_logits)
+# ppl = perplexity_lm(lm_labels, lm_logits)
+# f1 = f1_score_lm(lm_labels, lm_logits)
+# top_1 = top_1_mc(mc_labels, mc_logits)
 
-print("Perplexity", K.eval(ppl))
-print("F1 Score", K.eval(f1))
-print("Hits@1", K.eval(top_1))
+# print("Perplexity", K.eval(ppl))
+# print("F1 Score", K.eval(f1))
+# print("Hits@1", K.eval(top_1))
 
 # strategy = tf.distribute.MirroredStrategy()
 
