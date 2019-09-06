@@ -44,6 +44,18 @@ print(input_ids.shape)
 print(mc_token_ids.shape)
 print(mc_labels.shape)
 
+class Timer():
+    def __init__(self):
+        self.times = [time.time()]
+        self.total_time = 0.0
+
+    def __call__(self, include_in_total=True):
+        self.times.append(time.time())
+        delta_t = self.times[-1] - self.times[-2]
+        if include_in_total:
+            self.total_time += delta_t
+        return delta_t
+
 # index = 10
 # print(index) 
 f1s = []
@@ -63,17 +75,18 @@ print('Number of devices: {}'.format(strategy.num_replicas_in_sync))
 batch_size = None
 with strategy.scope():
     model = load_trained_model_from_checkpoint(config_path, checkpoint_path, batch_size=batch_size)
-    time1 = time.time()
+    timer = Timer()
     i = 0
-    while i < 40:
+    while i < 200:
+        print(f"Time since last iteration: {timer()}")
         #print("Done")
-        lm_logits, mc_logits = model.predict([input_ids[i:i+4], mc_token_ids[i:i+4]], batch_size=4)
+        lm_logits, mc_logits = model.predict([input_ids[i:i+40], mc_token_ids[i:i+40]], batch_size=40)
         # has_started = True
         #lm_logits, mc_logits = model.predict([input_ids, mc_token_ids], batch_size=batch_size*4)
         lm_logits = tf.convert_to_tensor(lm_logits)
         mc_logits = tf.convert_to_tensor(mc_logits)
-        LM_labels = tf.convert_to_tensor(lm_labels[i:i+4])
-        MC_labels = tf.convert_to_tensor(mc_labels[i:i+4])
+        LM_labels = tf.convert_to_tensor(lm_labels[i:i+40])
+        MC_labels = tf.convert_to_tensor(mc_labels[i:i+40])
 
         ppl = K.eval(perplexity_lm(LM_labels, lm_logits))
         f1 = K.eval(f1_score_lm(LM_labels, lm_logits))
@@ -88,7 +101,7 @@ with strategy.scope():
         perplexitys.append(ppl)
         f1s.append(f1)
         top_1s.append(np.mean(top_mc))
-        i += 4
+        i += 40
 
     # print("Perplexity", ppl)
     # print("F1 Score", f1)
@@ -99,8 +112,8 @@ with strategy.scope():
         'f1': f1s,
         'top': top_1s
     }
-
-    print(time.time() - time1, "total time")
+    print(f"Total time: {timer.total_time}")
+    #print(time.time() - time1, "total time")
     print(metrics)
     import json
 
