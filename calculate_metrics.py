@@ -12,6 +12,14 @@ from tensorflow.keras import backend as K
 from tensorflow.python.client import device_lib
 import time
 import simplejson as json
+import sys
+
+
+if len(sys.argv) != 2:
+    print('Enter model number!')
+    sys.exit(-1)
+
+epoch_number = sys.argv[1]
 
 def get_available_devices():
     local_device_protos = device_lib.list_local_devices()
@@ -77,7 +85,7 @@ strategy = tf.distribute.MirroredStrategy()
 
 #print('Number of devices: {}'.format(strategy.num_replicas_in_sync))
 with strategy.scope():
-    model = load_trained_model_from_checkpoint(config_path, checkpoint_path, batch_size=None)
+    model = load_trained_model_from_checkpoint(config_path, checkpoint_prefix, batch_size=None)
     timer = Timer()
     i = 0
 
