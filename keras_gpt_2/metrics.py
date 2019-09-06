@@ -12,9 +12,9 @@ def perplexity(y_true, y_pred):
 #     """
 # #     cross_entropy = K.sparse_categorical_crossentropy(y_true, y_pred)
 #     return K.exp(K.mean(K.categorical_crossentropy(y_true, y_pred)))
-    cross_entropy = K.categorical_crossentropy(y_true, y_pred)
+    cross_entropy = K.mean(K.categorical_crossentropy(y_true, y_pred))
     perplexity = K.exp(cross_entropy)
-    return K.mean(perplexity)
+    return perplexity
 
 def top_1(y_true, y_pred):
     return top_k_categorical_accuracy(y_true, y_pred, k=1)
