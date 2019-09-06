@@ -44,7 +44,9 @@ print(mc_labels.shape)
 
 # index = 10
 # print(index) 
-
+f1s = np.array([])
+perplexitys = np.array([])
+top_1s = np.array([])
 # input_ids = input_ids[:index]
 # lm_labels = lm_labels[:index]
 # mc_labels = mc_labels[:index]
@@ -59,25 +61,33 @@ print('Number of devices: {}'.format(strategy.num_replicas_in_sync))
 batch_size = 1
 with strategy.scope():
     model = load_trained_model_from_checkpoint(config_path, checkpoint_path, batch_size=batch_size)
-    lm_logits, mc_logits = model.predict([input_ids, mc_token_ids], batch_size=batch_size*4)
-    lm_logits = tf.convert_to_tensor(lm_logits)
-    mc_logits = tf.convert_to_tensor(mc_logits)
-    lm_labels = tf.convert_to_tensor(lm_labels)
-    mc_labels = tf.convert_to_tensor(mc_labels)
+    for i in range(10):
+        #print("Done")
+        lm_logits, mc_logits = model.predict([input_ids[i:i+1], mc_token_ids[i:i+1]], batch_size=1)
+        # has_started = True
+        #lm_logits, mc_logits = model.predict([input_ids, mc_token_ids], batch_size=batch_size*4)
+        lm_logits = tf.convert_to_tensor(lm_logits)
+        mc_logits = tf.convert_to_tensor(mc_logits)
+        lm_labels = tf.convert_to_tensor(lm_labels[i:i+1])
+        mc_labels = tf.convert_to_tensor(mc_labels[i:i+1])
 
-    ppl = K.eval(perplexity_lm(lm_labels, lm_logits))
-    f1 = K.eval(f1_score_lm(lm_labels, lm_logits))
-    top_1 = K.eval(top_1_lm(lm_labels, lm_logits))
-    top_1_mc = K.eval(top_1_mc(mc_labels, mc_logits))
+        ppl = K.eval(perplexity_lm(lm_labels, lm_logits))
+        f1 = K.eval(f1_score_lm(lm_labels, lm_logits))
+        #top_1 = K.eval(top_1_lm(lm_labels, lm_logits))
+        top_1_mc = K.eval(top_1_mc(mc_labels, mc_logits))
 
-    print("Perplexity", ppl)
-    print("F1 Score", f1)
-    print("Hits@1", top_1_mc)
+        perplexitys = np.concatenate([perplexitys, ppl], axis=0)
+        f1s = np.concatenate([f1s, f1], axis=0)
+        top_1s = np.concatenate([top_1s, top_1_mc], axis=0)
+
+    # print("Perplexity", ppl)
+    # print("F1 Score", f1)
+    # print("Hits@1", top_1_mc)
 
     metrics = {
-        'ppl': ppl,
-        'f1': f1,
-        'top': top_1_mc
+        'ppl': perplexitys.tolist(),
+        'f1': f1s.tolist(),
+        'top': top_1s.tolist()
     }
 
     import json
@@ -88,12 +98,7 @@ with strategy.scope():
 
 
 
-# for i in range(input_ids.shape[0]):
-#     #print("Done")
-#     lm_logits, mc_logits = model.predict([input_ids[i:i+1], mc_token_ids[i:i+1]], batch_size=1)
-#     current_lm = np.concatenate([current_lm, lm_logits], axis=0) if has_started else lm_logits
-#     current_mc = np.concatenate([current_mc, mc_logits], axis=0) if has_started else mc_logits
-#     has_started = True
+
 
 
 # print(current_lm.shape)
