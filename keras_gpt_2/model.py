@@ -9,7 +9,7 @@ from tensorflow.keras.layers import Dense, Layer, Dropout
 from tensorflow.keras.utils import to_categorical
 from tensorflow.keras import backend as K
 from .sequence_summary import SequenceSummary
-from .metrics import get_metrics
+from .metrics import top_1_lm, perplexity_lm, f1_score_lm
 
 
 from tensorflow import one_hot
@@ -182,8 +182,7 @@ def get_model(n_vocab,
     }
 
     metrics = {
-        "LMOutput": get_metrics(),
-        "MCOutput": get_metrics(is_mc=True)
+        "LMOutput": [perplexity_lm, top_1_lm, f1_score_lm]
     }
 
     model = tf.keras.models.Model(inputs=[lm_input_layer, mc_input_layer], outputs=[lm_head, mc_head])
@@ -191,6 +190,7 @@ def get_model(n_vocab,
         optimizer=tf.keras.optimizers.Adam(),
         loss=losses,
         loss_weights=lossWeights,
+        metrics=metrics
     )
     return model
 

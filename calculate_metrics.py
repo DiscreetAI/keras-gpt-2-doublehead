@@ -77,54 +77,32 @@ with strategy.scope():
     model = load_trained_model_from_checkpoint(config_path, checkpoint_path, batch_size=None)
     timer = Timer()
     i = 0
-    batch_size = 200 * 4
+    batch_size = 1
     minibatch_size = 10 * 4
-    num_points_to_eval = 200
+    num_points_to_eval = 1
     while i < num_points_to_eval:
         #print("Done")
-        lm_logits, mc_logits = model.predict([input_ids[i:i+batch_size], mc_token_ids[i:i+batch_size]], batch_size=batch_size)
-        j = 0
-        while j < batch_size:
-            print(f"Time since last iteration to do {minibatch_size}: {timer()}")
-            # has_started = True
-            #lm_logits, mc_logits = model.predict([input_ids, mc_token_ids], batch_size=batch_size*4)
-            LM_logits = lm_logits[j:j+minibatch_size]
-            LM_logits = tf.convert_to_tensor(LM_logits)
-            #mc_logits = tf.convert_to_tensor(mc_logits)
-            #LM_labels = tf.convert_to_tensor(lm_labels[i:i+minibatch_size])
-            LM_labels = lm_labels[j:j+minibatch_size]
-            LM_labels = tf.convert_to_tensor(LM_labels)
-            #MC_labels = tf.convert_to_tensor(mc_labels[i:i+minibatch_size])
-
-            ppl = K.eval(perplexity_lm(LM_labels, LM_logits))
-            f1 = K.eval(f1_score_lm(LM_labels, LM_logits))
-            top_lm = K.eval(top_1_lm(LM_labels, LM_logits))
-            #top_mc = K.eval(top_1_mc(MC_labels, mc_logits))
-            top_1 = top_lm
-
-            #print(top_mc.shape)
-            #print(ppl.shape)
-            #print(f1.shape)
-            print(f"Ppl: {ppl}")
-            print(f"f1: {f1}")
-            print(f"top_1: {top_1}") 
-
-            perplexitys.append(ppl)
-            f1s.append(f1)
-            top_1s.append(np.mean(top_1))
-            j += minibatch_size 
+        outputs = model.evaluate(
+            x=[input_ids[i:i+batch_size], mc_token_ids[i:i+batch_size]], 
+            y=[lm_labels[i:i+batch_size], mc_labels[i:i+batch_size]], 
+            batch_size=batch_size
+        ) 
+        print(outputs)
+        metrics = outputs
         i += batch_size
 
     # print("Perplexity", ppl)
     # print("F1 Score", f1)
     # print("Hits@1", top_1_mc)
 
-    metrics = {
-        'ppl': perplexitys,
-        'f1': f1s,
-        'top': top_1s
-    }
     print(f"Total time: {timer.total_time}")
+    metrics = {
+        'loss': metrics[0]
+        'ppl': metrics[1],
+        'f1': metrics[3],
+        'top': metrics[2]
+    }
+    
     #print(time.time() - time1, "total time")
     print(metrics)
     import json
