@@ -60,8 +60,8 @@ current_mc = None
 
 has_started = False
 
-for i in range(input_ids.shape[0]):
-    print("Done")
+for i in range(5): #range(input_ids.shape[0]):
+    #print("Done")
     lm_logits, mc_logits = model.predict([input_ids[i:i+1], mc_token_ids[i:i+1]], batch_size=1)
     current_lm = np.concatenate([current_lm, lm_logits], axis=0) if has_started else lm_logits
     current_mc = np.concatenate([current_mc, mc_logits], axis=0) if has_started else mc_logits
