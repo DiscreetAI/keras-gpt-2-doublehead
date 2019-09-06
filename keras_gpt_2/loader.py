@@ -12,7 +12,8 @@ def load_trained_model_from_checkpoint(config_path,
                                        checkpoint_path,
                                        seq_len=None,
                                        batch_size=1,
-                                       fixed_input_shape=False):
+                                       fixed_input_shape=False,
+                                       already_trained=False):
     """Load trained official model from checkpoint.
 
     :param config_path: The path to the JSON configuration file. (hparams.json)
@@ -53,41 +54,44 @@ def load_trained_model_from_checkpoint(config_path,
         fixed_input_shape=fixed_input_shape,
     )
 
-    model.get_layer(name='Embed-Token').set_weights([
-        tf.train.load_variable(checkpoint_path, 'model/wte:0'),
-    ])
-    model.get_layer(name='Embed-Token-Pos').set_weights([
-        tf.train.load_variable(checkpoint_path, 'model/wpe:0')[:seq_len, :],
-    ])
-    for i in range(config['n_layer']):
-        model.get_layer(name='Encode-%d-MultiHeadAtt-Norm' % i).set_weights([
-            tf.train.load_variable(checkpoint_path, 'model/h%d/ln_1/g:0' % i),
-            tf.train.load_variable(checkpoint_path, 'model/h%d/ln_1/b:0' % i),
+    if already_trained:
+        model.load_weights(checkpoint_path)
+    else:
+        model.get_layer(name='Embed-Token').set_weights([
+            tf.train.load_variable(checkpoint_path, 'model/wte:0'),
         ])
-        kernel = tf.train.load_variable(checkpoint_path, 'model/h%d/attn/c_attn/w:0' % i)[0]
-        bias = tf.train.load_variable(checkpoint_path, 'model/h%d/attn/c_attn/b:0' % i)
-        model.get_layer(name='Encode-%d-MultiHeadAtt' % i).set_weights([
-            kernel[:, :n_embd],
-            bias[:n_embd],
-            kernel[:, n_embd:-n_embd],
-            bias[n_embd:-n_embd],
-            kernel[:, -n_embd:],
-            bias[-n_embd:],
-            tf.train.load_variable(checkpoint_path, 'model/h%d/attn/c_proj/w:0' % i)[0],
-            tf.train.load_variable(checkpoint_path, 'model/h%d/attn/c_proj/b:0' % i),
+        model.get_layer(name='Embed-Token-Pos').set_weights([
+            tf.train.load_variable(checkpoint_path, 'model/wpe:0')[:seq_len, :],
         ])
-        model.get_layer(name='Encode-%d-FeedForward-Norm' % i).set_weights([
-            tf.train.load_variable(checkpoint_path, 'model/h%d/ln_2/g:0' % i),
-            tf.train.load_variable(checkpoint_path, 'model/h%d/ln_2/b:0' % i),
+        for i in range(config['n_layer']):
+            model.get_layer(name='Encode-%d-MultiHeadAtt-Norm' % i).set_weights([
+                tf.train.load_variable(checkpoint_path, 'model/h%d/ln_1/g:0' % i),
+                tf.train.load_variable(checkpoint_path, 'model/h%d/ln_1/b:0' % i),
+            ])
+            kernel = tf.train.load_variable(checkpoint_path, 'model/h%d/attn/c_attn/w:0' % i)[0]
+            bias = tf.train.load_variable(checkpoint_path, 'model/h%d/attn/c_attn/b:0' % i)
+            model.get_layer(name='Encode-%d-MultiHeadAtt' % i).set_weights([
+                kernel[:, :n_embd],
+                bias[:n_embd],
+                kernel[:, n_embd:-n_embd],
+                bias[n_embd:-n_embd],
+                kernel[:, -n_embd:],
+                bias[-n_embd:],
+                tf.train.load_variable(checkpoint_path, 'model/h%d/attn/c_proj/w:0' % i)[0],
+                tf.train.load_variable(checkpoint_path, 'model/h%d/attn/c_proj/b:0' % i),
+            ])
+            model.get_layer(name='Encode-%d-FeedForward-Norm' % i).set_weights([
+                tf.train.load_variable(checkpoint_path, 'model/h%d/ln_2/g:0' % i),
+                tf.train.load_variable(checkpoint_path, 'model/h%d/ln_2/b:0' % i),
+            ])
+            model.get_layer(name='Encode-%d-FeedForward' % i).set_weights([
+                tf.train.load_variable(checkpoint_path, 'model/h%d/mlp/c_fc/w:0' % i)[0],
+                tf.train.load_variable(checkpoint_path, 'model/h%d/mlp/c_fc/b:0' % i),
+                tf.train.load_variable(checkpoint_path, 'model/h%d/mlp/c_proj/w:0' % i)[0],
+                tf.train.load_variable(checkpoint_path, 'model/h%d/mlp/c_proj/b:0' % i),
+            ])
+        model.get_layer(name='Norm').set_weights([
+            tf.train.load_variable(checkpoint_path, 'model/ln_f/g:0'),
+            tf.train.load_variable(checkpoint_path, 'model/ln_f/b:0'),
         ])
-        model.get_layer(name='Encode-%d-FeedForward' % i).set_weights([
-            tf.train.load_variable(checkpoint_path, 'model/h%d/mlp/c_fc/w:0' % i)[0],
-            tf.train.load_variable(checkpoint_path, 'model/h%d/mlp/c_fc/b:0' % i),
-            tf.train.load_variable(checkpoint_path, 'model/h%d/mlp/c_proj/w:0' % i)[0],
-            tf.train.load_variable(checkpoint_path, 'model/h%d/mlp/c_proj/b:0' % i),
-        ])
-    model.get_layer(name='Norm').set_weights([
-        tf.train.load_variable(checkpoint_path, 'model/ln_f/g:0'),
-        tf.train.load_variable(checkpoint_path, 'model/ln_f/b:0'),
-    ])
     return model
