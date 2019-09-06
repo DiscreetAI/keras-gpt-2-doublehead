@@ -93,14 +93,13 @@ with strategy.scope():
     timer = Timer()
     i = 0
 
-    metrics = []
     print(f"Time since last iteration to do: {timer()}")
     #print("Done")
     # print(input_ids[i:i+batch_size].shape)
     # print(mc_token_ids[i:i+batch_size].shape)
     # print(lm_labels[i:i+batch_size].shape)
     # print(mc_labels[i:i+batch_size].shape)
-    metricss = model.evaluate(
+    metrics = model.evaluate(
         x = {
             'LMInput': input_ids,
             'MCInput': mc_token_ids
