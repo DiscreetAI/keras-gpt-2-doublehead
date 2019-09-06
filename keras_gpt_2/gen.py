@@ -23,7 +23,10 @@ def generate(model,
     max_len = max(text_lens)
     input_data = [encode + [0] * (max_len - len(encode)) for encode in encodes]
     for shift in range(length):
-        output_data, _ = model.predict(np.array(input_data), np.array([5]))
+        output_data, _ = model.predict({
+                "LMInput": np.array(input_data),
+                "MCInput": np.array([5])
+            })
         #print(output_data.shape)
         #print(output_data[..., :-1, :].shape)
         for index in range(batch_size):
