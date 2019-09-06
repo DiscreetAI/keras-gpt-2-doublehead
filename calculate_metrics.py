@@ -56,10 +56,10 @@ if not os.path.isdir(model_folder):
 strategy = tf.distribute.MirroredStrategy()
 
 print('Number of devices: {}'.format(strategy.num_replicas_in_sync))
-batch_size = 4
+batch_size = 1
 with strategy.scope():
     model = load_trained_model_from_checkpoint(config_path, checkpoint_path, batch_size=batch_size)
-    lm_logits, mc_logits = model.predict([input_ids, mc_token_ids], batch_size=1)
+    lm_logits, mc_logits = model.predict([input_ids, mc_token_ids], batch_size=batch_size*4)
     lm_logits = tf.convert_to_tensor(lm_logits)
     mc_logits = tf.convert_to_tensor(mc_logits)
     lm_labels = tf.convert_to_tensor(lm_labels)
