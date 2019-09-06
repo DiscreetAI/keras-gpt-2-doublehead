@@ -76,7 +76,7 @@ with strategy.scope():
 
     metrics = {
         'ppl': ppl,
-        'f1': f1
+        'f1': f1,
         'top': top_1.tolist()
     }
 
