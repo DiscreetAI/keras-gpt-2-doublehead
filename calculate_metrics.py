@@ -56,7 +56,7 @@ if not os.path.isdir(model_folder):
 strategy = tf.distribute.MirroredStrategy()
 
 print('Number of devices: {}'.format(strategy.num_replicas_in_sync))
-batch_size = 1
+batch_size = 4
 with strategy.scope():
     model = load_trained_model_from_checkpoint(config_path, checkpoint_path, batch_size=batch_size)
     lm_logits, mc_logits = model.predict([input_ids, mc_token_ids], batch_size=1)
@@ -65,13 +65,27 @@ with strategy.scope():
     lm_labels = tf.convert_to_tensor(lm_labels)
     mc_labels = tf.convert_to_tensor(mc_labels)
 
-    ppl = perplexity_lm(lm_labels, lm_logits)
-    f1 = f1_score_lm(lm_labels, lm_logits)
-    top_1 = top_1_mc(mc_labels, mc_logits)
+    ppl = K.eval(perplexity_lm(lm_labels, lm_logits))
+    f1 = K.eval(f1_score_lm(lm_labels, lm_logits))
+    top_1 = K.eval(top_1_lm(lm_labels, lm_logits))
+    top_1_mc = K.eval(top_1_mc(,c_labels, mc_logits))
 
-    print("Perplexity", K.eval(ppl))
-    print("F1 Score", K.eval(f1))
-    print("Hits@1", K.eval(top_1))
+    print("Perplexity", ppl)
+    print("F1 Score", f1)
+    print("Hits@1", top_1_mc)
+
+    metrics = {
+        'ppl': ppl,
+        'f1': f1
+        'top': top_1.tolist()
+    }
+
+    import json
+
+    with open("metrics.json", 'w') as f:
+        json.dump(metrics, f)
+
+
 
 
 # for i in range(input_ids.shape[0]):
