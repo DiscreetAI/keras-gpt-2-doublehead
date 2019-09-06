@@ -62,8 +62,8 @@ strategy = tf.distribute.MirroredStrategy()
 print('Number of devices: {}'.format(strategy.num_replicas_in_sync))
 batch_size = None
 with strategy.scope():
-    time1 = time.time()
     model = load_trained_model_from_checkpoint(config_path, checkpoint_path, batch_size=batch_size)
+    time1 = time.time()
     i = 0
     while i < 40:
         #print("Done")
