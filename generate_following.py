@@ -2,10 +2,9 @@ import os
 import sys
 from keras_gpt_2 import load_trained_model_from_checkpoint, get_bpe_from_files, generate
 
-
-if len(sys.argv) != 2:
-    print('python3 demo.py MODEL_FOLDER')
-    sys.exit(-1)
+epoch_number = 2
+already_trained=True
+checkpoint_path = os.path.join(checkpoint_dir, f"ckpt_{epoch_number}")
 
 
 model_folder = 'models/117M'
@@ -16,7 +15,7 @@ vocab_path = os.path.join(model_folder, 'vocab.bpe')
 
 
 print('Load model from checkpoint...')
-model = load_trained_model_from_checkpoint(config_path, checkpoint_path)
+model = load_trained_model_from_checkpoint(config_path, checkpoint_path, already_trained=already_trained)
 print('Load BPE from files...')
 bpe = get_bpe_from_files(encoder_path, vocab_path)
 print('Generate text...')
