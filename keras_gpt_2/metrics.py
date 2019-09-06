@@ -131,9 +131,11 @@ def f1_score_lm(y_true, y_pred):
 
 def f1_score_mc(y_true, y_pred):
     y_true = tf.cast(y_true, tf.int64)
-    # y_pred = K.reshape(y_pred, (2, -1))
+    print("old_F1", y_true.shape, y_pred.shape)
+    y_true = K.reshape(y_true, (-1, 1))
     y_pred = K.argmax(y_pred, axis=-1)
-    # y_true = K.reshape(y_true, (2,))
+    y_pred = K.reshape(y_pred, (-1, 1))
+    print("F1", y_true.shape, y_pred.shape)
     return f1_m(y_true, y_pred)
 
 class Metrics(Callback):
@@ -189,4 +191,4 @@ class Metrics(Callback):
             
 
 def get_metrics(is_mc=False):
-    return [perplexity_mc, precision_mc, f1_score_mc, top_1_mc, top_3_mc] if is_mc else [perplexity_lm, precision_lm, f1_score_lm, top_1_lm, top_3_lm]
+    return [perplexity_mc, f1_score_mc, top_1_mc] if is_mc else [perplexity_lm, f1_score_lm, top_1_lm]
