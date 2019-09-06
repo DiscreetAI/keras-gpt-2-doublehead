@@ -58,18 +58,18 @@ if not os.path.isdir(model_folder):
 strategy = tf.distribute.MirroredStrategy()
 
 print('Number of devices: {}'.format(strategy.num_replicas_in_sync))
-batch_size = 1
+batch_size = None
 with strategy.scope():
     model = load_trained_model_from_checkpoint(config_path, checkpoint_path, batch_size=batch_size)
-    for i in range(10):
+    while i < 40:
         #print("Done")
-        lm_logits, mc_logits = model.predict([input_ids[i:i+1], mc_token_ids[i:i+1]], batch_size=1)
+        lm_logits, mc_logits = model.predict([input_ids[i:i+4], mc_token_ids[i:i+4]], batch_size=4)
         # has_started = True
         #lm_logits, mc_logits = model.predict([input_ids, mc_token_ids], batch_size=batch_size*4)
         lm_logits = tf.convert_to_tensor(lm_logits)
         mc_logits = tf.convert_to_tensor(mc_logits)
-        lm_labels = tf.convert_to_tensor(lm_labels[i:i+1])
-        mc_labels = tf.convert_to_tensor(mc_labels[i:i+1])
+        lm_labels = tf.convert_to_tensor(lm_labels[i:i+4])
+        mc_labels = tf.convert_to_tensor(mc_labels[i:i+4])
 
         ppl = K.eval(perplexity_lm(lm_labels, lm_logits))
         f1 = K.eval(f1_score_lm(lm_labels, lm_logits))
@@ -79,6 +79,7 @@ with strategy.scope():
         perplexitys = np.concatenate([perplexitys, ppl], axis=0)
         f1s = np.concatenate([f1s, f1], axis=0)
         top_1s = np.concatenate([top_1s, top_1_mc], axis=0)
+        i += 4
 
     # print("Perplexity", ppl)
     # print("F1 Score", f1)
