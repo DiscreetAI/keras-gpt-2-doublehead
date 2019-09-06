@@ -28,12 +28,16 @@ print(get_available_devices())
 
 model_folder = 'models/117M'
 config_path = os.path.join(model_folder, 'hparams.json')
-checkpoint_path = os.path.join(model_folder, 'model.ckpt')
+
 encoder_path = os.path.join(model_folder, 'encoder.json')
 vocab_path = os.path.join(model_folder, 'vocab.bpe')
 checkpoint_dir = './training_checkpoints'
-epoch = 1
-checkpoint_prefix = os.path.join(checkpoint_dir, f"ckpt_{epoch}")
+if epoch_number == 0:
+    checkpoint_path = os.path.join(model_folder, 'model.ckpt')
+    already_trained = False
+else:
+    already_trained=True
+    checkpoint_path = os.path.join(checkpoint_dir, f"ckpt_{epoch}")
 filenames = ['valid_input_ids.json', 'valid_lm_labels.json', 'valid_mc_labels.json', 'valid_mc_token_ids.json']
 
 url = "https://persona-dataset.s3.amazonaws.com/{}"
@@ -85,7 +89,7 @@ strategy = tf.distribute.MirroredStrategy()
 
 #print('Number of devices: {}'.format(strategy.num_replicas_in_sync))
 with strategy.scope():
-    model = load_trained_model_from_checkpoint(config_path, checkpoint_prefix, batch_size=None, already_trained=True)
+    model = load_trained_model_from_checkpoint(config_path, checkpoint_path, batch_size=None, already_trained=already_trained)
     timer = Timer()
     i = 0
 
@@ -96,7 +100,7 @@ with strategy.scope():
     # print(mc_token_ids[i:i+batch_size].shape)
     # print(lm_labels[i:i+batch_size].shape)
     # print(mc_labels[i:i+batch_size].shape)
-    outputs = model.evaluate(
+    metricss = model.evaluate(
         x = {
             'LMInput': input_ids,
             'MCInput': mc_token_ids
@@ -108,8 +112,7 @@ with strategy.scope():
         batch_size=batch_size
     ) 
     print(model.metrics_names)
-    print(outputs)
-    metrics.append(outputs)
+    print(metrics)
         
 
     # print("Perplexity", ppl)
