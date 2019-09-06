@@ -46,9 +46,9 @@ print(mc_labels.shape)
 
 # index = 10
 # print(index) 
-f1s = np.array([])
-perplexitys = np.array([])
-top_1s = np.array([])
+f1s = []
+perplexitys = []
+top_1s = []
 # input_ids = input_ids[:index]
 # lm_labels = lm_labels[:index]
 # mc_labels = mc_labels[:index]
@@ -75,25 +75,19 @@ with strategy.scope():
         LM_labels = tf.convert_to_tensor(lm_labels[i:i+4])
         MC_labels = tf.convert_to_tensor(mc_labels[i:i+4])
 
-        print(lm_labels.shape)
-        print(input_ids.shape)
-
-        print(mc_token_ids.shape)
-        print(mc_labels.shape)
-
         ppl = K.eval(perplexity_lm(LM_labels, lm_logits))
         f1 = K.eval(f1_score_lm(LM_labels, lm_logits))
         #top_1 = K.eval(top_1_lm(lm_labels, lm_logits))
-        top_1_mc = K.eval(top_1_mc(MC_labels, mc_logits))
+        top_mc = K.eval(top_1_mc(MC_labels, mc_logits))
 
-        print(top_1_mc.shape)
+        print(top_mc.shape)
         print(ppl.shape)
         print(f1.shape)
         
 
-        perplexitys = np.concatenate([perplexitys, ppl], axis=0) if i else ppl
-        f1s = np.concatenate([f1s, f1], axis=0) if i else f1
-        top_1s = np.concatenate([top_1s, top_1_mc], axis=0) if i else top_1_mc
+        perplexitys.append(ppl)
+        f1s.append(f1)
+        top_1s.append(np.mean(top_mc))
         i += 4
 
     # print("Perplexity", ppl)
@@ -101,9 +95,9 @@ with strategy.scope():
     # print("Hits@1", top_1_mc)
 
     metrics = {
-        'ppl': perplexitys.tolist(),
-        'f1': f1s.tolist(),
-        'top': top_1s.tolist()
+        'ppl': perplexitys,
+        'f1': f1s,
+        'top': top_1s
     }
 
     import json
