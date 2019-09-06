@@ -55,8 +55,9 @@ if not os.path.isdir(model_folder):
 
 model = load_trained_model_from_checkpoint(config_path, checkpoint_path, batch_size=None)
 
-current_lm = None
-current_mc = None
+perplexitys = []
+f1s = []
+tops = []
 
 has_started = False
 
@@ -73,8 +74,8 @@ print(current_mc.shape)
 
 lm_logits = tf.convert_to_tensor(current_lm)
 mc_logits = tf.convert_to_tensor(current_mc)
-lm_labels = tf.convert_to_tensor(lm_labels)
-mc_labels = tf.convert_to_tensor(mc_labels)
+lm_labels = tf.convert_to_tensor(lm_labels[:5])
+mc_labels = tf.convert_to_tensor(mc_labels[:5])
 
 ppl = perplexity_lm(lm_labels, lm_logits)
 f1 = f1_score_lm(lm_labels, lm_logits)
