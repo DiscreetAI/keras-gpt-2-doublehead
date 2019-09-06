@@ -77,9 +77,9 @@ with strategy.scope():
     model = load_trained_model_from_checkpoint(config_path, checkpoint_path, batch_size=None)
     timer = Timer()
     i = 0
-    batch_size = 1
+    batch_size = 4
     minibatch_size = 10 * 4
-    num_points_to_eval = 1
+    num_points_to_eval = 4
     while i < num_points_to_eval:
         #print("Done")
         outputs = model.evaluate(
