@@ -77,7 +77,7 @@ with strategy.scope():
     metrics = {
         'ppl': ppl,
         'f1': f1,
-        'top': top_1.tolist()
+        'top': top_1_mc
     }
 
     import json
