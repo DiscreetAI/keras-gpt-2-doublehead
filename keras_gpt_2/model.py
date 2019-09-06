@@ -154,7 +154,7 @@ def get_model(n_vocab,
 
     mc_sequence_summary = SequenceSummary(
         name='MCSequenceSummary'
-    )([norm_layer, mc_input_layer])
+    )(norm_layer, mc_input_layer)
 
     mc_linear = Dense(
         units=1,

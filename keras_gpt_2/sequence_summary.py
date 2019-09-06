@@ -35,7 +35,7 @@ class SequenceSummary(Layer):
                 if summary_type == 'cls_index' and cls_index is None:
                     we take the last token of the sequence as classification token
         """
-        hidden_states, cls_index = inputs
+        hidden_states = inputs
 
         if self.summary_type == 'last':
             output = hidden_states[:, -1]
