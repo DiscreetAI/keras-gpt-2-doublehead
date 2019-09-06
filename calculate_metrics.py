@@ -44,10 +44,6 @@ print(input_ids.shape)
 print(mc_token_ids.shape)
 print(mc_labels.shape)
 
-print(lm_labels[4:8].shape)
-
-print(1/0)
-
 # index = 10
 # print(index) 
 f1s = np.array([])
@@ -70,26 +66,30 @@ with strategy.scope():
     model = load_trained_model_from_checkpoint(config_path, checkpoint_path, batch_size=batch_size)
     i = 0
     while i < 40:
-        print(i)
         #print("Done")
         lm_logits, mc_logits = model.predict([input_ids[i:i+4], mc_token_ids[i:i+4]], batch_size=4)
         # has_started = True
         #lm_logits, mc_logits = model.predict([input_ids, mc_token_ids], batch_size=batch_size*4)
         lm_logits = tf.convert_to_tensor(lm_logits)
         mc_logits = tf.convert_to_tensor(mc_logits)
-        lm_labels = tf.convert_to_tensor(lm_labels[i:i+4])
-        mc_labels = tf.convert_to_tensor(mc_labels[i:i+4])
+        LM_labels = tf.convert_to_tensor(lm_labels[i:i+4])
+        MC_labels = tf.convert_to_tensor(mc_labels[i:i+4])
 
         print(lm_labels.shape)
-        print(lm_logits.shape)
+        print(input_ids.shape)
 
-        print(mc_logits.shape)
+        print(mc_token_ids.shape)
         print(mc_labels.shape)
 
-        ppl = K.eval(perplexity_lm(lm_labels, lm_logits))
-        f1 = K.eval(f1_score_lm(lm_labels, lm_logits))
+        ppl = K.eval(perplexity_lm(LM_labels, lm_logits))
+        f1 = K.eval(f1_score_lm(LM_labels, lm_logits))
         #top_1 = K.eval(top_1_lm(lm_labels, lm_logits))
-        top_1_mc = K.eval(top_1_mc(mc_labels, mc_logits))
+        top_1_mc = K.eval(top_1_mc(MC_labels, mc_logits))
+
+        print(top_1_mc.shape)
+        print(ppl.shape)
+        print(f1.shape)
+        
 
         perplexitys = np.concatenate([perplexitys, ppl], axis=0) if i else ppl
         f1s = np.concatenate([f1s, f1], axis=0) if i else f1
