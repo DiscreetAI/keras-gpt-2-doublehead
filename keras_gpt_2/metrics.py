@@ -5,13 +5,16 @@ from tensorflow import one_hot
 from tensorflow.keras.callbacks import Callback
 
 def perplexity(y_true, y_pred):
-    """
-    The perplexity metric. Why isn't this part of Keras yet?!
-    https://stackoverflow.com/questions/41881308/how-to-calculate-perplexity-of-rnn-in-tensorflow
-    https://github.com/keras-team/keras/issues/8267
-    """
-#     cross_entropy = K.sparse_categorical_crossentropy(y_true, y_pred)
-    return K.exp(K.mean(K.categorical_crossentropy(y_true, y_pred)))
+#     """
+#     The perplexity metric. Why isn't this part of Keras yet?!
+#     https://stackoverflow.com/questions/41881308/how-to-calculate-perplexity-of-rnn-in-tensorflow
+#     https://github.com/keras-team/keras/issues/8267
+#     """
+# #     cross_entropy = K.sparse_categorical_crossentropy(y_true, y_pred)
+#     return K.exp(K.mean(K.categorical_crossentropy(y_true, y_pred)))
+    cross_entropy = K.categorical_crossentropy(y_true, y_pred)
+    perplexity = K.pow(2.0, cross_entropy)
+    return K.mean(perplexity)
 
 def top_1(y_true, y_pred):
     return top_k_categorical_accuracy(y_true, y_pred, k=1)

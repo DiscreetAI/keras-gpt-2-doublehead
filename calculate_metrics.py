@@ -18,8 +18,9 @@ def get_available_devices():
 print(get_available_devices()) 
 
 model_folder = 'models/117M'
+new_checkpoint = 'training_checkpoints'
 config_path = os.path.join(model_folder, 'hparams.json')
-checkpoint_path = os.path.join(model_folder, 'model.ckpt')
+checkpoint_path = os.path.join(new_checkpoint, 'ckpt.data')
 encoder_path = os.path.join(model_folder, 'encoder.json')
 vocab_path = os.path.join(model_folder, 'vocab.bpe')
 checkpoint_dir = './training_checkpoints'
