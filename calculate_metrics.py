@@ -55,11 +55,11 @@ if not os.path.isdir(model_folder):
 
 model = load_trained_model_from_checkpoint(config_path, checkpoint_path, batch_size=None)
 
-lm_logits, mc_logits = model.predict([input_ids, mc_token_ids])
+lm_logits, mc_logits = model.predict([input_ids[:1], mc_token_ids[:1]])
 
-ppl = perplexity_lm(lm_labels, lm_logits)
-f1 = f1_score_lm(lm_labels, lm_logits)
-top_1 = top_1_mc(mc_labels, mc_logits)
+# ppl = perplexity_lm(lm_labels, lm_logits)
+# f1 = f1_score_lm(lm_labels, lm_logits)
+# top_1 = top_1_mc(mc_labels, mc_logits)
 
 print("Perplexity", ppl)
 print("F1 Score", f1)
