@@ -81,7 +81,7 @@ with strategy.scope():
     num_points_to_eval = 4*30
     metrics = []
     while i < num_points_to_eval:
-        print(f"Time since last iteration to do {minibatch_size}: {timer()}")
+        print(f"Time since last iteration to do: {timer()}")
         #print("Done")
         print(input_ids[i:i+batch_size].shape)
         print(mc_token_ids[i:i+batch_size].shape)
