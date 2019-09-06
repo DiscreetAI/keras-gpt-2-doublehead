@@ -79,7 +79,7 @@ with strategy.scope():
     i = 0
     batch_size = 4*5
     minibatch_size = 10 * 4
-    num_points_to_eval = 4*5
+    num_points_to_eval = 4*100
     while i < num_points_to_eval:
         #print("Done")
         print(input_ids[i:i+batch_size].shape)
