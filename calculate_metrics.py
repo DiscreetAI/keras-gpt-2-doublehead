@@ -58,7 +58,7 @@ model = load_trained_model_from_checkpoint(config_path, checkpoint_path, batch_s
 current_lm = None
 current_mc = None
 
-for i in input_ids.shape[0]:
+for i in range(input_ids.shape[0]):
     lm_logits, mc_logits = model.predict([input_ids[i:i+1], mc_token_ids[i:i+1]], batch_size=1)
     current_lm = np.concatenate([current_lm, lm_logits], axis=0) if current_lm else lm_logits
     current_mc = np.concatenate([current_mc, mc_logits], axis=0) if current_mc else mc_logits
