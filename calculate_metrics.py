@@ -55,13 +55,6 @@ if not os.path.isdir(model_folder):
 
 model = load_trained_model_from_checkpoint(config_path, checkpoint_path, batch_size=None)
 
-perplexitys = []
-f1s = []
-tops = []
-
-mc_labels = np.array(mc_labels[0]*input_ids.shape[0])
-has_started = False
-
 # for i in range(input_ids.shape[0]):
 #     #print("Done")
 #     lm_logits, mc_logits = model.predict([input_ids[i:i+1], mc_token_ids[i:i+1]], batch_size=1)
