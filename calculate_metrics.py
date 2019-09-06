@@ -95,7 +95,7 @@ with strategy.scope():
                 'LMOutput': lm_labels[i:i+batch_size],
                 'MCOutput': mc_labels[i:i+batch_size]
             }, 
-            batch_size=batch_size
+            batch_size=4
         ) 
         print(outputs)
         metrics = outputs
