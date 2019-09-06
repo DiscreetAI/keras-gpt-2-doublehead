@@ -38,8 +38,4 @@ class SequenceSummary(Layer):
         elif self.summary_type == 'attn':
             raise NotImplementedError
 
-        # output = self.first_dropout(output)
-        # output = self.summary(output)
-        # output = self.activation(output)
-        # output = self.last_dropout(output)
         return output
