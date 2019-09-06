@@ -33,7 +33,7 @@ url = "https://persona-dataset.s3.amazonaws.com/{}"
 data = []
 
 batch_size = 4*32
-num_points_to_eval = 4*32*5
+num_points_to_eval = 4*32*20
 for name in filenames:
     full_url = url.format(name)
     json_data = requests.get(full_url).json()
@@ -109,12 +109,11 @@ with strategy.scope():
     # print("Hits@1", top_1_mc)
 
     print(f"Total time: {timer.total_time}")
-    metrics = list(zip(*metrics))
     metrics = {
         'loss': metrics[0],
-        'ppl': metrics[1],
-        'f1': metrics[3],
-        'top': metrics[2]
+        'ppl': metrics[3],
+        'f1': metrics[5],
+        'top': metrics[4]
     }
     
     #print(time.time() - time1, "total time")
