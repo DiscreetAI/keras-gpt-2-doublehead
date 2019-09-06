@@ -8,25 +8,6 @@ class SequenceSummary(Layer):
         super(SequenceSummary, self).__init__(name=name)
 
         self.summary_type = 'last'
-        # self.summary = Identity()
-        # if hasattr(config, 'summary_use_proj') and config.summary_use_proj:
-        #     if hasattr(config, 'summary_proj_to_labels') and config.summary_proj_to_labels and config.num_labels > 0:
-        #         num_classes = config.num_labels
-        #     else:
-        #         num_classes = config.hidden_size
-        #     self.summary = nn.Linear(config.hidden_size, num_classes)
-
-        # self.activation = Identity()
-        # if hasattr(config, 'summary_activation') and config.summary_activation == 'tanh':
-        #     self.activation = nn.Tanh()
-
-        # self.first_dropout = Identity()
-        # if hasattr(config, 'summary_first_dropout') and config.summary_first_dropout > 0:
-        #     self.first_dropout = nn.Dropout(config.summary_first_dropout)
-
-        # self.last_dropout = Identity()
-        # if hasattr(config, 'summary_last_dropout') and config.summary_last_dropout > 0:
-        #     self.last_dropout = nn.Dropout(config.summary_last_dropout)
 
     def call(self, inputs):
         """ hidden_states: float Tensor in shape [bsz, seq_len, hidden_size], the hidden-states of the last layer.
@@ -47,26 +28,13 @@ class SequenceSummary(Layer):
             if cls_index is None:
                 cls_index = torch.full_like(hidden_states[..., :1, :], hidden_states.shape[-2]-1, dtype=torch.long)
             else:
-                print(cls_index.shape)                
                 cls_index = K.expand_dims(cls_index, -1)
-                print(cls_index.shape)
                 args = (1,) * (len(K.int_shape(cls_index)) - 1) + (K.int_shape(hidden_states)[-1],)
-                # cls_index = K.tile(cls_index, args)
-                # cls_index = K.squeeze(cls_index, axis=-2)
-                print(hidden_states.shape, "HIDDEN_STATES")
-                print(cls_index.shape, "CLS_INDEX")
             # shape of cls_index: (bsz, XX, 1, hidden_size) where XX are optional leading dim of hidden_states
             cls_index = tf.cast(cls_index, tf.int32)
             intended_shape = (tf.shape(cls_index)[0],)
             idx = tf.stack([tf.range(tf.shape(cls_index)[0]), K.reshape(cls_index[:,0], intended_shape)],axis=-1)
             output = tf.gather_nd(hidden_states, idx)
-
-            print(output.shape)
-            # gather_shape = tf.gather(params=hidden_states, indices=tf.cast(cls_index, tf.int32), axis=-1)
-            # print(gather_shape.shape)
-            return output
-            output = K.squeeze(tf.gather(params=hidden_states, indices=tf.cast(cls_index, tf.int32), axis=-2), -2) # shape (bsz, XX, hidden_size)
-            print(output.shape, "SEQUENCE")
         elif self.summary_type == 'attn':
             raise NotImplementedError
 

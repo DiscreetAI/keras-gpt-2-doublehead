@@ -107,12 +107,12 @@ def get_model(n_vocab,
         input_layer_shape = (batch_size, None)
 
     lm_input_layer = tf.keras.layers.Input(
-        batch_shape=(batch_size, None),
+        batch_shape=(batch_size, 182),
         name='LMInput',
     )
 
     mc_input_layer = tf.keras.layers.Input(
-        batch_shape=(None,),
+        batch_shape=(batch_size,),
         name='MCInput',
     )
 
@@ -145,8 +145,6 @@ def get_model(n_vocab,
         name='Norm',
     )(last_layer)
 
-    print(norm_layer.shape, "NORM")
-
     lm_head = EmbeddingSim(
         use_bias=False,
         name='LMOutput',
@@ -154,7 +152,7 @@ def get_model(n_vocab,
 
     mc_sequence_summary = SequenceSummary(
         name='MCSequenceSummary'
-    )(norm_layer)
+    )([norm_layer, mc_input_layer])
 
     mc_linear = Dense(
         units=1,
@@ -166,11 +164,6 @@ def get_model(n_vocab,
         rate=0.1,
         name='MCOutput'
     )(mc_linear)
-
-    print(mc_head.shape, "OUTPUT")
-
-
-    # output_layer = 
 
     losses = {
         "LMOutput": lm_loss_function,
@@ -191,7 +184,7 @@ def get_model(n_vocab,
         optimizer=tf.keras.optimizers.Adam(),
         loss=losses,
         loss_weights=lossWeights,
-        #metrics=metrics
+        metrics=metrics
     )
     return model
 
@@ -208,8 +201,6 @@ def cross_entropy(logits, labels, ignore_index=None):
         labels = K.reshape(tf.cast(one_hot(labels, 50257, axis=-1), tf.float32), (-1, 50257))
         xentropy = sigmoid_crossentropy_ignore_index(labels, logits)
     else:
-        print(K.int_shape(logits), "LOGITS")
-        print(K.int_shape(labels), "LABELS")
         xentropy = K.mean(
                         tf.nn.sigmoid_cross_entropy_with_logits(
                             labels=K.reshape(tf.cast(labels, tf.float32), (-1, 1)),
@@ -236,10 +227,6 @@ def lm_loss_function(lm_labels, lm_logits):
     )
 
     return lm_loss
-
-
-
-    
 
 def get_custom_objects():
     custom_objects = get_transformer_custom_objects()
