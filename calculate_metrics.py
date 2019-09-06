@@ -11,6 +11,7 @@ from keras_gpt_2 import perplexity_lm, f1_score_lm, top_1_mc, top_1_lm
 from tensorflow.keras import backend as K
 from tensorflow.python.client import device_lib
 import time
+import simplejson as json
 
 def get_available_devices():
     local_device_protos = device_lib.list_local_devices()
