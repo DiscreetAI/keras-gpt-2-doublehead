@@ -58,15 +58,15 @@ class Timer():
             self.total_time += delta_t
         return delta_t
 
-index = (156020 // 40) * 40
-# print(index) 
-f1s = []
-perplexitys = []
-top_1s = []
-input_ids = input_ids[:index]
-lm_labels = lm_labels[:index]
-mc_labels = mc_labels[:index]
-mc_token_ids = mc_token_ids[:index]
+# index = (156020 // 40) * 40
+# # print(index) 
+# f1s = []
+# perplexitys = []
+# top_1s = []
+# input_ids = input_ids[:index]
+# lm_labels = lm_labels[:index]
+# mc_labels = mc_labels[:index]
+# mc_token_ids = mc_token_ids[:index]
 
 if not os.path.isdir(model_folder):
     gpt2.download_gpt2(model_name = '117M')
