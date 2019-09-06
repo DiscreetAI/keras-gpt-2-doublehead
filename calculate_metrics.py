@@ -97,7 +97,7 @@ with strategy.scope():
 
     print(f"Total time: {timer.total_time}")
     metrics = {
-        'loss': metrics[0]
+        'loss': metrics[0],
         'ppl': metrics[1],
         'f1': metrics[3],
         'top': metrics[2]
