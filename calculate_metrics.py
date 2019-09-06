@@ -68,7 +68,7 @@ with strategy.scope():
     ppl = K.eval(perplexity_lm(lm_labels, lm_logits))
     f1 = K.eval(f1_score_lm(lm_labels, lm_logits))
     top_1 = K.eval(top_1_lm(lm_labels, lm_logits))
-    top_1_mc = K.eval(top_1_mc(,c_labels, mc_logits))
+    top_1_mc = K.eval(top_1_mc(mc_labels, mc_logits))
 
     print("Perplexity", ppl)
     print("F1 Score", f1)
