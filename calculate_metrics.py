@@ -32,6 +32,8 @@ url = "https://persona-dataset.s3.amazonaws.com/{}"
 
 data = []
 
+batch_size = 4*64
+num_points_to_eval = 4*64*5
 for name in filenames:
     full_url = url.format(name)
     json_data = requests.get(full_url).json()
@@ -58,15 +60,15 @@ class Timer():
             self.total_time += delta_t
         return delta_t
 
-# index = (156020 // 40) * 40
-# # print(index) 
-# f1s = []
-# perplexitys = []
-# top_1s = []
-# input_ids = input_ids[:index]
-# lm_labels = lm_labels[:index]
-# mc_labels = mc_labels[:index]
-# mc_token_ids = mc_token_ids[:index]
+index = num_points_to_eval
+# print(index) 
+f1s = []
+perplexitys = []
+top_1s = []
+input_ids = input_ids[:index]
+lm_labels = lm_labels[:index]
+mc_labels = mc_labels[:index]
+mc_token_ids = mc_token_ids[:index]
 
 if not os.path.isdir(model_folder):
     gpt2.download_gpt2(model_name = '117M')
@@ -78,30 +80,28 @@ with strategy.scope():
     model = load_trained_model_from_checkpoint(config_path, checkpoint_path, batch_size=None)
     timer = Timer()
     i = 0
-    batch_size = 4*128
-    num_points_to_eval = 4*128*5
+
     metrics = []
-    while i < num_points_to_eval:
-        print(f"Time since last iteration to do: {timer()}")
-        #print("Done")
-        print(input_ids[i:i+batch_size].shape)
-        print(mc_token_ids[i:i+batch_size].shape)
-        print(lm_labels[i:i+batch_size].shape)
-        print(mc_labels[i:i+batch_size].shape)
-        outputs = model.evaluate(
-            x = {
-                'LMInput': input_ids[i:i+batch_size],
-                'MCInput': mc_token_ids[i:i+batch_size]
-            }, 
-            y = {
-                'LMOutput': lm_labels[i:i+batch_size],
-                'MCOutput': mc_labels[i:i+batch_size]
-            }, 
-            batch_size=batch_size
-        ) 
-        print(outputs)
-        metrics.append(outputs)
-        i += batch_size
+    print(f"Time since last iteration to do: {timer()}")
+    #print("Done")
+    # print(input_ids[i:i+batch_size].shape)
+    # print(mc_token_ids[i:i+batch_size].shape)
+    # print(lm_labels[i:i+batch_size].shape)
+    # print(mc_labels[i:i+batch_size].shape)
+    outputs = model.evaluate(
+        x = {
+            'LMInput': input_ids,
+            'MCInput': mc_token_ids
+        }, 
+        y = {
+            'LMOutput': lm_labels,
+            'MCOutput': mc_labels
+        }, 
+        batch_size=batch_size
+    ) 
+    print(outputs)
+    metrics.append(outputs)
+        
 
     # print("Perplexity", ppl)
     # print("F1 Score", f1)
