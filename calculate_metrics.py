@@ -87,108 +87,114 @@ mc_token_ids = mc_token_ids[:index]
 if not os.path.isdir(model_folder):
     gpt2.download_gpt2(model_name = '117M')
 
-if epoch_number == 0:
-    strategy = tf.distribute.MirroredStrategy()
-elif epoch_number == 1:
-    strategy = tf.distribute.MirroredStrategy(devices=['/device:GPU:0', '/device:GPU:1', '/device:GPU:2', '/device:GPU:3'])
-else:
-    strategy = tf.distribute.MirroredStrategy(devices=['/device:GPU:4', '/device:GPU:5', '/device:GPU:6', '/device:GPU:7'])
+model = load_trained_model_from_checkpoint(config_path, checkpoint_path, batch_size=None, already_trained=already_trained)
+print('Load BPE from files...')
+bpe = get_bpe_from_files(encoder_path, vocab_path)
+print('Generate text...')
+output = generate(model, bpe, ['From the day forth, my arm'], length=20, top_k=40)
 
-#print('Number of devices: {}'.format(strategy.num_replicas_in_sync))
-with strategy.scope():
-    model = load_trained_model_from_checkpoint(config_path, checkpoint_path, batch_size=None, already_trained=already_trained)
-    timer = Timer()
-    i = 0
+# if epoch_number == 0:
+#     strategy = tf.distribute.MirroredStrategy()
+# elif epoch_number == 1:
+#     strategy = tf.distribute.MirroredStrategy(devices=['/device:GPU:0', '/device:GPU:1', '/device:GPU:2', '/device:GPU:3'])
+# else:
+#     strategy = tf.distribute.MirroredStrategy(devices=['/device:GPU:4', '/device:GPU:5', '/device:GPU:6', '/device:GPU:7'])
 
-    print(f"Time since last iteration to do: {timer()}")
-    #print("Done")
-    # print(input_ids[i:i+batch_size].shape)
-    # print(mc_token_ids[i:i+batch_size].shape)
-    # print(lm_labels[i:i+batch_size].shape)
-    # print(mc_labels[i:i+batch_size].shape)
-    metrics = model.evaluate(
-        x = {
-            'LMInput': input_ids,
-            'MCInput': mc_token_ids
-        }, 
-        y = {
-            'LMOutput': lm_labels,
-            'MCOutput': mc_labels
-        }, 
-        batch_size=batch_size
-    ) 
-    print(model.metrics_names)
-    print(metrics)
-        
-
-    # print("Perplexity", ppl)
-    # print("F1 Score", f1)
-    # print("Hits@1", top_1_mc)
-
-    print(f"Total time: {timer.total_time}")
-    metrics = {
-        'loss': metrics[0],
-        'ppl': metrics[3],
-        'f1': metrics[5],
-        'top': metrics[4]
-    }
-    
-    #print(time.time() - time1, "total time")
-    print(metrics)
-
-    with open("metrics.json", 'w') as f:
-        json.dump(metrics, f, use_decimal=True)
-
-    
-
-
-
-
-
-
-
-# print(current_lm.shape)
-# print(current_mc.shape)
-
-# lm_logits = tf.convert_to_tensor(current_lm)
-# mc_logits = tf.convert_to_tensor(current_mc)
-
-
-# lm_logits = tf.convert_to_tensor(lm_logits)
-# mc_logits = tf.convert_to_tensor(mc_logits)
-# lm_labels = tf.convert_to_tensor(lm_labels)
-# mc_labels = tf.convert_to_tensor(mc_labels)
-
-# ppl = perplexity_lm(lm_labels, lm_logits)
-# f1 = f1_score_lm(lm_labels, lm_logits)
-# top_1 = top_1_mc(mc_labels, mc_logits)
-
-# print("Perplexity", K.eval(ppl))
-# print("F1 Score", K.eval(f1))
-# print("Hits@1", K.eval(top_1))
-
-# strategy = tf.distribute.MirroredStrategy()
-
-# print('Number of devices: {}'.format(strategy.num_replicas_in_sync))
-# batch_size = 2
+# #print('Number of devices: {}'.format(strategy.num_replicas_in_sync))
 # with strategy.scope():
     
-#     print("starting fit")
-#     history_output = model.fit(
-#         {
+#     timer = Timer()
+#     i = 0
+
+#     print(f"Time since last iteration to do: {timer()}")
+#     #print("Done")
+#     # print(input_ids[i:i+batch_size].shape)
+#     # print(mc_token_ids[i:i+batch_size].shape)
+#     # print(lm_labels[i:i+batch_size].shape)
+#     # print(mc_labels[i:i+batch_size].shape)
+#     metrics = model.evaluate(
+#         x = {
 #             'LMInput': input_ids,
 #             'MCInput': mc_token_ids
-#         },
-#         {
+#         }, 
+#         y = {
 #             'LMOutput': lm_labels,
 #             'MCOutput': mc_labels
-#         },
-#         batch_size=batch_size * strategy.num_replicas_in_sync,
-#         epochs=2,
-#         callbacks=[tf.keras.callbacks.ModelCheckpoint(filepath=checkpoint_prefix,
-#                                        save_weights_only=True)]
-#     )
-#     # import json
+#         }, 
+#         batch_size=batch_size
+#     ) 
+#     print(model.metrics_names)
+#     print(metrics)
+        
 
-#     # with open('training_history.json', 'w') as f:
-#     #     json.dump(history_output.history, f)
+#     # print("Perplexity", ppl)
+#     # print("F1 Score", f1)
+#     # print("Hits@1", top_1_mc)
+
+#     print(f"Total time: {timer.total_time}")
+#     metrics = {
+#         'loss': metrics[0],
+#         'ppl': metrics[3],
+#         'f1': metrics[5],
+#         'top': metrics[4]
+#     }
+    
+#     #print(time.time() - time1, "total time")
+#     print(metrics)
+
+#     with open("metrics.json", 'w') as f:
+#         json.dump(metrics, f, use_decimal=True)
+
+    
+
+
+
+
+
+
+
+# # print(current_lm.shape)
+# # print(current_mc.shape)
+
+# # lm_logits = tf.convert_to_tensor(current_lm)
+# # mc_logits = tf.convert_to_tensor(current_mc)
+
+
+# # lm_logits = tf.convert_to_tensor(lm_logits)
+# # mc_logits = tf.convert_to_tensor(mc_logits)
+# # lm_labels = tf.convert_to_tensor(lm_labels)
+# # mc_labels = tf.convert_to_tensor(mc_labels)
+
+# # ppl = perplexity_lm(lm_labels, lm_logits)
+# # f1 = f1_score_lm(lm_labels, lm_logits)
+# # top_1 = top_1_mc(mc_labels, mc_logits)
+
+# # print("Perplexity", K.eval(ppl))
+# # print("F1 Score", K.eval(f1))
+# # print("Hits@1", K.eval(top_1))
+
+# # strategy = tf.distribute.MirroredStrategy()
+
+# # print('Number of devices: {}'.format(strategy.num_replicas_in_sync))
+# # batch_size = 2
+# # with strategy.scope():
+    
+# #     print("starting fit")
+# #     history_output = model.fit(
+# #         {
+# #             'LMInput': input_ids,
+# #             'MCInput': mc_token_ids
+# #         },
+# #         {
+# #             'LMOutput': lm_labels,
+# #             'MCOutput': mc_labels
+# #         },
+# #         batch_size=batch_size * strategy.num_replicas_in_sync,
+# #         epochs=2,
+# #         callbacks=[tf.keras.callbacks.ModelCheckpoint(filepath=checkpoint_prefix,
+# #                                        save_weights_only=True)]
+# #     )
+# #     # import json
+
+# #     # with open('training_history.json', 'w') as f:
+# #     #     json.dump(history_output.history, f)
