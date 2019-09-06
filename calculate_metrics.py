@@ -22,7 +22,7 @@ encoder_path = os.path.join(model_folder, 'encoder.json')
 vocab_path = os.path.join(model_folder, 'vocab.bpe')
 checkpoint_dir = './training_checkpoints'
 checkpoint_prefix = os.path.join(checkpoint_dir, "ckpt_{epoch}")
-filenames = ['valid_input_ids.json', 'valid_lm_labels.json', 'valid_mc_labels.json', 'valid_mc_token_ids.json']
+filenames = ['input_ids.json', 'lm_labels.json', 'valid_mc_labels.json', 'valid_mc_token_ids.json']
 
 url = "https://persona-dataset.s3.amazonaws.com/{}"
 
@@ -61,9 +61,9 @@ lm_logits, mc_logits = model.predict([input_ids[:1], mc_token_ids[:1]])
 # f1 = f1_score_lm(lm_labels, lm_logits)
 # top_1 = top_1_mc(mc_labels, mc_logits)
 
-print("Perplexity", ppl)
-print("F1 Score", f1)
-print("Hits@1", top_1)
+# print("Perplexity", ppl)
+# print("F1 Score", f1)
+# print("Hits@1", top_1)
 
 # strategy = tf.distribute.MirroredStrategy()
 
