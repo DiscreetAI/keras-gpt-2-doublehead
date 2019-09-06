@@ -10,6 +10,8 @@ import gpt_2_simple as gpt2
 from keras_gpt_2 import perplexity_lm, f1_score_lm, top_1_mc
 from tensorflow.keras import backend as K
 from tensorflow.python.client import device_lib
+import time
+
 def get_available_devices():
     local_device_protos = device_lib.list_local_devices()
     return [x.name for x in local_device_protos]
@@ -60,7 +62,9 @@ strategy = tf.distribute.MirroredStrategy()
 print('Number of devices: {}'.format(strategy.num_replicas_in_sync))
 batch_size = None
 with strategy.scope():
+    time1 = time.time()
     model = load_trained_model_from_checkpoint(config_path, checkpoint_path, batch_size=batch_size)
+    i = 0
     while i < 40:
         #print("Done")
         lm_logits, mc_logits = model.predict([input_ids[i:i+4], mc_token_ids[i:i+4]], batch_size=4)
@@ -95,6 +99,8 @@ with strategy.scope():
 
     with open("metrics.json", 'w') as f:
         json.dump(metrics, f)
+
+    print(time.time() - time1)
 
 
 
