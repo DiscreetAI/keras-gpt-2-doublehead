@@ -144,21 +144,21 @@ lm_labels = arr['lm_labels']
 mc_labels = arr['mc_labels']
 
 
-with open('input_ids.json', 'w') as f:
-    json.dump(input_ids, f)
+# with open('input_ids.json', 'w') as f:
+#     json.dump(input_ids, f)
 
-with open('lm_labels.json', 'w') as f:
-    json.dump(lm_labels, f)
+# with open('lm_labels.json', 'w') as f:
+#     json.dump(lm_labels, f)
 
-with open('mc_token_ids.json', 'w') as f:
-    json.dump(mc_token_ids, f)
+# with open('mc_token_ids.json', 'w') as f:
+#     json.dump(mc_token_ids, f)
 
-with open('mc_labels.json', 'w') as f:
-    json.dump(mc_labels, f)
-# np.save('input_ids.npy', input_ids)
-# np.save('mc_token_ids.npy', mc_token_ids)
-# np.save('lm_labels.npy', lm_labels)
-# np.save('mc_labels.npy', mc_labels)
+# with open('mc_labels.json', 'w') as f:
+#     json.dump(mc_labels, f)
+np.save('input_ids.npy', input_ids)
+np.save('mc_token_ids.npy', mc_token_ids)
+np.save('lm_labels.npy', lm_labels)
+np.save('mc_labels.npy', mc_labels)
 
 
 
