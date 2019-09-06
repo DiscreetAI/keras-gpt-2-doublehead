@@ -82,6 +82,10 @@ with strategy.scope():
     num_points_to_eval = 4
     while i < num_points_to_eval:
         #print("Done")
+        print(input_ids[i:i+batch_size].shape)
+        print(mc_token_ids[i:i+batch_size].shape)
+        print(lm_labels[i:i+batch_size].shape)
+        print(mc_labels[i:i+batch_size].shape)
         outputs = model.evaluate(
             x = {
                 'LMInput': input_ids[i:i+batch_size],
