@@ -61,6 +61,7 @@ def perplexity_lm(y_true, y_pred):
     #     return K.mean(K.sparse_categorical_crossentropy(mul_1,mul_2), axis=-1)
 
     y_true = tf.cast(y_true, tf.int32)
+    print(y_pred.shape)
     # # unc = tf.fill(tf.shape(labels), -1)
     # # unc = K.not_equal(unc, labels)
     y_true = K.reshape(tf.cast(one_hot(y_true, 50257, axis=-1), tf.float32), y_pred.shape)
