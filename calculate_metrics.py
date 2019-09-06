@@ -22,7 +22,7 @@ encoder_path = os.path.join(model_folder, 'encoder.json')
 vocab_path = os.path.join(model_folder, 'vocab.bpe')
 checkpoint_dir = './training_checkpoints'
 checkpoint_prefix = os.path.join(checkpoint_dir, "ckpt_{epoch}")
-filenames = ['input_ids.json', 'lm_labels.json', 'valid_mc_labels.json', 'valid_mc_token_ids.json']
+filenames = ['valid_input_ids.json', 'valid_lm_labels.json', 'valid_mc_labels.json', 'valid_mc_token_ids.json']
 
 url = "https://persona-dataset.s3.amazonaws.com/{}"
 

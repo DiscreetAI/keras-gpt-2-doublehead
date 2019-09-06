@@ -22,7 +22,7 @@ vocab_path = os.path.join(model_folder, 'vocab.bpe')
 
 
 print('Load BPE from files...')
-bpe = get_bpe_from_files(encoder_path, vocab_path)
+#bpe = get_bpe_from_files(encoder_path, vocab_path)
 print('Generate text...')
 # output = generate(model, bpe, ['From the day forth, my arm'], length=20, top_k=40)
 from itertools import chain
@@ -142,21 +142,21 @@ lm_labels = arr['lm_labels'].tolist()
 mc_labels = arr['mc_labels'].tolist()
 
 
-# with open('input_ids.json', 'w') as f:
-#     json.dump(input_ids, f)
+with open('input_ids.json', 'w') as f:
+    json.dump(input_ids, f)
 
-# with open('lm_labels.json', 'w') as f:
-#     json.dump(lm_labels, f)
+with open('lm_labels.json', 'w') as f:
+    json.dump(lm_labels, f)
 
-# with open('mc_token_ids.json', 'w') as f:
-#     json.dump(mc_token_ids, f)
+with open('mc_token_ids.json', 'w') as f:
+    json.dump(mc_token_ids, f)
 
-# with open('mc_labels.json', 'w') as f:
-#     json.dump(mc_labels, f)
-np.save('input_ids.npy', input_ids)
-np.save('mc_token_ids.npy', mc_token_ids)
-np.save('lm_labels.npy', lm_labels)
-np.save('mc_labels.npy', mc_labels)
+with open('mc_labels.json', 'w') as f:
+    json.dump(mc_labels, f)
+# np.save('input_ids.npy', input_ids)
+# np.save('mc_token_ids.npy', mc_token_ids)
+# np.save('lm_labels.npy', lm_labels)
+# np.save('mc_labels.npy', mc_labels)
 
 
 
