@@ -75,7 +75,7 @@ has_started = False
 
 # lm_logits = tf.convert_to_tensor(current_lm)
 # mc_logits = tf.convert_to_tensor(current_mc)
-lm_logits, mc_logits = model.predict([input_ids, mc_token_ids], batch_size=2)
+lm_logits, mc_logits = model.predict([input_ids, mc_token_ids])
 lm_labels = tf.convert_to_tensor(lm_labels)
 mc_labels = tf.convert_to_tensor(mc_labels)
 
