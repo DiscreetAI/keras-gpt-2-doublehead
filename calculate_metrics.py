@@ -42,13 +42,13 @@ print(input_ids.shape)
 print(mc_token_ids.shape)
 print(mc_labels.shape)
 
-# index = (131438 // 16) * 16
-# print(index) 
+index = 100
+print(index) 
 
-# input_ids = input_ids[:index]
-# lm_labels = lm_labels[:index]
-# mc_labels = mc_labels[:index]
-# mc_token_ids = mc_token_ids[:index]
+input_ids = input_ids[:index]
+lm_labels = lm_labels[:index]
+mc_labels = mc_labels[:index]
+mc_token_ids = mc_token_ids[:index]
 
 if not os.path.isdir(model_folder):
     gpt2.download_gpt2(model_name = '117M')
