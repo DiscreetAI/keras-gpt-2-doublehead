@@ -100,6 +100,7 @@ with strategy.scope():
         'top': top_1s
     }
 
+    print(metrics)
     import json
 
     with open("metrics.json", 'w') as f:
