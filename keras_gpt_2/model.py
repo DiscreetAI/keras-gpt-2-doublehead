@@ -107,7 +107,7 @@ def get_model(n_vocab,
         input_layer_shape = (batch_size, None)
 
     lm_input_layer = tf.keras.layers.Input(
-        batch_shape=(batch_size, 182),
+        batch_shape=(batch_size, None),
         name='LMInput',
     )
 
@@ -191,7 +191,7 @@ def get_model(n_vocab,
         optimizer=tf.keras.optimizers.Adam(),
         loss=losses,
         loss_weights=lossWeights,
-        metrics=metrics
+        #metrics=metrics
     )
     return model
 
