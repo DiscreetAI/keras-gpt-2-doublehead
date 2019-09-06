@@ -8,7 +8,7 @@ from keras_gpt_2 import load_trained_model_from_checkpoint, get_bpe_from_files, 
 import requests
 import gpt_2_simple as gpt2
 from keras_gpt_2 import perplexity_lm, f1_score_lm, top_1_mc
-
+from tensorflow.keras import backend as K
 from tensorflow.python.client import device_lib
 def get_available_devices():
     local_device_protos = device_lib.list_local_devices()
@@ -79,11 +79,11 @@ mc_labels = tf.convert_to_tensor(mc_labels[:5])
 
 ppl = perplexity_lm(lm_labels, lm_logits)
 f1 = f1_score_lm(lm_labels, lm_logits)
-# top_1 = top_1_mc(mc_labels, mc_logits)
+top_1 = top_1_mc(mc_labels, mc_logits)
 
-print("Perplexity", ppl)
-print("F1 Score", f1)
-# print("Hits@1", top_1)
+print("Perplexity", K.eval(ppl))
+print("F1 Score", K.eval(f1))
+print("Hits@1", K.eval(top_1))
 
 # strategy = tf.distribute.MirroredStrategy()
 
