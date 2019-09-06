@@ -87,10 +87,10 @@ mc_token_ids = mc_token_ids[:index]
 if not os.path.isdir(model_folder):
     gpt2.download_gpt2(model_name = '117M')
 
-if epoch_number == 0:
-    strategy = tf.distribute.MirroredStrategy()
-elif epoch_number == 1:
-    strategy = tf.distribute.MirroredStrategy(devices=)
+# if epoch_number == 0:
+#     strategy = tf.distribute.MirroredStrategy()
+# elif epoch_number == 1:
+#     strategy = tf.distribute.MirroredStrategy(devices=)
 
 #print('Number of devices: {}'.format(strategy.num_replicas_in_sync))
 with strategy.scope():
