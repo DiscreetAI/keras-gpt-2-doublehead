@@ -99,6 +99,7 @@ with strategy.scope():
         }, 
         batch_size=batch_size
     ) 
+    print(model.metrics_names)
     print(outputs)
     metrics.append(outputs)
         
