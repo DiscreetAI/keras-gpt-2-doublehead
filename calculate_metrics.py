@@ -44,8 +44,8 @@ url = "https://persona-dataset.s3.amazonaws.com/{}"
 
 data = []
 
-batch_size = 4*32
-num_points_to_eval = 4*32*20
+batch_size = 128
+num_points_to_eval = (156020 // 128) * 128
 for name in filenames:
     full_url = url.format(name)
     json_data = requests.get(full_url).json()
