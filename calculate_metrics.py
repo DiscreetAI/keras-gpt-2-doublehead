@@ -77,8 +77,8 @@ with strategy.scope():
     model = load_trained_model_from_checkpoint(config_path, checkpoint_path, batch_size=None)
     timer = Timer()
     i = 0
-    batch_size = 4*10
-    num_points_to_eval = 4*30
+    batch_size = 4*32
+    num_points_to_eval = 4*32*5
     metrics = []
     while i < num_points_to_eval:
         print(f"Time since last iteration to do: {timer()}")
