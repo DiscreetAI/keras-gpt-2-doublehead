@@ -7,7 +7,7 @@ class SequenceSummary(Layer):
     def __init__(self, name):
         super(SequenceSummary, self).__init__(name=name)
 
-        self.summary_type = 'last'
+        self.summary_type = 'cls_index'
 
     def call(self, inputs):
         """ hidden_states: float Tensor in shape [bsz, seq_len, hidden_size], the hidden-states of the last layer.
@@ -16,7 +16,7 @@ class SequenceSummary(Layer):
                 if summary_type == 'cls_index' and cls_index is None:
                     we take the last token of the sequence as classification token
         """
-        hidden_states = inputs
+        hidden_states, cls_index = inputs
 
         if self.summary_type == 'last':
             output = hidden_states[:, -1]
