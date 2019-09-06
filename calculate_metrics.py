@@ -62,19 +62,20 @@ tops = []
 mc_labels = np.array(mc_labels[0]*input_ids.shape[0])
 has_started = False
 
-for i in range(input_ids.shape[0]):
-    #print("Done")
-    lm_logits, mc_logits = model.predict([input_ids[i:i+1], mc_token_ids[i:i+1]], batch_size=1)
-    current_lm = np.concatenate([current_lm, lm_logits], axis=0) if has_started else lm_logits
-    current_mc = np.concatenate([current_mc, mc_logits], axis=0) if has_started else mc_logits
-    has_started = True
+# for i in range(input_ids.shape[0]):
+#     #print("Done")
+#     lm_logits, mc_logits = model.predict([input_ids[i:i+1], mc_token_ids[i:i+1]], batch_size=1)
+#     current_lm = np.concatenate([current_lm, lm_logits], axis=0) if has_started else lm_logits
+#     current_mc = np.concatenate([current_mc, mc_logits], axis=0) if has_started else mc_logits
+#     has_started = True
 
 
-print(current_lm.shape)
-print(current_mc.shape)
+# print(current_lm.shape)
+# print(current_mc.shape)
 
-lm_logits = tf.convert_to_tensor(current_lm)
-mc_logits = tf.convert_to_tensor(current_mc)
+# lm_logits = tf.convert_to_tensor(current_lm)
+# mc_logits = tf.convert_to_tensor(current_mc)
+lm_logits, mc_logits = model.predict([input_ids, mc_token_ids], batch_size=2)
 lm_labels = tf.convert_to_tensor(lm_labels)
 mc_labels = tf.convert_to_tensor(mc_labels)
 
