@@ -19,7 +19,7 @@ if len(sys.argv) != 2:
     print('Enter model number!')
     sys.exit(-1)
 
-epoch_number = sys.argv[1]
+epoch_number = int(sys.argv[1])
 
 def get_available_devices():
     local_device_protos = device_lib.list_local_devices()
