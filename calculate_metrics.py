@@ -59,19 +59,26 @@ current_lm = None
 current_mc = None
 
 for i in range(input_ids.shape[0]):
+    print("Done")
     lm_logits, mc_logits = model.predict([input_ids[i:i+1], mc_token_ids[i:i+1]], batch_size=1)
-    current_lm = np.concatenate([current_lm, lm_logits], axis=0) if current_lm else lm_logits
-    current_mc = np.concatenate([current_mc, mc_logits], axis=0) if current_mc else mc_logits
+    current_lm = np.concatenate([current_lm, lm_logits], axis=0) if current_lm != None else lm_logits
+    current_mc = np.concatenate([current_mc, mc_logits], axis=0) if current_mc != None else mc_logits
+
 
 print(current_lm.shape)
 print(current_mc.shape)
 
-# ppl = perplexity_lm(lm_labels, lm_logits)
-# f1 = f1_score_lm(lm_labels, lm_logits)
+lm_logits = tf.convert_to_tensor(current_lm)
+mc_logits = tf.convert_to_tensor(current_mc)
+lm_labels = tf.convert_to_tensor(lm_labels)
+mc_labels = tf.convert_to_tensor(mc_labels)
+
+ppl = perplexity_lm(lm_labels, lm_logits)
+f1 = f1_score_lm(lm_labels, lm_logits)
 # top_1 = top_1_mc(mc_labels, mc_logits)
 
-# print("Perplexity", ppl)
-# print("F1 Score", f1)
+print("Perplexity", ppl)
+print("F1 Score", f1)
 # print("Hits@1", top_1)
 
 # strategy = tf.distribute.MirroredStrategy()
