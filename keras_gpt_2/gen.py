@@ -24,8 +24,8 @@ def generate(model,
     input_data = [encode + [0] * (max_len - len(encode)) for encode in encodes]
     for shift in range(length):
         output_data, _ = model.predict(np.array(input_data))
-        print(output_data.shape)
-        print(output_data[..., :-1, :].shape)
+        #print(output_data.shape)
+        #print(output_data[..., :-1, :].shape)
         for index in range(batch_size):
             probs = [(prob, i) for i, prob in enumerate(output_data[index, text_lens[index] + shift - 1])]
             probs.sort(reverse=True)
