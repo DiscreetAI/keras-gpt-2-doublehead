@@ -57,15 +57,15 @@ class Timer():
             self.total_time += delta_t
         return delta_t
 
-# index = 10
+index = (156020 // 40) * 40
 # print(index) 
 f1s = []
 perplexitys = []
 top_1s = []
-# input_ids = input_ids[:index]
-# lm_labels = lm_labels[:index]
-# mc_labels = mc_labels[:index]
-# mc_token_ids = mc_token_ids[:index]
+input_ids = input_ids[:index]
+lm_labels = lm_labels[:index]
+mc_labels = mc_labels[:index]
+mc_token_ids = mc_token_ids[:index]
 
 if not os.path.isdir(model_folder):
     gpt2.download_gpt2(model_name = '117M')
@@ -77,10 +77,11 @@ with strategy.scope():
     model = load_trained_model_from_checkpoint(config_path, checkpoint_path, batch_size=None)
     timer = Timer()
     i = 0
-    batch_size = 4*5
-    minibatch_size = 10 * 4
-    num_points_to_eval = 4*100
+    batch_size = 4*10
+    num_points_to_eval = 4*30
+    metrics = []
     while i < num_points_to_eval:
+        print(f"Time since last iteration to do {minibatch_size}: {timer()}")
         #print("Done")
         print(input_ids[i:i+batch_size].shape)
         print(mc_token_ids[i:i+batch_size].shape)
@@ -98,7 +99,7 @@ with strategy.scope():
             batch_size=batch_size
         ) 
         print(outputs)
-        metrics = outputs
+        metrics.append(outputs)
         i += batch_size
 
     # print("Perplexity", ppl)
@@ -106,6 +107,7 @@ with strategy.scope():
     # print("Hits@1", top_1_mc)
 
     print(f"Total time: {timer.total_time}")
+    metrics = list(zip(*metrics))
     metrics = {
         'loss': metrics[0],
         'ppl': metrics[1],
@@ -118,7 +120,7 @@ with strategy.scope():
     import json
 
     with open("metrics.json", 'w') as f:
-        json.dump(metrics, f)
+        json.dump(metrics, f, use_decimal=True)
 
     
 
