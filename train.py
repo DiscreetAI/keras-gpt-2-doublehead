@@ -1,9 +1,9 @@
 import os
 import sys
-from keras_gpt_2 import load_trained_model_from_checkpoint, get_bpe_from_files, generate
-from tensorflow.python.keras.models import load_model
-from tensorflow.python.keras.callbacks import BaseLogger, History
-import tensorflow as tf
+# from keras_gpt_2 import load_trained_model_from_checkpoint, get_bpe_from_files, generate
+# from tensorflow.python.keras.models import load_model
+# from tensorflow.python.keras.callbacks import BaseLogger, History
+# import tensorflow as tf
 import numpy as np
 from collections import defaultdict
 import urllib
@@ -14,10 +14,10 @@ checkpoint_path = os.path.join(model_folder, 'model.ckpt')
 encoder_path = os.path.join(model_folder, 'encoder.json')
 vocab_path = os.path.join(model_folder, 'vocab.bpe')
 
-import gpt_2_simple as gpt2
+# import gpt_2_simple as gpt2
 
-if not os.path.isdir(model_folder):
-    gpt2.download_gpt2(model_name = '117M')
+# if not os.path.isdir(model_folder):
+#     gpt2.download_gpt2(model_name = '117M')
 
 
 
@@ -100,7 +100,7 @@ def get_data_loaders(personachat, tokenizer, args_num_candidates=1, args_persona
 import json
 from pytorch_pretrained_bert import cached_path
 from pytorch_pretrained_bert import GPT2Tokenizer
-from keras_gpt_2 import load_trained_model_from_checkpoint, get_bpe_from_files, generate
+# from keras_gpt_2 import load_trained_model_from_checkpoint, get_bpe_from_files, generate
 
 tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
 url = "s3://datasets.huggingface.co/personachat/personachat_self_original.json"
