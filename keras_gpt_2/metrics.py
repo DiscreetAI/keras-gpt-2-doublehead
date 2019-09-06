@@ -84,12 +84,12 @@ def top_1_lm(y_true, y_pred):
     y_true = K.reshape(tf.cast(one_hot(y_true, 50257, axis=-1), tf.float32), (-1, 50257))
     
     y_pred = K.reshape(y_pred, (-1, 50257))
-    return top_1(y_true, y_pred)
+    return K.mean(top_1(y_true, y_pred))
 
 def top_1_mc(y_true, y_pred):
     y_true = K.reshape(tf.cast(y_true, tf.float32), (-1, 1))
     y_pred = K.reshape(y_pred, (-1, 1))
-    print(y_true.shape, y_pred.shape, "HERE")
+    #print(y_true.shape, y_pred.shape, "HERE")
     return top_1(y_true, y_pred)
 
 def top_3_lm(y_true, y_pred):

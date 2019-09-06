@@ -7,7 +7,7 @@ from collections import defaultdict
 from keras_gpt_2 import load_trained_model_from_checkpoint, get_bpe_from_files, generate
 import requests
 import gpt_2_simple as gpt2
-from keras_gpt_2 import perplexity_lm, f1_score_lm, top_1_mc
+from keras_gpt_2 import perplexity_lm, f1_score_lm, top_1_mc, top_1_lm
 from tensorflow.keras import backend as K
 from tensorflow.python.client import device_lib
 import time
@@ -18,13 +18,13 @@ def get_available_devices():
 print(get_available_devices()) 
 
 model_folder = 'models/117M'
-new_checkpoint = 'training_checkpoints'
 config_path = os.path.join(model_folder, 'hparams.json')
-checkpoint_path = os.path.join(new_checkpoint, 'ckpt.data')
+checkpoint_path = os.path.join(model_folder, 'model.ckpt')
 encoder_path = os.path.join(model_folder, 'encoder.json')
 vocab_path = os.path.join(model_folder, 'vocab.bpe')
 checkpoint_dir = './training_checkpoints'
-checkpoint_prefix = os.path.join(checkpoint_dir, "ckpt_{epoch}")
+epoch = 1
+checkpoint_prefix = os.path.join(checkpoint_dir, f"ckpt_{epoch}")
 filenames = ['valid_input_ids.json', 'valid_lm_labels.json', 'valid_mc_labels.json', 'valid_mc_token_ids.json']
 
 url = "https://persona-dataset.s3.amazonaws.com/{}"
@@ -39,11 +39,11 @@ for name in filenames:
 
 input_ids, lm_labels, mc_labels, mc_token_ids = data
 
-print(lm_labels.shape)
-print(input_ids.shape)
+#print(lm_labels.shape)
+#print(input_ids.shape)
 
-print(mc_token_ids.shape)
-print(mc_labels.shape)
+#print(mc_token_ids.shape)
+#print(mc_labels.shape)
 
 class Timer():
     def __init__(self):
@@ -72,37 +72,48 @@ if not os.path.isdir(model_folder):
 
 strategy = tf.distribute.MirroredStrategy()
 
-print('Number of devices: {}'.format(strategy.num_replicas_in_sync))
-batch_size = None
+#print('Number of devices: {}'.format(strategy.num_replicas_in_sync))
 with strategy.scope():
-    model = load_trained_model_from_checkpoint(config_path, checkpoint_path, batch_size=batch_size)
+    model = load_trained_model_from_checkpoint(config_path, checkpoint_path, batch_size=None)
     timer = Timer()
     i = 0
-    while i < 200:
-        print(f"Time since last iteration: {timer()}")
+    batch_size = 200 * 4
+    minibatch_size = 10 * 4
+    num_points_to_eval = 200
+    while i < num_points_to_eval:
         #print("Done")
-        lm_logits, mc_logits = model.predict([input_ids[i:i+40], mc_token_ids[i:i+40]], batch_size=40)
-        # has_started = True
-        #lm_logits, mc_logits = model.predict([input_ids, mc_token_ids], batch_size=batch_size*4)
-        lm_logits = tf.convert_to_tensor(lm_logits)
-        mc_logits = tf.convert_to_tensor(mc_logits)
-        LM_labels = tf.convert_to_tensor(lm_labels[i:i+40])
-        MC_labels = tf.convert_to_tensor(mc_labels[i:i+40])
+        lm_logits, mc_logits = model.predict([input_ids[i:i+batch_size], mc_token_ids[i:i+batch_size]], batch_size=batch_size)
+        j = 0
+        while j < batch_size:
+            print(f"Time since last iteration to do {minibatch_size}: {timer()}")
+            # has_started = True
+            #lm_logits, mc_logits = model.predict([input_ids, mc_token_ids], batch_size=batch_size*4)
+            LM_logits = lm_logits[j:j+minibatch_size]
+            LM_logits = tf.convert_to_tensor(LM_logits)
+            #mc_logits = tf.convert_to_tensor(mc_logits)
+            #LM_labels = tf.convert_to_tensor(lm_labels[i:i+minibatch_size])
+            LM_labels = lm_labels[j:j+minibatch_size]
+            LM_labels = tf.convert_to_tensor(LM_labels)
+            #MC_labels = tf.convert_to_tensor(mc_labels[i:i+minibatch_size])
 
-        ppl = K.eval(perplexity_lm(LM_labels, lm_logits))
-        f1 = K.eval(f1_score_lm(LM_labels, lm_logits))
-        #top_1 = K.eval(top_1_lm(lm_labels, lm_logits))
-        top_mc = K.eval(top_1_mc(MC_labels, mc_logits))
+            ppl = K.eval(perplexity_lm(LM_labels, LM_logits))
+            f1 = K.eval(f1_score_lm(LM_labels, LM_logits))
+            top_lm = K.eval(top_1_lm(LM_labels, LM_logits))
+            #top_mc = K.eval(top_1_mc(MC_labels, mc_logits))
+            top_1 = top_lm
 
-        print(top_mc.shape)
-        print(ppl.shape)
-        print(f1.shape)
-        
+            #print(top_mc.shape)
+            #print(ppl.shape)
+            #print(f1.shape)
+            print(f"Ppl: {ppl}")
+            print(f"f1: {f1}")
+            print(f"top_1: {top_1}") 
 
-        perplexitys.append(ppl)
-        f1s.append(f1)
-        top_1s.append(np.mean(top_mc))
-        i += 40
+            perplexitys.append(ppl)
+            f1s.append(f1)
+            top_1s.append(np.mean(top_1))
+            j += minibatch_size 
+        i += batch_size
 
     # print("Perplexity", ppl)
     # print("F1 Score", f1)
