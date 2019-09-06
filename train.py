@@ -125,7 +125,7 @@ def tokenize(obj):
         return dict((n, tokenize(o)) for n, o in obj.items())
     return list(tokenize(o) for o in obj)
 
-print("Tokenizing dataset...") 
+print("Tokenizing dataset..") 
 dataset = tokenize(dataset)
 
 with open('dataset.json', "w", encoding="utf-8") as f:
