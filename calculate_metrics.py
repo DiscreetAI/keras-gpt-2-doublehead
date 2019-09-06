@@ -25,7 +25,7 @@ def get_available_devices():
     local_device_protos = device_lib.list_local_devices()
     return [x.name for x in local_device_protos]
 print(get_available_devices()) 
-
+print(1/0)
 model_folder = 'models/117M'
 config_path = os.path.join(model_folder, 'hparams.json')
 
@@ -87,7 +87,10 @@ mc_token_ids = mc_token_ids[:index]
 if not os.path.isdir(model_folder):
     gpt2.download_gpt2(model_name = '117M')
 
-strategy = tf.distribute.MirroredStrategy()
+if epoch_number == 0:
+    strategy = tf.distribute.MirroredStrategy()
+elif epoch_number == 1:
+    strategy = tf.distribute.MirroredStrategy(devices=)
 
 #print('Number of devices: {}'.format(strategy.num_replicas_in_sync))
 with strategy.scope():
