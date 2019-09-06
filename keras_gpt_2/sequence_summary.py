@@ -58,7 +58,7 @@ class SequenceSummary(Layer):
             # shape of cls_index: (bsz, XX, 1, hidden_size) where XX are optional leading dim of hidden_states
             cls_index = tf.cast(cls_index, tf.int32)
             intended_shape = (tf.shape(cls_index)[0],)
-            idx = tf.stack([tf.range(2), K.reshape(cls_index[:,0], intended_shape)],axis=-1)
+            idx = tf.stack([tf.range(1), K.reshape(cls_index[:,0], intended_shape)],axis=-1)
             output = tf.gather_nd(hidden_states, idx)
 
             print(output.shape)
