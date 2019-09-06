@@ -36,13 +36,18 @@ for name in filenames:
 
 input_ids, lm_labels, mc_labels, mc_token_ids = data
 
-index = (131438 // 16) * 16
+index = (131438 // 32) * 16
 print(index) 
 
 input_ids = input_ids[:index]
 lm_labels = lm_labels[:index]
 mc_labels = mc_labels[:index]
 mc_token_ids = mc_token_ids[:index]
+
+print(lm_labels.shape)
+print(input_ids.shape)
+print(mc_token_ids.shape)
+print(mc_labels.shape)
 
 if not os.path.isdir(model_folder):
     gpt2.download_gpt2(model_name = '117M')
