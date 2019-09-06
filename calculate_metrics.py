@@ -44,6 +44,10 @@ print(input_ids.shape)
 print(mc_token_ids.shape)
 print(mc_labels.shape)
 
+print(lm_labels[4:8].shape)
+
+print(1/0)
+
 # index = 10
 # print(index) 
 f1s = np.array([])
