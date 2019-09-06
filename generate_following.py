@@ -4,6 +4,7 @@ from keras_gpt_2 import load_trained_model_from_checkpoint, get_bpe_from_files, 
 
 epoch_number = 2
 already_trained=True
+checkpoint_dir = './training_checkpoints'
 checkpoint_path = os.path.join(checkpoint_dir, f"ckpt_{epoch_number}")
 
 
