@@ -80,9 +80,9 @@ with strategy.scope():
         #top_1 = K.eval(top_1_lm(lm_labels, lm_logits))
         top_1_mc = K.eval(top_1_mc(mc_labels, mc_logits))
 
-        perplexitys = np.concatenate([perplexitys, ppl], axis=0)
-        f1s = np.concatenate([f1s, f1], axis=0)
-        top_1s = np.concatenate([top_1s, top_1_mc], axis=0)
+        perplexitys = np.concatenate([perplexitys, ppl], axis=0) if i else ppl
+        f1s = np.concatenate([f1s, f1], axis=0) if i else f1
+        top_1s = np.concatenate([top_1s, top_1_mc], axis=0) if i else top_1_mc
         i += 4
 
     # print("Perplexity", ppl)
