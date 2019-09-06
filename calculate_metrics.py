@@ -66,6 +66,7 @@ with strategy.scope():
     model = load_trained_model_from_checkpoint(config_path, checkpoint_path, batch_size=batch_size)
     i = 0
     while i < 40:
+        print(i)
         #print("Done")
         lm_logits, mc_logits = model.predict([input_ids[i:i+4], mc_token_ids[i:i+4]], batch_size=4)
         # has_started = True
