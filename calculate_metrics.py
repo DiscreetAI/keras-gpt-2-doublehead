@@ -75,6 +75,12 @@ with strategy.scope():
         lm_labels = tf.convert_to_tensor(lm_labels[i:i+4])
         mc_labels = tf.convert_to_tensor(mc_labels[i:i+4])
 
+        print(lm_labels.shape)
+        print(lm_logits.shape)
+
+        print(mc_logits.shape)
+        print(mc_labels.shape)
+
         ppl = K.eval(perplexity_lm(lm_labels, lm_logits))
         f1 = K.eval(f1_score_lm(lm_labels, lm_logits))
         #top_1 = K.eval(top_1_lm(lm_labels, lm_logits))
