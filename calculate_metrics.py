@@ -42,7 +42,7 @@ print(input_ids.shape)
 print(mc_token_ids.shape)
 print(mc_labels.shape)
 
-index = 100
+index = 10
 print(index) 
 
 input_ids = input_ids[:index]
