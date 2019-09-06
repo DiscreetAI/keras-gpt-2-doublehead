@@ -107,7 +107,7 @@ def get_model(n_vocab,
         input_layer_shape = (batch_size, None)
 
     lm_input_layer = tf.keras.layers.Input(
-        batch_shape=input_layer_shape,
+        batch_shape=(batch_size, 182),
         name='LMInput',
     )
 
