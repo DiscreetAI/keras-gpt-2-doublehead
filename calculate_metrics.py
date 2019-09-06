@@ -19,12 +19,12 @@ if len(sys.argv) != 2:
     print('Enter model number!')
     sys.exit(-1)
 
-epoch_number = int(sys.argv[1])
+# epoch_number = int(sys.argv[1])
 
-def get_available_devices():
-    local_device_protos = device_lib.list_local_devices()
-    return [x.name for x in local_device_protos]
-print(get_available_devices()) 
+# def get_available_devices():
+#     local_device_protos = device_lib.list_local_devices()
+#     return [x.name for x in local_device_protos]
+# print(get_available_devices()) 
 
 model_folder = 'models/117M'
 config_path = os.path.join(model_folder, 'hparams.json')
@@ -38,51 +38,51 @@ if epoch_number == 0:
 else:
     already_trained=True
     checkpoint_path = os.path.join(checkpoint_dir, f"ckpt_{epoch_number}")
-print(epoch_number)
-print(checkpoint_path)
-filenames = ['valid_input_ids.json', 'valid_lm_labels.json', 'valid_mc_labels.json', 'valid_mc_token_ids.json']
+# print(epoch_number)
+# print(checkpoint_path)
+# filenames = ['valid_input_ids.json', 'valid_lm_labels.json', 'valid_mc_labels.json', 'valid_mc_token_ids.json']
 
-url = "https://persona-dataset.s3.amazonaws.com/{}"
+# url = "https://persona-dataset.s3.amazonaws.com/{}"
 
-data = []
+# data = []
 
-batch_size = 128
-num_points_to_eval = (156020 // 128) * 128
-for name in filenames:
-    full_url = url.format(name)
-    json_data = requests.get(full_url).json()
-    data.append(np.array(json_data))
-    print("Done")
+# batch_size = 128
+# num_points_to_eval = (156020 // 128) * 128
+# for name in filenames:
+#     full_url = url.format(name)
+#     json_data = requests.get(full_url).json()
+#     data.append(np.array(json_data))
+#     print("Done")
 
-input_ids, lm_labels, mc_labels, mc_token_ids = data
+# input_ids, lm_labels, mc_labels, mc_token_ids = data
 
-#print(lm_labels.shape)
-#print(input_ids.shape)
+# #print(lm_labels.shape)
+# #print(input_ids.shape)
 
-#print(mc_token_ids.shape)
-#print(mc_labels.shape)
+# #print(mc_token_ids.shape)
+# #print(mc_labels.shape)
 
-class Timer():
-    def __init__(self):
-        self.times = [time.time()]
-        self.total_time = 0.0
+# class Timer():
+#     def __init__(self):
+#         self.times = [time.time()]
+#         self.total_time = 0.0
 
-    def __call__(self, include_in_total=True):
-        self.times.append(time.time())
-        delta_t = self.times[-1] - self.times[-2]
-        if include_in_total:
-            self.total_time += delta_t
-        return delta_t
+#     def __call__(self, include_in_total=True):
+#         self.times.append(time.time())
+#         delta_t = self.times[-1] - self.times[-2]
+#         if include_in_total:
+#             self.total_time += delta_t
+#         return delta_t
 
-index = num_points_to_eval
-# print(index) 
-f1s = []
-perplexitys = []
-top_1s = []
-input_ids = input_ids[:index]
-lm_labels = lm_labels[:index]
-mc_labels = mc_labels[:index]
-mc_token_ids = mc_token_ids[:index]
+# index = num_points_to_eval
+# # print(index) 
+# f1s = []
+# perplexitys = []
+# top_1s = []
+# input_ids = input_ids[:index]
+# lm_labels = lm_labels[:index]
+# mc_labels = mc_labels[:index]
+# mc_token_ids = mc_token_ids[:index]
 
 if not os.path.isdir(model_folder):
     gpt2.download_gpt2(model_name = '117M')
