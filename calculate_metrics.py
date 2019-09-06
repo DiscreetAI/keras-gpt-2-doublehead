@@ -78,8 +78,8 @@ with strategy.scope():
     model = load_trained_model_from_checkpoint(config_path, checkpoint_path, batch_size=None)
     timer = Timer()
     i = 0
-    batch_size = 4*32
-    num_points_to_eval = 4*32*5
+    batch_size = 4*256
+    num_points_to_eval = 4*256*5
     metrics = []
     while i < num_points_to_eval:
         print(f"Time since last iteration to do: {timer()}")
@@ -118,8 +118,7 @@ with strategy.scope():
     
     #print(time.time() - time1, "total time")
     print(metrics)
-    import json
-
+    
     with open("metrics.json", 'w') as f:
         json.dump(metrics, f, use_decimal=True)
 
