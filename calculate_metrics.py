@@ -38,6 +38,8 @@ if epoch_number == 0:
 else:
     already_trained=True
     checkpoint_path = os.path.join(checkpoint_dir, f"ckpt_{epoch_number}")
+
+print(checkpoint_path)
 filenames = ['valid_input_ids.json', 'valid_lm_labels.json', 'valid_mc_labels.json', 'valid_mc_token_ids.json']
 
 url = "https://persona-dataset.s3.amazonaws.com/{}"
