@@ -53,7 +53,7 @@ print(mc_labels.shape)
 if not os.path.isdir(model_folder):
     gpt2.download_gpt2(model_name = '117M')
 
-model = load_trained_model_from_checkpoint(config_path, checkpoint_path, batch_size=batch_size)
+model = load_trained_model_from_checkpoint(config_path, checkpoint_path, batch_size=None)
 
 lm_logits, mc_logits = model.predict([input_ids, mc_token_ids])
 
