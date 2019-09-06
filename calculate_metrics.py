@@ -92,6 +92,7 @@ print('Load BPE from files...')
 bpe = get_bpe_from_files(encoder_path, vocab_path)
 print('Generate text...')
 output = generate(model, bpe, ['From the day forth, my arm'], length=20, top_k=40)
+print(output)
 
 # if epoch_number == 0:
 #     strategy = tf.distribute.MirroredStrategy()
