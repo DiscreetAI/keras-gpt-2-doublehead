@@ -88,14 +88,12 @@ def get_data_loaders(personachat, tokenizer, args_num_candidates=1, args_persona
     print("Pad inputs and convert to Tensor")
     tensor_datasets = {"train": []}
     for dataset_name, dataset in datasets.items():
-        if dataset_name == 'valid':
-            continue
         dataset = pad_dataset(dataset, padding=tokenizer.convert_tokens_to_ids('<pad>'))
         for input_name in MODEL_INPUTS:
             tensor = dataset[input_name]
             # if input_name == "mc_ldsfaabels":
             #     tensor = tensor.reshape((-1, datasets[dataset_name]["n_candidates"]) + tensor.shape[1:])
-            dataset[input_name] = tensor
+            dataset[input_name] = np.array(tensor)
 
     return datasets
 
@@ -138,10 +136,10 @@ with open('dataset.json', "w", encoding="utf-8") as f:
 datasets = get_data_loaders(dataset, tokenizer)
 
 arr = datasets['valid']
-input_ids = arr['input_ids']
-mc_token_ids = arr['mc_token_ids']
-lm_labels = arr['lm_labels']
-mc_labels = arr['mc_labels']
+input_ids = arr['input_ids'].tolist()
+mc_token_ids = arr['mc_token_ids'].tolist()
+lm_labels = arr['lm_labels'].tolist()
+mc_labels = arr['mc_labels'].tolist()
 
 
 # with open('input_ids.json', 'w') as f:
