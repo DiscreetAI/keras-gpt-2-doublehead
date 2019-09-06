@@ -100,13 +100,14 @@ with strategy.scope():
         'top': top_1s
     }
 
+    print(time.time() - time1, "total time")
     print(metrics)
     import json
 
     with open("metrics.json", 'w') as f:
         json.dump(metrics, f)
 
-    print(time.time() - time1)
+    
 
 
 
