@@ -33,7 +33,7 @@ pycodestyle==2.5.0
 Pygments==2.4.2
 python-dateutil==2.8.0
 pytorch-pretrained-bert==0.6.2
-PyYAML==5.1.2
+PyYAML==5.4
 readme-renderer==24.0
 regex==2019.8.19
 requests==2.22.0
