@@ -26,7 +26,7 @@ keras-self-attention==0.41.0
 keras-transformer==0.30.0
 Markdown==3.1.1
 nose==1.3.7
-numpy==1.17.1
+numpy==1.22.0
 pkginfo==1.5.0.1
 protobuf==3.9.1
 pycodestyle==2.5.0
